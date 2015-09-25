@@ -137,9 +137,9 @@ set t_Co=256 " 256 color mode
 
 colorscheme base16-eighties
 
-python from powerline.vim import setup as powerline_setup
-python powerline_setup()
-python del powerline_setup
+python3 from powerline.vim import setup as powerline_setup
+python3 powerline_setup()
+python3 del powerline_setup
 
 nnoremap <C-S> <C-W>
 " Unmap arrow keys in normal mode
