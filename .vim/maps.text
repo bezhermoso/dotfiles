@@ -1,0 +1,58 @@
+
+
+v  ["          *@:<C-U>exe "normal! gv"|call search('\%(^\s*".*\n\)\%(^\s*"\)\@!', "bW")<CR>
+n  ["          *@:call search('\%(^\s*".*\n\)\%(^\s*"\)\@!', "bW")<CR>
+v  []          *@m':<C-U>exe "normal! gv"|call search('^\s*endf*\%[unction]\>', "bW")<CR>
+n  []          *@m':call search('^\s*endf*\%[unction]\>', "bW")<CR>
+v  [[          *@m':<C-U>exe "normal! gv"|call search('^\s*fu\%[nction]\>', "bW")<CR>
+n  [[          *@m':call search('^\s*fu\%[nction]\>', "bW")<CR>
+v  ]"          *@:<C-U>exe "normal! gv"|call search('^\(\s*".*\n\)\@<!\(\s*"\)', "W")<CR>
+n  ]"          *@:call search('^\(\s*".*\n\)\@<!\(\s*"\)', "W")<CR>
+v  ][          *@m':<C-U>exe "normal! gv"|call search('^\s*endf*\%[unction]\>', "W")<CR>
+n  ][          *@m':call search('^\s*endf*\%[unction]\>', "W")<CR>
+v  ]]          *@m':<C-U>exe "normal! gv"|call search('^\s*fu\%[nction]\>', "W")<CR>
+n  ]]          *@m':call search('^\s*fu\%[nction]\>', "W")<CR>
+n  y<C-G>      *@:call setreg(v:register, <SNR>10_recall())<CR>
+n  <C-H>       * <C-W>h
+v  <Tab>       * %
+n  <Tab>       * %
+n  <NL>        * <C-W>j
+n  <C-K>       * <C-W>k
+n  <C-L>       * <C-W>l
+n  <C-N>       * :call NumberToggle()<CR>
+n  ,/          * "+y
+n  ,P          * "+p
+n  ,X          * "+d
+n  ,C          * "+y
+n  ,d          * :YcmShowDetailedDiagnostic<CR>
+n  ,ca           <Plug>NERDCommenterAltDelims
+x  ,cu           <Plug>NERDCommenterUncomment
+n  ,cu           <Plug>NERDCommenterUncomment
+x  ,cb           <Plug>NERDCommenterAlignBoth
+n  ,cb           <Plug>NERDCommenterAlignBoth
+x  ,cl           <Plug>NERDCommenterAlignLeft
+n  ,cl           <Plug>NERDCommenterAlignLeft
+n  ,cA           <Plug>NERDCommenterAppend
+x  ,cy           <Plug>NERDCommenterYank
+
+
+c  <C-R><C-G>  *@fnameescape(<SNR>10_recall())
+i  <C-Space>   * <C-X><C-O><C-P>
+i  <Nul>         <C-Space>
+i  <Up>        * pumvisible() ? "\<C-P>" : "\<Up>"
+i  <S-Tab>     * pumvisible() ? "\<C-P>" : "\<S-Tab>"
+i  <Down>      * pumvisible() ? "\<C-N>" : "\<Down>"
+i  <Plug>ISurround * <C-R>=<SNR>38_insert(1)<CR>
+i  <Plug>Isurround * <C-R>=<SNR>38_insert()<CR>
+i  <Plug>NERDCommenterInsert * <Space><BS><Esc>:call NERDComment('i', "insert")<CR>
+i  <C-Tab>     * <Esc>:tabprevious<CR>
+!  <D-v>         <C-R>*
+i  <C-G>S        <Plug>ISurround
+i  <C-G>s        <Plug>Isurround
+i  <Tab>       * pumvisible() ? "\<C-N>" : "\<Tab>"
+i  <C-S>         <Plug>Isurround
+i  ,[          * []<Esc>i
+i  ,{          * {}<Esc>i
+i  ,"          * ""<Esc>i
+i  ,(          * ()<Esc>i
+i  ,'          * ''<Esc>i
