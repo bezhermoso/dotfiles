@@ -4,6 +4,13 @@
       {
         "left": [
           {
+            "function": "vim_power.segments.in_vim_shell"
+          },
+          {
+            "function": "powerline.segments.common.env.user",
+            "priority": 30
+          },
+          {
             "function": "powerline.segments.common.vcs.branch",
             "priority": 40
           },
@@ -35,11 +42,7 @@
     ],
     "left": [
       {
-        "function": "vim_power.segments.in_vim_shell"
-      },
-      {
-        "function": "powerline.segments.common.env.user",
-        "priority": 30
+        "function": "vim_power.segments.prompt_text"
       }
     ],
     "right": [

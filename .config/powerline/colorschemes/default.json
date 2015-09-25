@@ -48,6 +48,7 @@
 		"cwd:divider":               { "fg": "gray7", "bg": "gray4", "attrs": [] },
 		"virtualenv":                { "fg": "white", "bg": "darkcyan", "attrs": [] },
 		"attached_clients":          { "fg": "gray8", "bg": "gray0", "attrs": [] },
-		"in_vim_shell":              { "fg": "gray0", "bg": "brightgreen", "attrs": ["bold"] }
+		"in_vim_shell":              { "fg": "gray0", "bg": "brightgreen", "attrs": ["bold"] },
+		"prompt_text":               { "fg": "white", "bg": "gray2", "attrs": ["bold"] }
 	}
 }
