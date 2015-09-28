@@ -39,8 +39,8 @@
 		"battery_empty":             { "fg": "white", "bg": "gray0", "attrs": [] },
 		"player":                    { "fg": "gray10", "bg": "black", "attrs": [] },
 		"user":                      { "fg": "white", "bg": "darkblue", "attrs": ["bold"] },
-		"branch":                    { "fg": "gray9", "bg": "gray2", "attrs": [] },
-		"branch_dirty":              { "fg": "brightyellow", "bg": "gray2", "attrs": [] },
+		"branch":                    { "fg": "gray2", "bg": "mediumpurple", "attrs": [] },
+		"branch_dirty":              { "fg": "brightyellow", "bg": "darkred", "attrs": [] },
 		"branch_clean":              { "fg": "gray9", "bg": "gray2", "attrs": [] },
 		"branch:divider":            { "fg": "gray7", "bg": "gray2", "attrs": [] },
 		"cwd":                       "information:additional",
@@ -49,6 +49,6 @@
 		"virtualenv":                { "fg": "white", "bg": "darkcyan", "attrs": [] },
 		"attached_clients":          { "fg": "gray8", "bg": "gray0", "attrs": [] },
 		"in_vim_shell":              { "fg": "gray0", "bg": "brightgreen", "attrs": ["bold"] },
-		"prompt_text":               { "fg": "white", "bg": "gray2", "attrs": ["bold"] }
+		"prompt_text":               { "fg": "gray0", "bg": "yellow", "attrs": ["bold"] }
 	}
 }

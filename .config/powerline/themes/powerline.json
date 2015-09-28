@@ -135,7 +135,7 @@
     },
     "vim_power.segments.prompt_text": {
       "args": {
-        "text": "○"
+        "text": "  λ"
       }
     }
   }
