@@ -45,7 +45,10 @@
     ],
     "left": [
       {
-        "function": "vim_power.segments.prompt_text"
+        "function": "vim_power.segments.prompt_text",
+        "args": {
+          "draw_hard_divider": false
+        }
       }
     ],
     "right": [

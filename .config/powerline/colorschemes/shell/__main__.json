@@ -1,7 +1,7 @@
 {
 	"groups": {
-		"continuation":         "cwd",
-		"continuation:current": "cwd:current_folder",
+		"continuation":         "new_continuation",
+		"continuation:current": "new_continuation",
 		"exit_fail":            "critical:failure",
 		"exit_success":         "critical:success",
 		"jobnum":               "information:priority",

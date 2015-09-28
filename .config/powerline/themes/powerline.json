@@ -31,7 +31,7 @@
           "pause":    "▮▮",
           "stop":     "■"
         }
-      }
+     }
     },
 
     "time": {
@@ -135,7 +135,8 @@
     },
     "vim_power.segments.prompt_text": {
       "args": {
-        "text": "  λ"
+        "text": "λ ",
+        "draw_hard_divider": true
       }
     }
   }
