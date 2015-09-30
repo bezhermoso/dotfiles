@@ -135,8 +135,7 @@
     },
     "vim_power.segments.prompt_text": {
       "args": {
-        "text": "λ ",
-        "draw_hard_divider": true
+        "text": "λ  "
       }
     }
   }

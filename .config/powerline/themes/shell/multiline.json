@@ -14,7 +14,7 @@
             "function": "powerline.segments.common.vcs.branch",
             "priority": 40,
             "args": {
-              "status_colors": true
+              "status_colors": false
             }
           },
           {
@@ -46,9 +46,7 @@
     "left": [
       {
         "function": "vim_power.segments.prompt_text",
-        "args": {
-          "draw_hard_divider": false
-        }
+        "draw_hard_divider": false
       }
     ],
     "right": [
