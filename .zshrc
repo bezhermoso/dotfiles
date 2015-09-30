@@ -1,26 +1,41 @@
+if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
+
+echo ''
+fortune -a | lolcat
+echo ''
+#export PATH="$HOME/.rbenv/bin:$PATH"
+
 source /usr/local/Cellar/antigen/1/share/antigen.zsh
+source /Users/bez/.phpbrew/bashrc
 
 function powerline_lib_path() {
-  pip show powerline-status | grep Location | awk '{print $2}'
+  pip3 show powerline-status | grep Location | awk '{print $2}'
 }
 
 function src() {
   source $HOME/.zshrc
 }
 
+
 alias dl=youtube-dl
 alias vi=vim
+alias quit=exit
 
 export POWERLINE_PATH=$(powerline_lib_path)/powerline
 export EDITOR=vim
 export HISTINGORE='clear:history'
 export HISTORYCONTROL='ignoreboth'
 
-export DOCKER_HOST=tcp://192.168.99.100:2376
-export DOCKER_MACHINE_NAME=default
-export DOCKER_TLS_VERIFY=1
-export DOCKER_CERT_PATH=/Users/bez/.docker/machine/machines/default
+#export DOCKER_HOST=tcp://192.168.99.100:2376
+#export DOCKER_MACHINE_NAME=default
+#export DOCKER_TLS_VERIFY=1
+#export DOCKER_CERT_PATH=/Users/bez/.docker/machine/machines/default
+#
+eval "$(docker-machine env default)"
 
+function powerline() {
+  $POWERLINE_PATH/client/powerline.sh "$@"
+}
 
 #unalias run-help
 autoload run-help
@@ -65,7 +80,6 @@ antigen bundle wd
 antigen bundle zsh-users/zsh-syntax-highlighting
 
 antigen apply
-
 
 . $POWERLINE_PATH/bindings/zsh/powerline.zsh
 
