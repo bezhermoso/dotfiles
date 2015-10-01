@@ -34,53 +34,51 @@ function! StripWhitespace()
 endfunction
 noremap <leader>ss :call StripWhitespace()<CR>
 
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
-
-Plugin 'gmarik/Vundle.vim'
+call plug#begin()
+Plug 'gmarik/Vundle.vim'
 " The following are examples of different formats supported.
-" " Keep Plugin commands between vundle#begin/end.
+" " Keep Plug commands between vundle#begin/end.
 " " plugin on GitHub repo
-Plugin 'tpope/vim-fugitive'
+Plug 'tpope/vim-fugitive'
 " " plugin from http://vim-scripts.org/vim/scripts.html
-" Plugin 'L9'
+" Plug 'L9'
 " " Git plugin not hosted on GitHub
-"Plugin 'git://git.wincent.com/command-t.git'
+"Plug 'git://git.wincent.com/command-t.git'
 " " git repos on your local machine (i.e. when working on your own plugin)
-" Plugin 'file:///home/gmarik/path/to/plugin'
+" Plug 'file:///home/gmarik/path/to/plugin'
 " " The sparkup vim script is in a subdirectory of this repo called vim.
 " " Pass the path to set the runtimepath properly.
-" Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
+" Plug 'rstacruz/sparkup', {'rtp': 'vim/'}
 " " Avoid a name conflict with L9
-" Plugin 'user/L9', {'name': 'newL9'}
-Plugin 'L9'
-" Plugin 'FuzzyFinder'
-" Plugin 'airblade/FuzzyFinder_Textmate'
-Plugin 'scrooloose/nerdtree'
-Plugin 'mileszs/ack.vim'
-Plugin 'kien/ctrlp.vim'
-Plugin 'chriskempson/base16-vim'
-Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
-Plugin 'godlygeek/tabular'
-Plugin 'plasticboy/vim-markdown'
-" Plugin 'bling/vim-airline'
-Plugin 'powerline/powerline'
-"Plugin 'Valloric/YouCompleteMe'
-Plugin 'scrooloose/nerdcommenter'
-Plugin 'guns/xterm-color-table.vim'
-Plugin 'tpope/vim-surround'
-Plugin 'tpope/vim-repeat'
-Plugin 'unblevable/quick-scope'
-Plugin 'lsdr/monokai'
-Plugin 'altercation/vim-colors-solarized'
-Plugin 'rking/ag.vim'
-Plugin 'tpope/vim-endwise'
-Plugin 'mattn/flappyvird-vim'
-Plugin 'shawncplus/phpcomplete.vim'
-Plugin 'StanAngeloff/php.vim'
-Plugin 'vim-scripts/ZoomWin'
+" Plug 'user/L9', {'name': 'newL9'}
+Plug 'L9'
+" Plug 'FuzzyFinder'
+" Plug 'airblade/FuzzyFinder_Textmate'
+Plug 'scrooloose/nerdtree'
+Plug 'mileszs/ack.vim'
+Plug 'kien/ctrlp.vim'
+Plug 'chriskempson/base16-vim'
+Plug 'rstacruz/sparkup', {'rtp': 'vim/'}
+Plug 'godlygeek/tabular'
+Plug 'plasticboy/vim-markdown'
+" Plug 'bling/vim-airline'
+Plug 'powerline/powerline'
+"Plug 'Valloric/YouCompleteMe'
+Plug 'scrooloose/nerdcommenter'
+Plug 'guns/xterm-color-table.vim'
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-repeat'
+Plug 'unblevable/quick-scope'
+Plug 'lsdr/monokai'
+Plug 'altercation/vim-colors-solarized'
+Plug 'rking/ag.vim'
+Plug 'tpope/vim-endwise'
+Plug 'mattn/flappyvird-vim'
+Plug 'shawncplus/phpcomplete.vim'
+Plug 'StanAngeloff/php.vim'
+Plug 'vim-scripts/ZoomWin'
 
-call vundle#end()
+call plug#end()
 
 " Set comma as leader key
 let mapleader=","
