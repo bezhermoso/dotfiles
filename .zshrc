@@ -12,6 +12,8 @@ function powerline_lib_path() {
   pip3 show powerline-status | grep Location | awk '{print $2}'
 }
 
+powerline-daemon -q
+
 function src() {
   source $HOME/.zshrc
 }
@@ -47,6 +49,13 @@ BACKGROUND=${BACKGROUND:-"dark"}
 BASE16_SHELL="$HOME/TerminalMods/base16-shell/base16-${BASE16_FLAVOR}.${BACKGROUND}.sh"
 [[ -s $BASE16_SHELL ]] && source $BASE16_SHELL
 
+function dark() {
+  export BACKGROUND='dark' && src
+}
+
+function light() {
+  export BACKGROUND="light" && src
+}
 
 # Antigen plugins#
 antigen use oh-my-zsh
@@ -76,11 +85,10 @@ antigen bundle tmux
 antigen bundle vagrant
 antigen bundle web-search
 antigen bundle wd
-
 antigen bundle zsh-users/zsh-syntax-highlighting
 
 antigen apply
 
 . $POWERLINE_PATH/bindings/zsh/powerline.zsh
 
-PATH=$PATH:~/.composer/vendor/bin
+#PATH=$PATH:~/.composer/vendor/bin
