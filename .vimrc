@@ -52,8 +52,6 @@ Plug 'tpope/vim-fugitive'
 " " Avoid a name conflict with L9
 " Plug 'user/L9', {'name': 'newL9'}
 Plug 'L9'
-" Plug 'FuzzyFinder'
-" Plug 'airblade/FuzzyFinder_Textmate'
 Plug 'scrooloose/nerdtree'
 Plug 'mileszs/ack.vim'
 Plug 'kien/ctrlp.vim'
@@ -61,7 +59,6 @@ Plug 'chriskempson/base16-vim'
 Plug 'rstacruz/sparkup', {'rtp': 'vim/'}
 Plug 'godlygeek/tabular'
 Plug 'plasticboy/vim-markdown'
-" Plug 'bling/vim-airline'
 Plug 'powerline/powerline'
 "Plug 'Valloric/YouCompleteMe'
 Plug 'scrooloose/nerdcommenter'
@@ -77,6 +74,11 @@ Plug 'mattn/flappyvird-vim'
 Plug 'shawncplus/phpcomplete.vim'
 Plug 'StanAngeloff/php.vim'
 Plug 'vim-scripts/ZoomWin'
+Plug 'rstacruz/vim-closer'
+Plug 'austintaylor/vim-commaobject'
+Plug 'beberlei/vim-php-refactor'
+Plug 'easymotion/vim-easymotion'
+"Plug 'rstacruz/vim-hyperstyle'
 
 call plug#end()
 
