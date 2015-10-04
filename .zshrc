@@ -4,6 +4,7 @@ echo ''
 fortune -a | lolcat
 echo ''
 #export PATH="$HOME/.rbenv/bin:$PATH"
+export PATH="$HOME/.dotfiles/bin:$PATH"
 
 source /usr/local/Cellar/antigen/1/share/antigen.zsh
 source /Users/bez/.phpbrew/bashrc
@@ -12,7 +13,7 @@ function powerline_lib_path() {
   pip3 show powerline-status | grep Location | awk '{print $2}'
 }
 
-powerline-daemon -q
+#powerline-daemon -rq
 
 function src() {
   source $HOME/.zshrc
@@ -27,13 +28,6 @@ export POWERLINE_PATH=$(powerline_lib_path)/powerline
 export EDITOR=vim
 export HISTINGORE='clear:history'
 export HISTORYCONTROL='ignoreboth'
-
-#export DOCKER_HOST=tcp://192.168.99.100:2376
-#export DOCKER_MACHINE_NAME=default
-#export DOCKER_TLS_VERIFY=1
-#export DOCKER_CERT_PATH=/Users/bez/.docker/machine/machines/default
-#
-eval "$(docker-machine env default)"
 
 function powerline() {
   $POWERLINE_PATH/client/powerline.sh "$@"
@@ -89,6 +83,16 @@ antigen bundle zsh-users/zsh-syntax-highlighting
 
 antigen apply
 
+export POWERLINE_DAEMON_PS="$(ps aux | grep powerline-daemon | grep -v grep)"
+if [[ -z "$POWERLINE_DAEMON_PS" ]]; then
+  echo "Starting powerline-daemon..."
+  powerline-daemon -q
+fi
 . $POWERLINE_PATH/bindings/zsh/powerline.zsh
 
 #PATH=$PATH:~/.composer/vendor/bin
+
+# vim indicator in Powerline shell
+if [[ -n "$VIMRUNTIME" ]]; then
+  export POWERLINE_IN_VIM_SHELL=':sh'
+fi
