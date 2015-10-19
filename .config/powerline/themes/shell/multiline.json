@@ -30,7 +30,11 @@
           },
           {
             "function": "powerline.segments.shell.cwd",
-            "priority": 10
+            "priority": 10,
+            "args": {
+              "use_path_separator": true,
+              "dir_limit_depth": false
+            } 
           },
           {
             "function": "powerline.segments.shell.jobnum",

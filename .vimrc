@@ -26,11 +26,11 @@ set secure
 
 " Strip trailing whitespace (,ss)
 function! StripWhitespace()
-	let save_cursor = getpos(".")
-	let old_query = getreg('/')
-	:%s/\s\+$//e
-	call setpos('.', save_cursor)
-	call setreg('/', old_query)
+  let save_cursor = getpos(".")
+  let old_query = getreg('/')
+  :%s/\s\+$//e
+  call setpos('.', save_cursor)
+  call setreg('/', old_query)
 endfunction
 noremap <leader>ss :call StripWhitespace()<CR>
 
@@ -192,6 +192,7 @@ vnoremap <S-Tab> :tabnext<CR>
 vnoremap <C-S-Tab> :tabprevious<CR>
 
 nnoremap <leader>m :NERDTreeToggle<cr>
+nnoremap <leader>M :NERDTreeFocus<cr>
 nnoremap <leader>n :CtrlP<cr>
 nnoremap <leader>N :CtrlPMRUFiles<cr>
 nnoremap <leader>a :Ag
@@ -206,8 +207,9 @@ inoremap <leader>[ []<ESC>i
 "let g:CommandTHighlightColor = "Visual"
 
 " Highlight colors 
-"hi Search ctermfg=0 ctermbg=11 guifg=Black 
+hi Search ctermfg=0 ctermbg=11 guifg=Black 
 "hi LineNr ctermfg=242
+hi Comment ctermfg=245
 "hi ColorColumn ctermbg=black
 if shell_background == 'dark'
   hi CursorLine cterm=NONE ctermbg=239
@@ -226,13 +228,12 @@ vnoremap <BS> "_d
 nmap <leader>l :set list!<CR>
 
 " Toggle between relative & absolute file number
+set number
 function! NumberToggle()
   if(&relativenumber == 1)
-    set number
     set relativenumber!
   else
     set relativenumber
-    set number!
   endif
 endfunc
 nnoremap <C-n> :call NumberToggle()<CR>
@@ -340,5 +341,10 @@ if exists("+undofile")
 endif
 
 " Ident entire file. Uses 'i' as mark so that it goes back to the current line.
-nnoremap <leader>= migg=G'i
+function! IndentEntireFile()
+  let last_cursor = getpos('.')
+  execute "normal! gg=G"
+  call setpos('.', last_cursor)
+endfunction
+nnoremap <leader>= :call IndentEntireFile()<cr>
 nnoremap <silent> <C-w>z :ZoomWin<cr>

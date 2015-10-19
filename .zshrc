@@ -1,7 +1,7 @@
 if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
 
 echo ''
-fortune -a | lolcat
+fortune | lolcat
 echo ''
 #export PATH="$HOME/.rbenv/bin:$PATH"
 export PATH="$HOME/.dotfiles/bin:$PATH"
@@ -37,7 +37,7 @@ function powerline() {
 autoload run-help
 HELPDIR=/usr/local/share/zsh/help
 
-BASE16_FLAVOR=eighties
+BASE16_FLAVOR=bright
 BACKGROUND=${BACKGROUND:-"dark"}
 
 BASE16_SHELL="$HOME/TerminalMods/base16-shell/base16-${BASE16_FLAVOR}.${BACKGROUND}.sh"
@@ -75,7 +75,7 @@ antigen bundle rand-quote
 antigen bundle sprunge
 antigen bundle sudo
 antigen bundle symfony2
-antigen bundle tmux
+#antigen bundle tmux
 antigen bundle vagrant
 antigen bundle web-search
 antigen bundle wd
@@ -90,9 +90,13 @@ if [[ -z "$POWERLINE_DAEMON_PS" ]]; then
 fi
 . $POWERLINE_PATH/bindings/zsh/powerline.zsh
 
+tmux start-server
 #PATH=$PATH:~/.composer/vendor/bin
 
 # vim indicator in Powerline shell
 if [[ -n "$VIMRUNTIME" ]]; then
   export POWERLINE_IN_VIM_SHELL=':sh'
 fi
+
+#export PATH="$PATH:/opt/tmux"
+#test -e ${HOME}/.iterm2_shell_integration.zsh && source ${HOME}/.iterm2_shell_integration.zsh
