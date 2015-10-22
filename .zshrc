@@ -86,7 +86,7 @@ antigen apply
 export POWERLINE_DAEMON_PS="$(ps aux | grep powerline-daemon | grep -v grep)"
 if [[ -z "$POWERLINE_DAEMON_PS" ]]; then
   echo "Starting powerline-daemon..."
-  powerline-daemon -q
+  powerline-daemon -rq
 fi
 . $POWERLINE_PATH/bindings/zsh/powerline.zsh
 
@@ -100,3 +100,4 @@ fi
 
 #export PATH="$PATH:/opt/tmux"
 #test -e ${HOME}/.iterm2_shell_integration.zsh && source ${HOME}/.iterm2_shell_integration.zsh
+export ANSIBLE_NOCOWS=1
