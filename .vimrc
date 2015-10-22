@@ -78,6 +78,8 @@ Plug 'rstacruz/vim-closer'
 Plug 'austintaylor/vim-commaobject'
 Plug 'beberlei/vim-php-refactor'
 Plug 'easymotion/vim-easymotion'
+Plug 'reedes/vim-pencil'
+Plug 'junegunn/goyo.vim'
 "Plug 'rstacruz/vim-hyperstyle'
 
 call plug#end()
@@ -137,9 +139,9 @@ set t_Co=256 " 256 color mode
 
 colorscheme base16-eighties
 
-python3 from powerline.vim import setup as powerline_setup
-python3 powerline_setup()
-python3 del powerline_setup
+python from powerline.vim import setup as powerline_setup
+python powerline_setup()
+python del powerline_setup
 
 nnoremap <C-S> <C-W>
 " Unmap arrow keys in normal mode
@@ -223,6 +225,8 @@ nnoremap <leader><BS> "_dd
 vnoremap <leader><BS> "_dd
 nnoremap <BS> "_d
 vnoremap <BS> "_d
+nnoremap <BS><BS> "_dd
+vnoremap <BS><BS> "_dd
 
 " Toggle `set list`
 nmap <leader>l :set list!<CR>
@@ -348,3 +352,4 @@ function! IndentEntireFile()
 endfunction
 nnoremap <leader>= :call IndentEntireFile()<cr>
 nnoremap <silent> <C-w>z :ZoomWin<cr>
+inoremap kj <esc>
