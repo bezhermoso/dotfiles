@@ -75,7 +75,7 @@ antigen bundle rand-quote
 antigen bundle sprunge
 antigen bundle sudo
 antigen bundle symfony2
-#antigen bundle tmux
+antigen bundle tmux
 antigen bundle vagrant
 antigen bundle web-search
 antigen bundle wd
@@ -90,7 +90,7 @@ if [[ -z "$POWERLINE_DAEMON_PS" ]]; then
 fi
 . $POWERLINE_PATH/bindings/zsh/powerline.zsh
 
-tmux start-server
+#tmux start-server
 #PATH=$PATH:~/.composer/vendor/bin
 
 # vim indicator in Powerline shell
@@ -101,3 +101,12 @@ fi
 #export PATH="$PATH:/opt/tmux"
 #test -e ${HOME}/.iterm2_shell_integration.zsh && source ${HOME}/.iterm2_shell_integration.zsh
 export ANSIBLE_NOCOWS=1
+
+# tmuxinator
+tmuxinator_version=$(gem list tmuxinator | grep tmuxinator | awk '{print $2}' | sed 's/(/-/' | sed 's/)//')
+tmuxinator_dir=$(gem list tmuxinator -d | grep Installed | awk '{print $3}')
+source $tmuxinator_dir/gems/tmuxinator$tmuxinator_version/completion/tmuxinator.zsh
+
+function xcode-license() {
+  sudo xcodebuild -license
+}
