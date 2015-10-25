@@ -353,3 +353,14 @@ endfunction
 nnoremap <leader>= :call IndentEntireFile()<cr>
 nnoremap <silent> <C-w>z :ZoomWin<cr>
 inoremap kj <esc>
+nnoremap z<Space> :Goyo<cr>
+let g:goyo_width=120
+
+function! s:goyo_enter()
+  set relativenumber
+  set wrap
+  set colorcolumn=80
+  set textwidth=79
+  set formatoptions=qrn1
+endfunction
+autocmd! User GoyoEnter nested call <SID>goyo_enter()
