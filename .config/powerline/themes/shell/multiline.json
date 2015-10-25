@@ -18,9 +18,6 @@
             }
           },
           {
-            "function": "powerline.segments.shell.mode"
-          },
-          {
             "function": "powerline.segments.common.net.hostname",
             "priority": 10
           },

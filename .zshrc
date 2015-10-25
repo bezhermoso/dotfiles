@@ -58,6 +58,13 @@ antigen bundle git
 antigen bundle autojump
 antigen bundle brew
 antigen bundle bower
+antigen bundle chucknorris
+antigen bundle common-aliases
+# Shift+Ctrl+Arrow to cycle:
+#antigen bundle dircycle
+# Alt+Arrow to cycle:
+antigen bundle dirhistory
+antigen bundle dirpersist
 antigen bundle node
 antigen bundle npm
 antigen bundle bundler
@@ -68,15 +75,20 @@ antigen bundle docker
 antigen bundle encode64
 antigen bundle httpie
 antigen bundle history
+antigen bundle jira
 antigen bundle jsontools
 antigen bundle pip
 antigen bundle python
 antigen bundle rand-quote
 antigen bundle sprunge
 antigen bundle sudo
+antigen bundle osx
 antigen bundle symfony2
 antigen bundle tmux
+antigen bundle tmuxinator
+antigen bundle urltools
 antigen bundle vagrant
+antigen bundle vi-mode
 antigen bundle web-search
 antigen bundle wd
 antigen bundle zsh-users/zsh-syntax-highlighting
