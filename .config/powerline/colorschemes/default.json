@@ -52,6 +52,7 @@
     "prompt_text":               { "fg": "white", "bg": "black", "attrs": [] },
     "new_continuation":          { "fg": "white", "bg": "black", "attrs": ["bold"] },
     "continuation":              "new_contiuation",
-    "continuation:current":      "new_continuation"
+    "continuation:current":      "new_continuation",
+    "exit_fail":                 { "fg": "red", "bg": "black"}
   }
 }

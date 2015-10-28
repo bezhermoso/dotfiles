@@ -2,8 +2,8 @@
 	"groups": {
 		"continuation":         "new_continuation",
 		"continuation:current": "new_continuation",
-		"exit_fail":            "critical:failure",
-		"exit_success":         "critical:success",
+		"exit_fail":            {"bg": "black", "fg": "red"},
+		"exit_success":         {"bg": "black", "fg": "green"},
 		"jobnum":               "information:priority",
 		"superuser":            "warning:regular"
 	}

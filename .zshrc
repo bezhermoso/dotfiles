@@ -1,16 +1,18 @@
 if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
+if which pyenv > /dev/null; then eval "$(pyenv init -)"; fi
 
-echo ''
-fortune | lolcat
-echo ''
+#echo ''
+fortune
+archey
+#echo ''
 #export PATH="$HOME/.rbenv/bin:$PATH"
-export PATH="$HOME/.dotfiles/bin:$PATH"
+export PATH="$HOME/.dotfiles/bin:$HOME/.local/bin:$PATH"
 
 source /usr/local/Cellar/antigen/1/share/antigen.zsh
 source /Users/bez/.phpbrew/bashrc
 
 function powerline_lib_path() {
-  pip3 show powerline-status | grep Location | awk '{print $2}'
+  pip show powerline-status | grep Location | awk '{print $2}'
 }
 
 #powerline-daemon -rq
@@ -25,23 +27,34 @@ alias vi=vim
 alias quit=exit
 
 export POWERLINE_PATH=$(powerline_lib_path)/powerline
+#export POWERLINE_PATH=$(powerline_lib_path)
 export EDITOR=vim
 export HISTINGORE='clear:history'
 export HISTORYCONTROL='ignoreboth'
 
-function powerline() {
-  $POWERLINE_PATH/client/powerline.sh "$@"
-}
+#function powerline() {
+  #$POWERLINE_PATH/client/powerline.sh "$@"
+#}
 
 #unalias run-help
 autoload run-help
 HELPDIR=/usr/local/share/zsh/help
 
+
 BASE16_FLAVOR=bright
+export VIM_COLOR="base16-${BASE16_FLAVOR}"
 BACKGROUND=${BACKGROUND:-"dark"}
 
 BASE16_SHELL="$HOME/TerminalMods/base16-shell/base16-${BASE16_FLAVOR}.${BACKGROUND}.sh"
 [[ -s $BASE16_SHELL ]] && source $BASE16_SHELL
+
+if [[ $BACKGROUND = "dark" ]]; then
+  export TMUX_WINDOW_STYLE='bg=#181818'
+  export TMUX_ACTIVE_WINDOW_STYLE='bg=black'
+else
+  export TMUX_WINDOW_STYLE='bg=lightgray'
+  export TMUX_ACTIVE_WINDOW_STYLE='bg=white'
+fi
 
 function dark() {
   export BACKGROUND='dark' && src
@@ -54,6 +67,7 @@ function light() {
 # Antigen plugins#
 antigen use oh-my-zsh
 
+source $HOME/.dotfiles/zsh/vi-mode.zsh
 antigen bundle git
 antigen bundle autojump
 antigen bundle brew
@@ -88,12 +102,12 @@ antigen bundle tmux
 antigen bundle tmuxinator
 antigen bundle urltools
 antigen bundle vagrant
-antigen bundle vi-mode
-antigen bundle web-search
+#antigen bundle web-search
 antigen bundle wd
 antigen bundle zsh-users/zsh-syntax-highlighting
 
 antigen apply
+
 
 export POWERLINE_DAEMON_PS="$(ps aux | grep powerline-daemon | grep -v grep)"
 if [[ -z "$POWERLINE_DAEMON_PS" ]]; then
@@ -122,3 +136,10 @@ source $tmuxinator_dir/gems/tmuxinator$tmuxinator_version/completion/tmuxinator.
 function xcode-license() {
   sudo xcodebuild -license
 }
+
+
+export NVM_DIR="/Users/bez/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
+
+NEWLINE=$'\n'
+PS1=$PS1$NEWLINE"$(tput bold) λ  $(tput sgr0)"

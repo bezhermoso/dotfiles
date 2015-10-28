@@ -7,6 +7,12 @@
             "function": "vim_power.segments.in_vim_shell"
           },
           {
+            "function": "powerline.segments.shell.mode",
+            "args": {
+              "default": "viins"
+            }
+          },
+          {
             "function": "powerline.segments.common.env.user",
             "priority": 30
           },
@@ -45,10 +51,6 @@
       }
     ],
     "left": [
-      {
-        "function": "vim_power.segments.prompt_text",
-        "draw_hard_divider": false
-      }
     ],
     "right": [
     ]
