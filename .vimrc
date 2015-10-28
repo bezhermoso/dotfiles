@@ -1,10 +1,6 @@
 " Auto-source vimrc on save
 autocmd! bufwritepost .vimrc source %
 
-if has("gui_macvim")
-  set background=dark
-endif
-
 let shell_background=$BACKGROUND
 
 set background=dark
@@ -80,6 +76,7 @@ Plug 'beberlei/vim-php-refactor'
 Plug 'easymotion/vim-easymotion'
 Plug 'reedes/vim-pencil'
 Plug 'junegunn/goyo.vim'
+Plug 'scrooloose/syntastic'
 "Plug 'rstacruz/vim-hyperstyle'
 
 call plug#end()
@@ -137,7 +134,11 @@ set smartcase
 let base16colorspace=256 " Access colors present in 256 colorspace
 set t_Co=256 " 256 color mode
 
-colorscheme base16-eighties
+if !empty($VIM_COLOR)
+    colorscheme $VIM_COLOR
+else
+    colorscheme base16-bright
+endif
 
 python from powerline.vim import setup as powerline_setup
 python powerline_setup()
@@ -221,12 +222,12 @@ endif
 nnoremap <Leader>h :set cursorline!<CR>
 
 " Map backspace to delete line without overwriting pasteboard
-nnoremap <leader><BS> "_dd
-vnoremap <leader><BS> "_dd
+"nnoremap <leader><BS> "_dd
+"vnoremap <leader><BS> "_dd
 nnoremap <BS> "_d
 vnoremap <BS> "_d
 nnoremap <BS><BS> "_dd
-vnoremap <BS><BS> "_dd
+vnoremap <BS> "_dd
 
 " Toggle `set list`
 nmap <leader>l :set list!<CR>
@@ -256,7 +257,7 @@ nnoremap Q !!bash
 
 
 " Save when vim buffer lose focus
-au FocusLost * :wa
+"au FocusLost * :wa
 
 " Activate cursor line on current buffer only
 augroup CursorLine
@@ -364,3 +365,12 @@ function! s:goyo_enter()
   set formatoptions=qrn1
 endfunction
 autocmd! User GoyoEnter nested call <SID>goyo_enter()
+
+" Recommended syntastic config for n00bs
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+
+let NERDTreeShowHidden=1
