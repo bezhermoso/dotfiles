@@ -41,9 +41,9 @@ autoload run-help
 HELPDIR=/usr/local/share/zsh/help
 
 
-BASE16_FLAVOR=bright
+export BASE16_FLAVOR=${BASE16_FLAVOR:-"bright"}
 export VIM_COLOR="base16-${BASE16_FLAVOR}"
-BACKGROUND=${BACKGROUND:-"dark"}
+export BACKGROUND=${BACKGROUND:-"dark"}
 
 BASE16_SHELL="$HOME/TerminalMods/base16-shell/base16-${BASE16_FLAVOR}.${BACKGROUND}.sh"
 [[ -s $BASE16_SHELL ]] && source $BASE16_SHELL
