@@ -3,7 +3,7 @@ if which pyenv > /dev/null; then eval "$(pyenv init -)"; fi
 
 #echo ''
 fortune
-archey
+#archey
 #echo ''
 #export PATH="$HOME/.rbenv/bin:$PATH"
 export PATH="$HOME/.dotfiles/bin:$HOME/.local/bin:$PATH"
