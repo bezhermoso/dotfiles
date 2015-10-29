@@ -142,6 +142,6 @@ export NVM_DIR="/Users/bez/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
 
 NEWLINE=$'\n'
-PS1=$PS1$NEWLINE" λ  "
+PS1=$PS1$NEWLINE" λ  "
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
