@@ -1,8 +1,9 @@
 if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
 if which pyenv > /dev/null; then eval "$(pyenv init -)"; fi
 
-#echo ''
+echo ''
 fortune
+echo ''
 #archey
 #echo ''
 #export PATH="$HOME/.rbenv/bin:$PATH"
@@ -73,7 +74,7 @@ antigen bundle autojump
 antigen bundle brew
 antigen bundle bower
 antigen bundle chucknorris
-antigen bundle common-aliases
+#antigen bundle common-aliases
 # Shift+Ctrl+Arrow to cycle:
 #antigen bundle dircycle
 # Alt+Arrow to cycle:
@@ -114,15 +115,32 @@ if [[ -z "$POWERLINE_DAEMON_PS" ]]; then
   echo "Starting powerline-daemon..."
   powerline-daemon -rq
 fi
-. $POWERLINE_PATH/bindings/zsh/powerline.zsh
+
+NEWLINE=$'\n'
+function powerline-prompt() {
+  . $POWERLINE_PATH/bindings/zsh/powerline.zsh
+  PS1=$PS1$NEWLINE" λ  "
+  PS2="%_  "
+}
+
+function antigen-prompt() {
+  antigen theme agnoster
+}
+
+if [[ -n "$SSH_CONNECTION" ]]; then
+  antigen-prompt
+else
+  powerline-prompt
+fi
+
 
 #tmux start-server
 #PATH=$PATH:~/.composer/vendor/bin
 
 # vim indicator in Powerline shell
-if [[ -n "$VIMRUNTIME" ]]; then
-  export POWERLINE_IN_VIM_SHELL=':sh'
-fi
+#if [[ -n "$VIMRUNTIME" ]]; then
+  #export POWERLINE_IN_VIM_SHELL=':sh'
+#fi
 
 #export PATH="$PATH:/opt/tmux"
 #test -e ${HOME}/.iterm2_shell_integration.zsh && source ${HOME}/.iterm2_shell_integration.zsh
@@ -141,7 +159,8 @@ function xcode-license() {
 export NVM_DIR="/Users/bez/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
 
-NEWLINE=$'\n'
-PS1=$PS1$NEWLINE" λ  "
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
+
+alias hacksh='$SHELL | tr -u eauiobBgGsSlL 34U1088995577'
+alias reinit-markers='/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/LaunchServices.framework/Versions/A/Support/lsregister -kill -seed'
