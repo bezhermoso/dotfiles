@@ -32,7 +32,7 @@ alias dl=youtube-dl
 alias vi=vim
 alias quit=exit
 
-export POWERLINE_PATH=$(powerline_lib_path)/powerline
+export POWERLINE_PATH=$(powerline_lib_path)
 #export POWERLINE_PATH=$(powerline_lib_path)
 export EDITOR=vim
 export HISTINGORE='clear:history'
@@ -133,6 +133,7 @@ function antigen-prompt() {
 }
 
 if [[ -n "$SSH_CONNECTION" ]]; then
+  PS2=''
   antigen-prompt
 else
   powerline-prompt
@@ -154,7 +155,7 @@ export ANSIBLE_NOCOWS=1
 # tmuxinator
 tmuxinator_version=$(gem list tmuxinator | grep tmuxinator | awk '{print $2}' | sed 's/(/-/' | sed 's/)//')
 tmuxinator_dir=$(gem list tmuxinator -d | grep Installed | awk '{print $3}')
-source $tmuxinator_dir/gems/tmuxinator$tmuxinator_version/completion/tmuxinator.zsh
+[[ -d $tmuxinator_dir ]] && source $tmuxinator_dir/gems/tmuxinator$tmuxinator_version/completion/tmuxinator.zsh
 
 function xcode-license() {
   sudo xcodebuild -license
