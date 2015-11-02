@@ -9,8 +9,13 @@ echo ''
 #export PATH="$HOME/.rbenv/bin:$PATH"
 export PATH="$HOME/.dotfiles/bin:$HOME/.local/bin:$PATH"
 
-source /usr/local/Cellar/antigen/1/share/antigen.zsh
-source /Users/bez/.phpbrew/bashrc
+
+if [[ -n "$SSH_CONNECTION" ]]; then
+  source ~/antigen.zsh
+else
+  source /usr/local/Cellar/antigen/1/share/antigen.zsh
+fi
+[[ -s "${HOME}/.phpbrew/bashrc" ]] && source /Users/bez/.phpbrew/bashrc
 
 function powerline_lib_path() {
   pip show powerline-status | grep Location | awk '{print $2}'
