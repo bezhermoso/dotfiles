@@ -12,6 +12,7 @@ set nocompatible
 filetype plugin indent on 
 
 set clipboard=unnamed
+set pastetoggle=<F2>
 
 " Enable per-directory .vimrc files and disable unsafe commands in them
 set exrc
@@ -30,6 +31,7 @@ function! StripWhitespace()
 endfunction
 noremap <leader>ss :call StripWhitespace()<CR>
 
+let g:plug_timeout=180
 call plug#begin()
 Plug 'gmarik/Vundle.vim'
 " The following are examples of different formats supported.
@@ -56,7 +58,7 @@ Plug 'rstacruz/sparkup', {'rtp': 'vim/'}
 Plug 'godlygeek/tabular'
 Plug 'plasticboy/vim-markdown'
 Plug 'powerline/powerline'
-"Plug 'Valloric/YouCompleteMe'
+Plug 'Valloric/YouCompleteMe'
 Plug 'scrooloose/nerdcommenter'
 Plug 'guns/xterm-color-table.vim'
 Plug 'tpope/vim-surround'
@@ -77,6 +79,12 @@ Plug 'easymotion/vim-easymotion'
 Plug 'reedes/vim-pencil'
 Plug 'junegunn/goyo.vim'
 Plug 'scrooloose/syntastic'
+Plug 'chrisbra/unicode.vim'
+Plug 'chrisbra/unicode.vim'
+Plug 'majutsushi/tagbar'
+Plug 'xolox/vim-easytags'
+Plug 'xolox/vim-misc'
+Plug 'tpope/vim-vinegar'
 "Plug 'rstacruz/vim-hyperstyle'
 
 call plug#end()
@@ -120,6 +128,7 @@ set ruler
 set showcmd
 set incsearch
 set laststatus=2
+set autoread
 
 " Open new split panes to right and bottom, which feels more natural
 set splitbelow
@@ -161,6 +170,13 @@ vnoremap ? ?\v
 nnoremap <leader>s <esc>:%s/\v
 vnoremap <leader>s <esc>:%s/\v
 
+" Keep search results centered
+nnoremap <silent> n nzz
+nnoremap <silent> N Nzz
+nnoremap <silent> * *zz
+nnoremap <silent> # #zz
+nnoremap <silent> g* g*zz
+nnoremap <silent> g# g#zz
 " Clear search
 nnoremap <leader><space> :noh<cr>
 
@@ -172,6 +188,7 @@ set wrap
 set textwidth=79
 set formatoptions=qrn1
 set colorcolumn=80
+set fo-=t
 
 " Unmap mouse scrolls
 nnoremap <ScrollWheelUp> <Nop>
@@ -253,7 +270,7 @@ nnoremap <C-l> <C-w>l
 nnoremap + <C-w>+
 nnoremap - <C-w>-
 "Execute current line in shell and paste output into buffer
-nnoremap Q !!bash
+nnoremap <leader>Q !!bash
 
 
 " Save when vim buffer lose focus
@@ -266,23 +283,30 @@ augroup CursorLine
   au WinLeave * setlocal nocursorline
 augroup END
 
-nnoremap <leader>C "+y
-xnoremap <leader>C "+y
-nnoremap <leader>x "+d
-xnoremap <leader>x "+d
-nnoremap <leader>p "+p
-xnoremap <leader>p "+p
-nnoremap <leader>P "+P
-xnoremap <leader>P "+P
+" Copy/cut/paste from system buffer.
+"nnoremap <leader>C "+y
+"xnoremap <leader>C "+y
+"nnoremap <leader>x "+d
+"xnoremap <leader>x "+d
+"nnoremap <leader>p "+p
+"xnoremap <leader>p "+p
+"nnoremap <leader>P "+P
+"xnoremap <leader>P "+P
 
+" Toggle comments
 nnoremap <leader>/<Space> :call NERDComment(0, "toggle")<CR>
 xnoremap <leader>/<Space> :call NERDComment(0, "toggle")<CR>
 
 " Special file type associations
-autocmd BufNewFile,BufRead Vagrantfile set filetype=ruby
-autocmd BufNewFile,BufRead Gemfile set filetype=ruby
-autocmd BufNewFile,BufRead Berksfile set filetype=ruby
+"autocmd BufNewFile,BufRead Vagrantfile set filetype=ruby
+autocmd BufNewFile,BufRead {Vagrant,Gem,Berks}file set filetype=ruby
+"autocmd BufNewFile,BufRead Berksfile set filetype=ruby
 autocmd BufNewFile,BufRead *.md setlocal filetype=markdown
+autocmd BufNewFile,BufRead *.{handlebars,hbs} setlocal filetype=javascript
+
+" Enable spellcheck on git commits & markdown files
+autocmd BufRead COMMIT_EDITMSG setlocal spell!
+autocmd BufRead *.{md,markdown} setlocal spell!
 
 nnoremap <leader>a :Ag 
 
@@ -302,7 +326,7 @@ function! s:ExecuteInShell(command)
   echo 'Shell command ' . command . ' executed.'
 endfunction
 command! -complete=shellcmd -nargs=+ Shell call s:ExecuteInShell(<q-args>)
-nnoremap <C-x> :call <SID>ExecuteInShell(getline('.'))<CR>
+nnoremap <leader>x<Space> :call <SID>ExecuteInShell(getline('.'))
 
 " http://stackoverflow.com/a/9528322
 " Save your backups to a less annoying place than the current directory.
@@ -345,20 +369,40 @@ if exists("+undofile")
   set undofile
 endif
 
-" Ident entire file. Uses 'i' as mark so that it goes back to the current line.
+" Ident entire file.
 function! IndentEntireFile()
   let last_cursor = getpos('.')
   execute "normal! gg=G"
   call setpos('.', last_cursor)
 endfunction
 nnoremap <leader>= :call IndentEntireFile()<cr>
+vnoremap < <gv
+vnoremap > >gv
+
 nnoremap <silent> <C-w>z :ZoomWin<cr>
 inoremap kj <esc>
 nnoremap z<Space> :Goyo<cr>
-let g:goyo_width=120
 
+nnoremap ,o o<esc>
+nnoremap ,O O<esc>
+
+cnoremap <C-j> <t_kd>
+cnoremap <C-k> <t_ku>
+cnoremap <C-a> <Home>
+cnoremap <C-e> <End>
+
+nnoremap Q @@
+
+" use ,F to jump to tag in a vertical split
+nnoremap <silent> ,F :let word=expand("<cword>")<CR>:vsp<CR>:exec("tag ". word)<cr>
+ 
+" use ,gf to go to file in a vertical split
+nnoremap <silent> ,gf :vertical botright wincmd f<CR>
+
+let g:goyo_width=120
 function! s:goyo_enter()
   set relativenumber
+  set number
   set wrap
   set colorcolumn=80
   set textwidth=79
@@ -372,5 +416,9 @@ let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 1
 let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 0
+let g:syntastic_javascript_checkers = ['eslint']
+let g:syntastic_loc_list_height = 5
 
 let NERDTreeShowHidden=1
+set exrc
+set secure
