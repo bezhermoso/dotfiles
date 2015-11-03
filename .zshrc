@@ -52,7 +52,10 @@ export VIM_COLOR="base16-${BASE16_FLAVOR}"
 export BACKGROUND=${BACKGROUND:-"dark"}
 
 BASE16_SHELL="$HOME/TerminalMods/base16-shell/base16-${BASE16_FLAVOR}.${BACKGROUND}.sh"
-[[ -s $BASE16_SHELL ]] && source $BASE16_SHELL
+
+if [[ -z "$TMUX" ]]; then
+  [[ -s $BASE16_SHELL ]] && source $BASE16_SHELL
+fi
 
 if [[ $BACKGROUND = "dark" ]]; then
   export TMUX_WINDOW_STYLE='bg=#181818'
@@ -124,7 +127,8 @@ fi
 NEWLINE=$'\n'
 function powerline-prompt() {
   . $POWERLINE_PATH/bindings/zsh/powerline.zsh
-  PS1=$PS1$NEWLINE" λ  "
+  #PS1=$PS1$NEWLINE" λ  "
+  PS1=$PS1$NEWLINE" ★  "
   PS2="%_  "
 }
 
