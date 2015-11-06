@@ -117,6 +117,8 @@ antigen bundle zsh-users/zsh-syntax-highlighting
 
 antigen apply
 
+# Seems like Shift+Tab is unbound by one of the Antigen plugins...
+bindkey -M menuselect '^[[Z' reverse-menu-complete
 
 export POWERLINE_DAEMON_PS="$(ps aux | grep powerline-daemon | grep -v grep)"
 if [[ -z "$POWERLINE_DAEMON_PS" ]]; then

@@ -21,7 +21,7 @@
     },
 
     "line_current_symbol": {
-      "contents": " "
+      "contents": "L "
     },
     "player": {
       "args": {
@@ -45,7 +45,7 @@
       }
     },
     "powerline.segments.common.net.hostname": {
-      "before": " "
+      "before": ""
     },
     "powerline.segments.common.bat.battery": {
       "args": {

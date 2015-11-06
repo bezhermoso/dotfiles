@@ -85,6 +85,8 @@ Plug 'majutsushi/tagbar'
 Plug 'xolox/vim-easytags'
 Plug 'xolox/vim-misc'
 Plug 'tpope/vim-vinegar'
+Plug 'SirVer/ultisnips'
+Plug 'honza/vim-snippets'
 "Plug 'rstacruz/vim-hyperstyle'
 
 call plug#end()
@@ -404,7 +406,7 @@ function! s:goyo_enter()
   set relativenumber
   set number
   set wrap
-  set colorcolumn=80
+  "set colorcolumn=80
   set textwidth=79
   set formatoptions=qrn1
 endfunction
@@ -418,6 +420,8 @@ let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 0
 let g:syntastic_javascript_checkers = ['eslint']
 let g:syntastic_loc_list_height = 5
+
+let g:UltiSnipsEditSplit="vertical"
 
 let NERDTreeShowHidden=1
 set exrc
