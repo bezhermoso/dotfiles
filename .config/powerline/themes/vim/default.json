@@ -61,7 +61,11 @@
 			{
 				"exclude_modes": ["nc"],
 				"function": "powerline.segments.vim.plugin.syntastic.syntastic",
-				"priority": 50
+				"priority": 50,
+        "args": {
+          "warn_format": "WARN: L {first_line}:{num}",
+          "err_format": "ERR: L {first_line}:{num}"
+        }
 			},
 			{
 				"exclude_modes": ["nc"],
