@@ -87,6 +87,7 @@ Plug 'xolox/vim-misc'
 Plug 'tpope/vim-vinegar'
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
+Plug 'kchmck/vim-coffee-script'
 "Plug 'rstacruz/vim-hyperstyle'
 
 call plug#end()
