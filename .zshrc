@@ -175,3 +175,5 @@ export LANG=en_US.UTF-8
 
 alias hacksh='$SHELL | tr -u eauiobBgGsSlL 34U1088995577'
 alias reinit-markers='/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/LaunchServices.framework/Versions/A/Support/lsregister -kill -seed'
+
+nvm use 0.12
