@@ -88,9 +88,16 @@ Plug 'tpope/vim-vinegar'
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
 Plug 'kchmck/vim-coffee-script'
+"Plug 'Xuyuanp/nerdtreemce-EMAIL-git-plugin'
+Plug 'bkad/CamelCaseMotion'
+Plug 'vim-scripts/argtextobj.vim'
+Plug 'michaeljsmith/vim-indent-object'
+Plug 'kana/vim-textobj-user'
+Plug 'nelstrom/vim-textobj-rubyblock'
+Plug 'rizzatti/dash.vim'
 "Plug 'rstacruz/vim-hyperstyle'
-
 call plug#end()
+
 
 " Set comma as leader key
 let mapleader=","
@@ -155,6 +162,8 @@ endif
 python from powerline.vim import setup as powerline_setup
 python powerline_setup()
 python del powerline_setup
+
+runtime macros/matchit.vim
 
 nnoremap <C-S> <C-W>
 " Unmap arrow keys in normal mode
@@ -233,6 +242,7 @@ inoremap <leader>[ []<ESC>i
 hi Search ctermfg=0 ctermbg=11 guifg=Black 
 "hi LineNr ctermfg=242
 hi Comment ctermfg=245
+hi MatchParen ctermbg=105
 "hi ColorColumn ctermbg=black
 if shell_background == 'dark'
   hi CursorLine cterm=NONE ctermbg=239
@@ -422,7 +432,13 @@ let g:syntastic_check_on_wq = 0
 let g:syntastic_javascript_checkers = ['eslint']
 let g:syntastic_loc_list_height = 5
 
+nnoremap <C-l> gt
+nnoremap <C-h> gT
+nnoremap <C-e>n :tabnew<cr>
+
 let g:UltiSnipsEditSplit="vertical"
+
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
 
 let NERDTreeShowHidden=1
 set exrc
