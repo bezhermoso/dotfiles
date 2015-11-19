@@ -9,11 +9,10 @@ if shell_background == 'light'
 endif
 
 set nocompatible
-filetype plugin indent on 
+filetype plugin indent on
 
 set clipboard=unnamed
 set pastetoggle=<F2>
-
 " Enable per-directory .vimrc files and disable unsafe commands in them
 set exrc
 set secure
@@ -58,6 +57,7 @@ Plug 'rstacruz/sparkup', {'rtp': 'vim/'}
 Plug 'godlygeek/tabular'
 Plug 'plasticboy/vim-markdown'
 Plug 'powerline/powerline'
+Plug 'bling/vim-airline'
 Plug 'Valloric/YouCompleteMe'
 Plug 'scrooloose/nerdcommenter'
 Plug 'guns/xterm-color-table.vim'
@@ -129,10 +129,11 @@ set foldmethod=indent
 set foldnestmax=10
 set nofoldenable 
 set foldlevel=1
-set ttimeoutlen=50
+"set ttimeoutlen=50
+set timeoutlen=1000 ttimeoutlen=0
 set shell=$SHELL
 set backspace=indent,eol,start
-set listchars=tab:▸\ ,eol:¬,nbsp:.      
+set listchars=tab:▸\ ,eol:¬
 set list
 set ruler
 set showcmd
@@ -158,10 +159,16 @@ if !empty($VIM_COLOR)
 else
     colorscheme base16-bright
 endif
+"let g:airline_theme="powerlineish"
+let g:airline_theme="luna"
+let g:airline_powerline_fonts = 1
+"if has("nvim")
 
-python from powerline.vim import setup as powerline_setup
-python powerline_setup()
-python del powerline_setup
+"else
+  "python from powerline.vim import setup as powerline_setup
+  "python powerline_setup()
+  "python del powerline_setup
+"endif
 
 runtime macros/matchit.vim
 
@@ -223,10 +230,10 @@ inoremap <C-Tab> <ESC>:tabprevious<CR>
 vnoremap <S-Tab> :tabnext<CR>
 vnoremap <C-S-Tab> :tabprevious<CR>
 
-nnoremap <leader>m :NERDTreeToggle<cr>
-nnoremap <leader>M :NERDTreeFocus<cr>
-nnoremap <leader>n :CtrlP<cr>
-nnoremap <leader>N :CtrlPMRUFiles<cr>
+nnoremap <leader>n :NERDTreeToggle<cr>
+nnoremap <leader>N :NERDTreeFocus<cr>
+nnoremap <leader>m :CtrlP<cr>
+nnoremap <leader>M :CtrlPMRUFiles<cr>
 nnoremap <leader>a :Ag
 
 " Common wraps
@@ -235,11 +242,11 @@ inoremap <leader>( ()<ESC>i
 inoremap <leader>" ""<ESC>i
 inoremap <leader>{ {}<ESC>i
 inoremap <leader>[ []<ESC>i
-"let g:CommandTMaxHeight = 15 
+"let g:CommandTMaxHeight = 15
 "let g:CommandTHighlightColor = "Visual"
 
-" Highlight colors 
-hi Search ctermfg=0 ctermbg=11 guifg=Black 
+" Highlight colors
+hi Search ctermfg=0 ctermbg=11 guifg=Black
 "hi LineNr ctermfg=242
 hi Comment ctermfg=245
 hi MatchParen ctermbg=105
@@ -367,7 +374,7 @@ set directory+=~/tmp//
 set directory+=.
 
 " viminfo stores the the state of your previous editing session
-set viminfo+=n~/.vim/viminfo
+"set viminfo+=n~/.vim/viminfo
 
 if exists("+undofile")
   " undofile - This allows you to use undos after exiting and restarting
@@ -408,7 +415,7 @@ nnoremap Q @@
 
 " use ,F to jump to tag in a vertical split
 nnoremap <silent> ,F :let word=expand("<cword>")<CR>:vsp<CR>:exec("tag ". word)<cr>
- 
+
 " use ,gf to go to file in a vertical split
 nnoremap <silent> ,gf :vertical botright wincmd f<CR>
 

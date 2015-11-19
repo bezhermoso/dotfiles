@@ -29,12 +29,13 @@ function src() {
 
 
 alias dl=youtube-dl
+alias vim=nvim
 alias vi=vim
 alias quit=exit
 
 export POWERLINE_PATH=$(powerline_lib_path)/powerline
 #export POWERLINE_PATH=$(powerline_lib_path)
-export EDITOR=vim
+export EDITOR=nvim
 export HISTINGORE='clear:history'
 export HISTORYCONTROL='ignoreboth'
 
