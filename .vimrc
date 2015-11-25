@@ -14,8 +14,8 @@ filetype plugin indent on
 set clipboard=unnamed
 set pastetoggle=<F2>
 " Enable per-directory .vimrc files and disable unsafe commands in them
-set exrc
-set secure
+"set exrc
+"set secure
 
 " Don’t reset cursor to start of line when moving around.
 "set nostartofline
@@ -49,13 +49,13 @@ Plug 'tpope/vim-fugitive'
 " " Avoid a name conflict with L9
 " Plug 'user/L9', {'name': 'newL9'}
 Plug 'L9'
-Plug 'scrooloose/nerdtree'
+Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 Plug 'mileszs/ack.vim'
-Plug 'kien/ctrlp.vim'
+Plug 'ctrlpvim/ctrlp.vim'
 Plug 'chriskempson/base16-vim'
 Plug 'rstacruz/sparkup', {'rtp': 'vim/'}
 Plug 'godlygeek/tabular'
-Plug 'plasticboy/vim-markdown'
+Plug 'plasticboy/vim-markdown', { 'for': 'markdown' }
 Plug 'powerline/powerline'
 Plug 'bling/vim-airline'
 Plug 'Valloric/YouCompleteMe'
@@ -67,34 +67,39 @@ Plug 'unblevable/quick-scope'
 Plug 'lsdr/monokai'
 Plug 'altercation/vim-colors-solarized'
 Plug 'rking/ag.vim'
-Plug 'tpope/vim-endwise'
+Plug 'tpope/vim-endwise', { 'for': 'ruby' }
 Plug 'mattn/flappyvird-vim'
 Plug 'shawncplus/phpcomplete.vim'
 Plug 'StanAngeloff/php.vim'
 Plug 'vim-scripts/ZoomWin'
 Plug 'rstacruz/vim-closer'
 Plug 'austintaylor/vim-commaobject'
-Plug 'beberlei/vim-php-refactor'
+Plug 'beberlei/vim-php-refactor', { 'for': 'php' }
 Plug 'easymotion/vim-easymotion'
 Plug 'reedes/vim-pencil'
 Plug 'junegunn/goyo.vim'
 Plug 'scrooloose/syntastic'
 Plug 'chrisbra/unicode.vim'
-Plug 'chrisbra/unicode.vim'
 Plug 'majutsushi/tagbar'
 Plug 'xolox/vim-easytags'
 Plug 'xolox/vim-misc'
 Plug 'tpope/vim-vinegar'
-Plug 'SirVer/ultisnips'
-Plug 'honza/vim-snippets'
+Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
 Plug 'kchmck/vim-coffee-script'
 "Plug 'Xuyuanp/nerdtreemce-EMAIL-git-plugin'
 Plug 'bkad/CamelCaseMotion'
 Plug 'vim-scripts/argtextobj.vim'
 Plug 'michaeljsmith/vim-indent-object'
 Plug 'kana/vim-textobj-user'
-Plug 'nelstrom/vim-textobj-rubyblock'
+Plug 'nelstrom/vim-textobj-rubyblock', {'for': 'ruby'}
 Plug 'rizzatti/dash.vim'
+Plug 'vim-scripts/groovy.vim', {'for': 'groovy'}
+Plug 'dag/vim2hs', {'for': 'haskell'}
+Plug 'netrw.vim'
+Plug 'ReplaceWithRegister'
+Plug 'tpope/vim-commentary'
+Plug 'kana/vim-textobj-entire'
+Plug 'kana/vim-textobj-line'
 "Plug 'rstacruz/vim-hyperstyle'
 call plug#end()
 
@@ -237,11 +242,11 @@ nnoremap <leader>M :CtrlPMRUFiles<cr>
 nnoremap <leader>a :Ag
 
 " Common wraps
-inoremap <leader>' ''<ESC>i
-inoremap <leader>( ()<ESC>i
-inoremap <leader>" ""<ESC>i
-inoremap <leader>{ {}<ESC>i
-inoremap <leader>[ []<ESC>i
+"inoremap <leader>' ''<ESC>i
+"inoremap <leader>( ()<ESC>i
+"inoremap <leader>" ""<ESC>i
+"inoremap <leader>{ {}<ESC>i
+"inoremap <leader>[ []<ESC>i
 "let g:CommandTMaxHeight = 15
 "let g:CommandTHighlightColor = "Visual"
 
@@ -323,6 +328,7 @@ autocmd BufNewFile,BufRead {Vagrant,Gem,Berks}file set filetype=ruby
 "autocmd BufNewFile,BufRead Berksfile set filetype=ruby
 autocmd BufNewFile,BufRead *.md setlocal filetype=markdown
 autocmd BufNewFile,BufRead *.{handlebars,hbs} setlocal filetype=javascript
+autocmd BufNewFile,BufRead *.module setlocal filetype=php
 
 " Enable spellcheck on git commits & markdown files
 autocmd BufRead COMMIT_EDITMSG setlocal spell!
@@ -446,6 +452,8 @@ nnoremap <C-e>n :tabnew<cr>
 let g:UltiSnipsEditSplit="vertical"
 
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
+
+vnoremap <tab> %
 
 let NERDTreeShowHidden=1
 set exrc
