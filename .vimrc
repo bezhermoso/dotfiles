@@ -13,6 +13,7 @@ filetype plugin indent on
 
 set clipboard=unnamed
 set pastetoggle=<F2>
+set autoread
 " Enable per-directory .vimrc files and disable unsafe commands in them
 "set exrc
 "set secure
@@ -100,6 +101,7 @@ Plug 'ReplaceWithRegister'
 Plug 'tpope/vim-commentary'
 Plug 'kana/vim-textobj-entire'
 Plug 'kana/vim-textobj-line'
+Plug 'evidens/vim-twig'
 "Plug 'rstacruz/vim-hyperstyle'
 call plug#end()
 
@@ -204,9 +206,6 @@ nnoremap <silent> g# g#zz
 " Clear search
 nnoremap <leader><space> :noh<cr>
 
-nnoremap <tab> %
-vnoremap <tab> %
-
 " Text wrapping
 set wrap
 set textwidth=79
@@ -229,11 +228,8 @@ nnoremap <S-ScrollWheelRight> <Nop>
 nnoremap <C-ScrollWheelRight> <Nop>
 
 " Tabbing on normal and visual modes
-nnoremap <S-Tab> :tabnext<CR>
-nnoremap <C-S-Tab> :tabprevious<CR>
-inoremap <C-Tab> <ESC>:tabprevious<CR>
-vnoremap <S-Tab> :tabnext<CR>
-vnoremap <C-S-Tab> :tabprevious<CR>
+"nnoremap <S-Tab> :tabnext<CR>
+"nnoremap <C-S-Tab> :tabprevious<CR>
 
 nnoremap <leader>n :NERDTreeToggle<cr>
 nnoremap <leader>N :NERDTreeFocus<cr>
@@ -328,7 +324,8 @@ autocmd BufNewFile,BufRead {Vagrant,Gem,Berks}file set filetype=ruby
 "autocmd BufNewFile,BufRead Berksfile set filetype=ruby
 autocmd BufNewFile,BufRead *.md setlocal filetype=markdown
 autocmd BufNewFile,BufRead *.{handlebars,hbs} setlocal filetype=javascript
-autocmd BufNewFile,BufRead *.module setlocal filetype=php
+autocmd BufNewFile,BufRead *.{module,install,theme} setlocal filetype=php
+autocmd BufNewFile,BufRead *.twig setlocal filetype=html
 
 " Enable spellcheck on git commits & markdown files
 autocmd BufRead COMMIT_EDITMSG setlocal spell!
@@ -443,18 +440,25 @@ let g:syntastic_auto_loc_list = 1
 let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 0
 let g:syntastic_javascript_checkers = ['eslint']
+let g:syntastic_html_checkers=['']
 let g:syntastic_loc_list_height = 5
 
+"let g:ctrlp_match_window='top,order:ttb,min:1,max:10'
+
 nnoremap <C-l> gt
-nnoremap <C-h> gT
+nnoremap <C-k> gT
 nnoremap <C-e>n :tabnew<cr>
+nnoremap gp `[v`]
+nnoremap <F1> <Nop>
+inoremap <F1> <Nop>
+vnoremap <F1> <Nop>
 
 let g:UltiSnipsEditSplit="vertical"
 
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
 
-vnoremap <tab> %
 
 let NERDTreeShowHidden=1
 set exrc
 set secure
+vnoremap <Tab> %
