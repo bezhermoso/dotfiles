@@ -177,4 +177,9 @@ export LANG=en_US.UTF-8
 alias hacksh='$SHELL | tr -u eauiobBgGsSlL 34U1088995577'
 alias reinit-markers='/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/LaunchServices.framework/Versions/A/Support/lsregister -kill -seed'
 
-nvm use 0.12
+# Drupal Console
+source "$HOME/.console/console.rc" 2>/dev/null
+
+nvm use 4
+export ANDROID_HOME=/usr/local/opt/android-sdk
+export HOMEBREW_GITHUB_API_TOKEN=182130e66d4c5dfed0395ffd2509c601d74400af
