@@ -265,7 +265,7 @@ nnoremap <Leader>h :set cursorline!<CR>
 nnoremap <BS> "_d
 vnoremap <BS> "_d
 nnoremap <BS><BS> "_dd
-vnoremap <BS> "_dd
+vnoremap <BS> "_d
 
 " Toggle `set list`
 nmap <leader>l :set list!<CR>
@@ -330,6 +330,7 @@ autocmd BufNewFile,BufRead *.twig setlocal filetype=html
 " Enable spellcheck on git commits & markdown files
 autocmd BufRead COMMIT_EDITMSG setlocal spell!
 autocmd BufRead *.{md,markdown} setlocal spell!
+autocmd FileChangedShell * echo "Warning: File changed on disk"
 
 nnoremap <leader>a :Ag 
 
