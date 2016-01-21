@@ -8,6 +8,7 @@ echo ''
 #echo ''
 #export PATH="$HOME/.rbenv/bin:$PATH"
 export PATH="$HOME/.dotfiles/bin:$HOME/.local/bin:$PATH"
+export PATH="/Projects/Personal/DrupalConsole/bin:$PATH"
 
 
 if [[ -n "$SSH_CONNECTION" ]]; then
@@ -180,6 +181,6 @@ alias reinit-markers='/System/Library/Frameworks/CoreServices.framework/Versions
 # Drupal Console
 source "$HOME/.console/console.rc" 2>/dev/null
 
-nvm use 4
+nvm use 5
 export ANDROID_HOME=/usr/local/opt/android-sdk
 export HOMEBREW_GITHUB_API_TOKEN=182130e66d4c5dfed0395ffd2509c601d74400af
