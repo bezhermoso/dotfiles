@@ -102,6 +102,7 @@ Plug 'tpope/vim-commentary'
 Plug 'kana/vim-textobj-entire'
 Plug 'kana/vim-textobj-line'
 Plug 'evidens/vim-twig'
+"Plug 'mxw/vim-jsx'
 "Plug 'rstacruz/vim-hyperstyle'
 call plug#end()
 
@@ -233,9 +234,13 @@ nnoremap <C-ScrollWheelRight> <Nop>
 
 nnoremap <leader>n :NERDTreeToggle<cr>
 nnoremap <leader>N :NERDTreeFocus<cr>
+nnoremap <leader>gn :NERDTreeFind<cr>
 nnoremap <leader>m :CtrlP<cr>
 nnoremap <leader>M :CtrlPMRUFiles<cr>
 nnoremap <leader>a :Ag
+
+" Disable 'only window'
+nnoremap <c-o> :Noop<cr>
 
 " Common wraps
 "inoremap <leader>' ''<ESC>i
@@ -327,6 +332,7 @@ autocmd BufNewFile,BufRead *.{handlebars,hbs} setlocal filetype=javascript
 autocmd BufNewFile,BufRead *.{module,install,theme} setlocal filetype=php
 autocmd BufNewFile,BufRead *.twig setlocal filetype=html
 
+let g:jsx_ext_required=0
 " Enable spellcheck on git commits & markdown files
 autocmd BufRead COMMIT_EDITMSG setlocal spell!
 autocmd BufRead *.{md,markdown} setlocal spell!
@@ -440,7 +446,7 @@ let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 1
 let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 0
-let g:syntastic_javascript_checkers = ['eslint']
+let g:syntastic_javascript_checkers = []
 let g:syntastic_html_checkers=['']
 let g:syntastic_loc_list_height = 5
 
@@ -463,3 +469,6 @@ let NERDTreeShowHidden=1
 set exrc
 set secure
 vnoremap <Tab> %
+command! Trailing :%s/\s\+$//e
+command! Blankl :g/^$/d
+
