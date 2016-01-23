@@ -10,6 +10,10 @@
 		"window_name":          {"fg": "white",      "bg": "darkblue", "attrs": ["bold"]},
 		"session":              {"fg": "darkblue",      "bg": "gray90",   "attrs": ["bold"]},
 		"session:prefix":       {"fg": "gray0",     "bg": "brightyellow", "attrs": ["bold"]},
-		"hostname":             {"fg": "darkblue",     "bg": "gray90", "attrs": ["bold"]}
+		"hostname":             {"fg": "darkblue",     "bg": "gray90", "attrs": ["bold"]},
+    "time":                 { "fg": "gray10", "bg": "gray2", "attrs": ["bold"] },
+    "date":                 { "fg": "gray8", "bg": "gray2", "attrs": [] },
+    "system_load":          { "fg": "gray8", "bg": "gray0", "attrs": [] },
+    "system_load_gradient": { "fg": "green_yellow_orange_red", "bg": "gray0", "attrs": [] }
 	}
 }

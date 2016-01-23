@@ -2,6 +2,7 @@
 	"colors": {
 		"black": 0,
 		"white": 231,
+    "brightwhite": 255,
 
 		"green": 2,
 		"darkestgreen": 22,

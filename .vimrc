@@ -239,8 +239,6 @@ nnoremap <leader>m :CtrlP<cr>
 nnoremap <leader>M :CtrlPMRUFiles<cr>
 nnoremap <leader>a :Ag
 
-" Disable 'only window'
-nnoremap <c-o> :Noop<cr>
 
 " Common wraps
 "inoremap <leader>' ''<ESC>i
