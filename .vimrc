@@ -57,7 +57,7 @@ Plug 'chriskempson/base16-vim'
 Plug 'rstacruz/sparkup', {'rtp': 'vim/'}
 Plug 'godlygeek/tabular'
 Plug 'plasticboy/vim-markdown', { 'for': 'markdown' }
-Plug 'powerline/powerline'
+"Plug 'powerline/powerline'
 Plug 'bling/vim-airline'
 Plug 'Valloric/YouCompleteMe'
 Plug 'scrooloose/nerdcommenter'
@@ -101,6 +101,7 @@ Plug 'ReplaceWithRegister'
 Plug 'tpope/vim-commentary'
 Plug 'kana/vim-textobj-entire'
 Plug 'kana/vim-textobj-line'
+Plug 'kylef/apiblueprint.vim'
 Plug 'evidens/vim-twig'
 "Plug 'mxw/vim-jsx'
 "Plug 'rstacruz/vim-hyperstyle'
@@ -464,8 +465,8 @@ autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTree
 
 
 let NERDTreeShowHidden=1
-set exrc
-set secure
+"set exrc
+"set secure
 vnoremap <Tab> %
 command! Trailing :%s/\s\+$//e
 command! Blankl :g/^$/d
