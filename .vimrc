@@ -72,7 +72,8 @@ Plug 'tpope/vim-endwise', { 'for': 'ruby' }
 Plug 'mattn/flappyvird-vim'
 Plug 'shawncplus/phpcomplete.vim'
 Plug 'StanAngeloff/php.vim'
-Plug 'vim-scripts/ZoomWin'
+" ZoomWin doesn't work well in neovim
+"Plug 'vim-scripts/ZoomWin'
 Plug 'rstacruz/vim-closer'
 Plug 'austintaylor/vim-commaobject'
 Plug 'beberlei/vim-php-refactor', { 'for': 'php' }
@@ -408,7 +409,7 @@ nnoremap <leader>= :call IndentEntireFile()<cr>
 vnoremap < <gv
 vnoremap > >gv
 
-nnoremap <silent> <C-w>z :ZoomWin<cr>
+"nnoremap <silent> <C-w>z :ZoomWin<cr>
 inoremap kj <esc>
 nnoremap z<Space> :Goyo<cr>
 
