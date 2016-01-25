@@ -28,7 +28,7 @@ local function focusScreen(screen)
 end
 
 --Bring focus to next display/screen
-hotkey.bind({"alt"}, "R", function ()
+hotkey.bind({"alt"}, "`", function ()
   focusScreen(window.focusedWindow():screen():next())
 end)
 
