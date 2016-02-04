@@ -15,3 +15,4 @@ local function reloadConfig(files)
 end
 
 pathwatcher.new(os.getenv("HOME") .. "/.hammerspoon/", reloadConfig):start()
+
