@@ -1,5 +1,5 @@
 " Auto-source vimrc on save
-autocmd! bufwritepost .vimrc source %
+"autocmd! bufwritepost .vimrc source %
 
 let shell_background=$BACKGROUND
 
@@ -59,6 +59,7 @@ Plug 'godlygeek/tabular'
 Plug 'plasticboy/vim-markdown', { 'for': 'markdown' }
 "Plug 'powerline/powerline'
 Plug 'bling/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
 Plug 'Valloric/YouCompleteMe'
 Plug 'scrooloose/nerdcommenter'
 Plug 'guns/xterm-color-table.vim'
@@ -82,7 +83,7 @@ Plug 'reedes/vim-pencil'
 Plug 'junegunn/goyo.vim'
 Plug 'scrooloose/syntastic'
 Plug 'chrisbra/unicode.vim'
-Plug 'majutsushi/tagbar'
+"Plug 'majutsushi/tagbar'
 Plug 'xolox/vim-easytags'
 Plug 'xolox/vim-misc'
 Plug 'tpope/vim-vinegar'
@@ -104,6 +105,10 @@ Plug 'kana/vim-textobj-entire'
 Plug 'kana/vim-textobj-line'
 Plug 'kylef/apiblueprint.vim'
 Plug 'evidens/vim-twig'
+Plug 'junegunn/vim-easy-align'
+Plug 'Shougo/unite.vim'
+Plug 'Shougo/vimproc.vim'
+Plug 'pangloss/vim-javascript'
 "Plug 'mxw/vim-jsx'
 "Plug 'rstacruz/vim-hyperstyle'
 call plug#end()
@@ -137,7 +142,7 @@ set showmode
 set visualbell
 set foldmethod=indent
 set foldnestmax=10
-set nofoldenable 
+set nofoldenable
 set foldlevel=1
 "set ttimeoutlen=50
 set timeoutlen=1000 ttimeoutlen=0
@@ -170,8 +175,10 @@ else
     colorscheme base16-bright
 endif
 "let g:airline_theme="powerlineish"
-let g:airline_theme="luna"
+let g:airline_theme="term"
 let g:airline_powerline_fonts = 1
+let g:airline_symbols = {}
+let g:airline_symbols.linenr = '␤'
 "if has("nvim")
 
 "else
@@ -241,6 +248,9 @@ nnoremap <leader>m :CtrlP<cr>
 nnoremap <leader>M :CtrlPMRUFiles<cr>
 nnoremap <leader>a :Ag
 
+let g:ctrlp_map='<leader>m'
+let g:ctrlp_tabpage_position='al'
+let g:ctrlp_clear_cache_on_exit=0
 
 " Common wraps
 "inoremap <leader>' ''<ESC>i
@@ -444,11 +454,13 @@ autocmd! User GoyoEnter nested call <SID>goyo_enter()
 
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 1
-let g:syntastic_check_on_open = 1
-let g:syntastic_check_on_wq = 0
-let g:syntastic_javascript_checkers = []
+let g:syntastic_check_on_open = 0
+let g:syntastic_javascript_checkers = ['eslint']
 let g:syntastic_html_checkers=['']
 let g:syntastic_loc_list_height = 5
+let g:syntastic_check_on_wq = 0
+
+nnoremap <leader>syn<Space> :SyntasticCheck<cr>
 
 "let g:ctrlp_match_window='top,order:ttb,min:1,max:10'
 
@@ -471,4 +483,16 @@ let NERDTreeShowHidden=1
 vnoremap <Tab> %
 command! Trailing :%s/\s\+$//e
 command! Blankl :g/^$/d
+nnoremap <C-w>z :tab split<cr>
+nnoremap <C-w>o <Nop>
 
+xmap ga <Plug>(EasyAlign)
+nmap ga <Plug>(EasyAlign)
+
+set wrap
+set linebreak
+
+let g:ctrlp_max_files=0
+let g:unite_source_history_yank_enable = 1
+call unite#filters#matcher_default#use(['matcher_fuzzy'])
+let g:unite_source_rec_async_command = [ 'ag', '-l', '-g', '', '--nocolor' ]
