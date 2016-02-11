@@ -21,6 +21,8 @@ local function focusScreen(sc)
   --Get windows within screen, ordered from front to back.
   --If no windows exist, bring focus to desktop. Otherwise, set focus on
   --front-most application window.
+  if not sc then return end
+
   local windows = fnutils.filter(
     window.orderedWindows(),
     fnutils.partial(isInScreen, sc))
@@ -34,7 +36,7 @@ hotkey.bind({"alt"}, "`", function ()
 end)
 
 --Bring focus to previous display/screen
-hotkey.bind({"alt", "shift"}, "`", function() 
+hotkey.bind({"alt", "shift"}, "`", function()
   focusScreen(window.focusedWindow():screen():previous())
 end)
 
