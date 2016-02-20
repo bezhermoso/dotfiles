@@ -1,0 +1,82 @@
+snippet clss "Class" b
+class ${1:ClassName}${2: extends ${3:ParentClass}}${4: implements ${5:Interface$6}}
+{
+$7
+}
+endsnippet
+
+snippet @v "@var" b
+/* @var ${1:type} $${2:var} */
+endsnippet
+
+snippet prot "protected property" b
+/**
+ * @var ${4:mixed}
+ */
+protected $${1:name}${2: = $3};
+endsnippet
+
+snippet priv "private property" b
+
+/**
+ * @var ${4:mixed}
+ */
+private $${1:name}${2: = $3};
+endsnippet
+
+snippet pub "public property" b
+
+/**
+ * @var ${4:mixed}
+ */
+public $${1:name}${2: = $3};
+endsnippet
+
+snippet privf "private function" b
+
+/**
+ * @param $4$$2
+ * 
+ * @return ${5:null}
+ * ${6:@throws $7Exception}
+ */
+public function ${1:functionName}($${2:param}$3)
+$8
+endsnippet
+
+snippet protf "protected function" b
+
+/**
+ * @param $4$$2
+ * 
+ * @return ${5:null}
+ * ${6:@throws $7Exception}
+ */
+protected function ${1:functionName}($${2:param}$3)
+$8
+endsnippet
+
+snippet pubf "public function" b
+
+/**
+ * @param $4$$2
+ * 
+ * @return ${5:null}
+ * ${6:@throws $7Exception}
+ */
+public function ${1:functionName}($${2:param}$3)
+$8
+endsnippet
+
+snippet inter "Interface" b
+interface ${2:$3Interface}${4: implements ${5:$6Interface}}$7
+{
+$8
+}
+endsnippet
+
+snippet doc "PHP doc" b
+/**
+ * $1
+ */
+endsnippet
