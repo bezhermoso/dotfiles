@@ -2,6 +2,7 @@ local wifi = require "hs.wifi"
 local notify = require "hs.notify"
 local timer = require "hs.timer"
 local notificationUtils = require "../utils/notification"
+local application = require "hs.application"
 
 -- WORK-RELATED AUTOMATION --
 
