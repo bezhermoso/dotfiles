@@ -1,0 +1,15 @@
+snippet --- "Front-matter" b
+---
+layout: ${1:post}
+title: $2
+date: ${3:`date +%Y`-`date +%m`-`date +%d`}
+---
+
+$4
+endsnippet
+
+snippet high "Code highlight" b
+{% highlight $1 %}
+$2
+{% endhighlight %}
+endsnippet
