@@ -5,67 +5,59 @@ $7
 }
 endsnippet
 
-snippet @v "@var" b
-/* @var ${1:type} $${2:var} */
+snippet abs "Abstract class" b
+abstract class ${1:ClassName}${2: extends ${3:ParentClass}}${4: implements ${5:Interface$6}}
+{
+$7
+}
 endsnippet
 
-snippet prot "protected property" b
-/**
- * @var ${4:mixed}
- */
-protected $${1:name}${2: = $3};
+snippet prop "protected property" b
+protected $$1;
 endsnippet
 
-snippet priv "private property" b
-
-/**
- * @var ${4:mixed}
- */
-private $${1:name}${2: = $3};
+snippet prip "private property" b
+private $$1;
 endsnippet
 
-snippet pub "public property" b
-
-/**
- * @var ${4:mixed}
- */
-public $${1:name}${2: = $3};
+snippet pubp "public property" b
+public $$1;
 endsnippet
 
-snippet privf "private function" b
-
-/**
- * @param $4$$2
- * 
- * @return ${5:null}
- * ${6:@throws $7Exception}
- */
-public function ${1:functionName}($${2:param}$3)
-$8
+snippet props "protected static property" b
+protected static $$1;
 endsnippet
 
-snippet protf "protected function" b
+snippet prips "private static property" b
+private static $$1;
+endsnippet
 
-/**
- * @param $4$$2
- * 
- * @return ${5:null}
- * ${6:@throws $7Exception}
- */
-protected function ${1:functionName}($${2:param}$3)
-$8
+snippet pubps "public static property" b
+public static $$1;
+endsnippet
+
+snippet prif "private function" b
+private function ${1:functionName}($${2:param})$3
+endsnippet
+
+snippet prof "protected function" b
+protected function ${1:functionName}($${2:param})$3
 endsnippet
 
 snippet pubf "public function" b
+public function ${1:functionName}($${2:param})$3
+endsnippet
 
-/**
- * @param $4$$2
- * 
- * @return ${5:null}
- * ${6:@throws $7Exception}
- */
-public function ${1:functionName}($${2:param}$3)
-$8
+snippet pubfs "public static function" b
+public static function ${1:functionName}($${2:param})$3
+endsnippet
+
+snippet prifs "private static function" b
+private static function ${1:functionName}($${2:param})$3
+endsnippet
+
+snippet profs "protected static function" b
+protected static function ${1:functionName}($${2:param})$3
 endsnippet
 
 snippet inter "Interface" b
@@ -79,4 +71,51 @@ snippet doc "PHP doc" b
 /**
  * $1
  */
+endsnippet
+
+snippet @v "@var" b
+/* @var ${1:type} $${2:var} */
+endsnippet
+
+snippet pdoc "Property documentation" b
+/**
+ * @var ${1:type}
+ */
+endsnippet
+
+snippet fdoc "Function documentation" b
+/**
+ * @param ${4:type} $${5:param}
+ * 
+ * @return ${1:null}
+ * ${2:@throw $3Exception}
+ */
+endsnippet
+
+snippet nam "Namespace" b
+namespace ${1:Namespace};
+endsnippet
+
+snippet use "use statement" b
+use ${1:Class};
+endsnippet
+
+snippet t "$this" b
+$this->
+endsnippet
+
+snippet con "Constant" b
+const ${1:CONST} = $2;
+endsnippet
+
+snippet dmp "var_dump" b
+var_dump($$1);
+endsnippet
+
+snippet pr "print_r" b
+print_r($$1);
+endsnippet
+
+snippet x "exit" b
+exit($1);
 endsnippet
