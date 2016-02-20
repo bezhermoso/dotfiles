@@ -29,7 +29,7 @@ function! StripWhitespace()
   call setpos('.', save_cursor)
   call setreg('/', old_query)
 endfunction
-noremap <leader>ss :call StripWhitespace()<CR>
+"noremap <leader>ss :call StripWhitespace()<CR>
 
 let g:plug_timeout=180
 call plug#begin()
@@ -109,6 +109,7 @@ Plug 'junegunn/vim-easy-align'
 Plug 'Shougo/unite.vim'
 Plug 'Shougo/vimproc.vim'
 Plug 'pangloss/vim-javascript'
+"Plug 'rstacruz/vim-node-import'
 "Plug 'mxw/vim-jsx'
 "Plug 'rstacruz/vim-hyperstyle'
 call plug#end()
@@ -179,6 +180,8 @@ let g:airline_theme="term"
 let g:airline_powerline_fonts=0
 let g:airline_symbols={}
 let g:airline_symbols.linenr = '␤'
+
+let g:qs_highlight_on_keys = ['f', 'F', 't', 'T']
 "if has("nvim")
 
 "else
@@ -203,8 +206,7 @@ nnoremap / /\v
 vnoremap / /\v
 nnoremap ? ?\v
 vnoremap ? ?\v
-nnoremap <leader>s <esc>:%s/\v
-vnoremap <leader>s <esc>:%s/\v
+nnoremap <leader>s <esc>:%s//g<left><left>
 
 " Keep search results centered
 nnoremap <silent> n nzz
@@ -314,9 +316,9 @@ nnoremap <leader>Q !!bash
 
 " Activate cursor line on current buffer only
 augroup CursorLine
-  au!
-  au VimEnter,WinEnter,BufWinEnter * setlocal cursorline
-  au WinLeave * setlocal nocursorline
+  "au!
+  "au VimEnter,WinEnter,BufWinEnter * setlocal cursorline
+  "au WinLeave * setlocal nocursorline
 augroup END
 
 " Copy/cut/paste from system buffer.
@@ -330,8 +332,8 @@ augroup END
 "xnoremap <leader>P "+P
 
 " Toggle comments
-nnoremap <leader>/<Space> :call NERDComment(0, "toggle")<CR>
-xnoremap <leader>/<Space> :call NERDComment(0, "toggle")<CR>
+nnoremap <leader>/ :call NERDComment(0, "toggle")<CR>
+xnoremap <leader>/ :call NERDComment(0, "toggle")<CR>
 
 " Special file type associations
 "autocmd BufNewFile,BufRead Vagrantfile set filetype=ruby
@@ -348,7 +350,7 @@ autocmd BufRead COMMIT_EDITMSG setlocal spell!
 autocmd BufRead *.{md,markdown} setlocal spell!
 autocmd FileChangedShell * echo "Warning: File changed on disk"
 
-nnoremap <leader>a :Ag 
+nnoremap <leader>a :Ag
 
 "Another enhanced script from
 "http://vim.wikia.com/wiki/Display_output_of_shell_commands_in_new_window
@@ -472,8 +474,6 @@ nnoremap <F1> <Nop>
 inoremap <F1> <Nop>
 vnoremap <F1> <Nop>
 
-let g:UltiSnipsEditSplit="vertical"
-
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
 
 
@@ -496,3 +496,21 @@ let g:ctrlp_max_files=0
 let g:unite_source_history_yank_enable = 1
 call unite#filters#matcher_default#use(['matcher_fuzzy'])
 let g:unite_source_rec_async_command = [ 'ag', '-l', '-g', '', '--nocolor' ]
+
+" Convert ```[lang] to {% higlight [lang] %} within range
+function! ConvertToLiquidHighlighting() range
+  silent! execute a:firstline . "," . a:lastline . 's/^```\([a-z]\+\)$/{% highlight \1 %}/g'
+  silent! execute a:firstline . "," . a:lastline . 's/^```$/{% endhighlight %}/g'
+endfunction
+
+vnoremap <leader>H :call ConvertToLiquidHighlighting()<cr>
+nnoremap <leader>H  :0,$call ConvertToLiquidHighlighting()<cr>
+
+nnoremap <left> :cprev<cr>
+nnoremap <right> :cnext<cr>
+
+let g:UltiSnipsEditSplit="vertical"
+let g:UltiSnipsExpandTrigger="<C-j>"
+let g:UltiSnipsJumpForwardTrigger="<C-j>"
+let g:UltiSnipsJumpBackwardTrigger="<C-k>"
+
