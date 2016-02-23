@@ -33,7 +33,7 @@ endfunction
 
 let g:plug_timeout=180
 call plug#begin()
-Plug 'gmarik/Vundle.vim'
+"Plug 'gmarik/Vundle.vim'
 " The following are examples of different formats supported.
 " " Keep Plug commands between vundle#begin/end.
 " " plugin on GitHub repo
@@ -51,7 +51,7 @@ Plug 'tpope/vim-fugitive'
 " Plug 'user/L9', {'name': 'newL9'}
 Plug 'L9'
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
-Plug 'mileszs/ack.vim'
+"Plug 'mileszs/ack.vim'
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'chriskempson/base16-vim'
 Plug 'rstacruz/sparkup', {'rtp': 'vim/'}
@@ -66,8 +66,8 @@ Plug 'guns/xterm-color-table.vim'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
 Plug 'unblevable/quick-scope'
-Plug 'lsdr/monokai'
-Plug 'altercation/vim-colors-solarized'
+"Plug 'lsdr/monokai'
+"Plug 'altercation/vim-colors-solarized'
 Plug 'rking/ag.vim'
 Plug 'tpope/vim-endwise', { 'for': 'ruby' }
 Plug 'mattn/flappyvird-vim'
@@ -514,3 +514,11 @@ let g:UltiSnipsExpandTrigger="<C-j>"
 let g:UltiSnipsJumpForwardTrigger="<C-j>"
 let g:UltiSnipsJumpBackwardTrigger="<C-k>"
 
+augroup pencil
+  autocmd!
+  autocmd FileType markdown,mkd call pencil#init({'wrap': 'soft'})
+                            "\ | call lexical#init()
+                            "\ | call litecorrect#init()
+                            "\ | call textobj#quote#init()
+                            "\ | call textobj#sentence#init()
+augroup END
