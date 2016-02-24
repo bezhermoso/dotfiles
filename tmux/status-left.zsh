@@ -3,15 +3,15 @@
 tmux_session_colors=(white colour8)
 tmux_session_name=" #{session_name} "
 
-tmux_session_prefix_colors=(colour4 colour3)
+tmux_session_prefix_colors=(colour42 colour3)
 
 tmux_session_segment="#[fg=$tmux_session_prefix_colors[1]]#{?client_prefix,,$tmux_session_name}"
-tmux_session_segment="$tmux_session_segment#{?client_prefix,,❯}"
+tmux_session_segment="$tmux_session_segment#{?client_prefix,,❯❯}"
 
 tmux_session_prefix_segment="#[fg=$tmux_session_prefix_colors[2]]#{?client_prefix,$tmux_session_name,}"
-tmux_session_prefix_segment="$tmux_session_prefix_segment#{?client_prefix,❯ ,}"
+tmux_session_prefix_segment="$tmux_session_prefix_segment#{?client_prefix,❯❯,}"
 
-tmux_status_left="$tmux_session_segment$tmux_session_prefix_segment#[default]"
+tmux_status_left="$tmux_session_segment$tmux_session_prefix_segment#[default]  "
 
 tmux display-message -p "$tmux_status_left"
 
