@@ -1,37 +1,41 @@
 snippet thf "then function(...)" i
-then(function(${1:data}) {
-	$1$2
-})$3
+then(function($1) {
+	$2
+})
 endsnippet
 
 snippet th "then(...)" i
-then($1)$2
+then($1)
 endsnippet
 
-snippet fnc "function(...)" w
+snippet fu "function(...)" w
 function($1) {
 	$2
 }
 endsnippet
 
+snippet cat "catch(...)" i
+catch(${1:${2:Error}, }$3)
+endsnippet
+
 snippet catf "catch(function(...)" i
-catch(function(${1:err}) {
-	$2
+catch(${1:${2:Error}, }function(${3:err}) {
+	$4
 })
 endsnippet
 
 snippet prom "new Promise(...)" w
 new Promise(function(resolve, reject) {
 	$1
-})$2
+})
 endsnippet
 
 snippet res "Promise.resolve(...)" w
-Promise.resolve($1)$2
+Promise.resolve($1)
 endsnippet
 
 snippet rej "Promise.reject(...)" w
-Promise.reject($1)$2
+Promise.reject($1)
 endsnippet
 
 snippet log "console.log(...)" b
@@ -39,11 +43,15 @@ console.log($1);
 endsnippet
 
 snippet err "console.error(...)" b
-console.error($1);
+console.error(${1:err});
 endsnippet
 
-snippet req "require(...)" w
-var $2 = require("$1")$3
+snippet req "var v = require(...)" w
+var $1 = require("${2:$1}")
+endsnippet
+
+snippet r "require(...)" w
+require("$1")
 endsnippet
 
 snippet hapip "Hapi.js plugin" b
@@ -55,4 +63,24 @@ exports.register.attributes = {
 	name: '${1:plugin-name}',
 	version: '${2:0.0.1}'
 }
+endsnippet
+
+snippet xerr "extend Error" b
+function ${1:MyError}(message) {
+	this.message = message;
+	this.stack = (new ${2:Error}($3)).stack;
+}
+$1.prototype = Object.create(Error.prototype);
+$1.prototype.constructor = $1;
+$1.prototype.name = "$1";
+endsnippet
+
+snippet blu "var Promise = require('bluebird')" b
+var Promise = require("bluebird");
+
+endsnippet
+
+snippet ram "var R = require('ramda')" b
+var R = require("ramda");
+
 endsnippet
