@@ -119,6 +119,7 @@ Plug 'arnaud-lb/vim-php-namespace', {'for': 'php'}
 Plug 'jwalton512/vim-blade'
 Plug 'jiangmiao/auto-pairs'
 Plug 'benekastah/neomake'
+Plug 'mhinz/vim-startify'
 "NEW PLUGINS HERE
 call plug#end()
 
@@ -574,3 +575,5 @@ vnoremap <silent> g: :<c-U>call SourceVimscript("visual")<cr>
 nnoremap <silent> g:: :call SourceVimscript("currentline")<cr>
 
 nnoremap <leader><leader> :noh<cr>
+
+let g:startify_bookmarks = ['~/.vimrc', '~/.zprofile', '~/.zshrc']
