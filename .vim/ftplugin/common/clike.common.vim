@@ -1,8 +1,7 @@
 
-inoremap <buffer> ( ()<ESC>i
-inoremap <buffer> { {}<ESC>i
-inoremap <buffer> [ []<ESC>i
-inoremap <buffer> f<Tab> function()<esc>i
-inoremap <buffer> ret<Tab> return 
-inoremap <buffer> if<Tab> if ()<esc>i
+"inoremap <buffer> ( ()<left>
+"inoremap <buffer> { {}<left>
+"inoremap <buffer> [ []<left>
+"inoremap <buffer> f<Tab> function()<left>
+"inoremap <buffer> if<Tab> if ()<left>
 
