@@ -1,0 +1,5 @@
+#!/usr/bin/env zsh
+
+#local place
+#place="$@"
+curl -4 "wttr.in/$@"
