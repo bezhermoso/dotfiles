@@ -14,9 +14,6 @@ filetype plugin indent on
 set clipboard=unnamed
 set pastetoggle=<F2>
 set autoread
-" Enable per-directory .vimrc files and disable unsafe commands in them
-"set exrc
-"set secure
 
 " Don’t reset cursor to start of line when moving around.
 "set nostartofline
@@ -50,7 +47,7 @@ Plug 'tpope/vim-fugitive'
 " " Avoid a name conflict with L9
 " Plug 'user/L9', {'name': 'newL9'}
 Plug 'L9'
-Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
+Plug 'scrooloose/nerdtree', { 'on': ['NERDTreeToggle', 'NERDTreeFind', 'NERDTreeFocus'] }
 "Plug 'mileszs/ack.vim'
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'chriskempson/base16-vim'
@@ -71,14 +68,14 @@ Plug 'unblevable/quick-scope'
 Plug 'rking/ag.vim'
 Plug 'tpope/vim-endwise', { 'for': 'ruby' }
 Plug 'mattn/flappyvird-vim'
-Plug 'shawncplus/phpcomplete.vim'
+"Plug 'shawncplus/phpcomplete.vim'
 Plug 'StanAngeloff/php.vim'
 " ZoomWin doesn't work well in neovim
 "Plug 'vim-scripts/ZoomWin'
 Plug 'rstacruz/vim-closer'
 Plug 'austintaylor/vim-commaobject'
 Plug 'beberlei/vim-php-refactor', { 'for': 'php' }
-Plug 'easymotion/vim-easymotion'
+"Plug 'easymotion/vim-easymotion'
 Plug 'reedes/vim-pencil'
 Plug 'junegunn/goyo.vim'
 Plug 'scrooloose/syntastic'
@@ -107,24 +104,36 @@ Plug 'kylef/apiblueprint.vim'
 Plug 'evidens/vim-twig'
 Plug 'junegunn/vim-easy-align'
 Plug 'Shougo/unite.vim'
-Plug 'Shougo/vimproc.vim'
+Plug 'Shougo/vimproc.vim', {'do': 'make -f make_mac.mak'}
 Plug 'pangloss/vim-javascript'
 "Plug 'rstacruz/vim-node-import'
 "Plug 'mxw/vim-jsx'
 "Plug 'rstacruz/vim-hyperstyle'
+Plug 'stephpy/vim-yaml'
+Plug 'python.vim'
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
+Plug 'm2mdas/phpcomplete-extended', {'for': 'php'}
+Plug 'm2mdas/phpcomplete-extended-symfony', {'for': 'php'}
+Plug 'arnaud-lb/vim-php-namespace', {'for': 'php'}
+Plug 'jwalton512/vim-blade'
+Plug 'jiangmiao/auto-pairs'
+Plug 'benekastah/neomake'
+"NEW PLUGINS HERE
 call plug#end()
 
+set rtp+=/usr/local/opt/fzf
 
 " Set comma as leader key
-let mapleader=","
+let mapleader="\<Space>"
 "nnoremap ; :
 filetype plugin indent on
 syntax on
+set synmaxcol=500
 
 set showtabline=1
 set tabstop=2 shiftwidth=2 softtabstop=2 expandtab
-set hlsearch
-set incsearch
+set hlsearch incsearch ignorecase smartcase
 set showmatch
 set wildmode=list:longest
 set relativenumber
@@ -216,7 +225,7 @@ nnoremap <silent> # #zz
 nnoremap <silent> g* g*zz
 nnoremap <silent> g# g#zz
 " Clear search
-nnoremap <leader><space> :noh<cr>
+nnoremap <leader>c :noh<cr>
 
 " Text wrapping
 set wrap
@@ -265,9 +274,10 @@ let g:ctrlp_clear_cache_on_exit=0
 
 " Highlight colors
 hi Search ctermfg=0 ctermbg=11 guifg=Black
-"hi LineNr ctermfg=242
+hi LineNr ctermfg=242
 hi Comment ctermfg=245
 hi MatchParen ctermbg=105
+hi TabLineSel ctermbg=24 ctermfg=4
 "hi ColorColumn ctermbg=black
 if shell_background == 'dark'
   hi CursorLine cterm=NONE ctermbg=239
@@ -316,9 +326,9 @@ nnoremap <leader>Q !!bash
 
 " Activate cursor line on current buffer only
 augroup CursorLine
-  "au!
-  "au VimEnter,WinEnter,BufWinEnter * setlocal cursorline
-  "au WinLeave * setlocal nocursorline
+  au!
+  au VimEnter,WinEnter,BufWinEnter * setlocal cursorline
+  au WinLeave * setlocal nocursorline
 augroup END
 
 " Copy/cut/paste from system buffer.
@@ -333,7 +343,7 @@ augroup END
 
 " Toggle comments
 nnoremap <leader>/ :call NERDComment(0, "toggle")<CR>
-xnoremap <leader>/ :call NERDComment(0, "toggle")<CR>
+vnoremap <leader>/ :call NERDComment(0, "toggle")<CR>
 
 " Special file type associations
 "autocmd BufNewFile,BufRead Vagrantfile set filetype=ruby
@@ -342,6 +352,7 @@ autocmd BufNewFile,BufRead {Vagrant,Gem,Berks}file set filetype=ruby
 autocmd BufNewFile,BufRead *.md setlocal filetype=markdown
 autocmd BufNewFile,BufRead *.{handlebars,hbs} setlocal filetype=javascript
 autocmd BufNewFile,BufRead *.{module,install,theme} setlocal filetype=php
+autocmd BufNewFile,BufRead *.blade.php setlocal filetype=html
 autocmd BufNewFile,BufRead *.twig setlocal filetype=html
 
 let g:jsx_ext_required=0
@@ -411,6 +422,11 @@ if exists("+undofile")
   set undofile
 endif
 
+if has('persistent_undo')
+  set undolevels=5000
+endif
+set updatecount=10
+
 " Ident entire file.
 function! IndentEntireFile()
   let last_cursor = getpos('.')
@@ -428,8 +444,8 @@ nnoremap z<Space> :Goyo<cr>
 nnoremap ,o o<esc>
 nnoremap ,O O<esc>
 
-cnoremap <C-j> <t_kd>
-cnoremap <C-k> <t_ku>
+"cnoremap <C-j> <t_kd>
+"cnoremap <C-k> <t_ku>
 cnoremap <C-a> <Home>
 cnoremap <C-e> <End>
 
@@ -522,3 +538,39 @@ augroup pencil
                             "\ | call textobj#quote#init()
                             "\ | call textobj#sentence#init()
 augroup END
+
+"nnoremap <Space> ,
+
+nnoremap <leader>f :Files<cr>
+nnoremap <leader>F :History<cr>
+
+autocmd  FileType  php setlocal omnifunc=phpcomplete_extended#CompletePHP
+let g:phpcomplete_index_composer_command=""
+
+command! -bang -nargs=* Agu call fzf#vim#ag(<q-args>, '--skip-vcs-ignores', {'down': '~40%'})
+
+" https://www.reddit.com/r/vim/comments/4aab93/weekly_vim_tips_and_tricks_thread_1/d0yqb6z
+function! SourceVimscript(type)
+  let sel_save = &selection
+  let &selection = "inclusive"
+  let reg_save = @"
+  if a:type == 'line'
+    silent execute "normal! '[V']y"
+  elseif a:type == 'char'
+    silent execute "normal! `[v`]y"
+  elseif a:type == "visual"
+    silent execute "normal! gvy"
+  elseif a:type == "currentline"
+    silent execute "normal! yy"
+  endif
+  let @" = substitute(@", '\n\s*\\', '', 'g')
+  " source the content
+  @"
+  let &selection = sel_save
+  let @" = reg_save
+endfunction
+nnoremap <silent> g: :set opfunc=SourceVimscript<cr>g@
+vnoremap <silent> g: :<c-U>call SourceVimscript("visual")<cr>
+nnoremap <silent> g:: :call SourceVimscript("currentline")<cr>
+
+nnoremap <leader><leader> :noh<cr>
