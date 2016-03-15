@@ -35,7 +35,7 @@ else
   python_segment=
 fi
 
-php_colors=(colour55 colour61)
+php_colors=(colour55 colour99)
 php_fg=white
 php_lower_bound=120
 php_version=$($TMUX_CONFIG_DIR/get-tmux-env.zsh TMUX_PHP_V)
@@ -51,9 +51,42 @@ tmux_time_format="%H:%M"
 tmux_date_format="%b %d"
 time_segment="#[fg=$tmux_time_colors[3]] ❮ $(date +$tmux_date_format) #[bg=$tmux_time_colors[2],fg=white] $(date +$tmux_time_format) "
 
+$power_segment=""
+#local battery_level
+#fully_charged=$(system_profiler SPPowerDataType | grep "Fully Charged" | awk '{print $3}')
+#charging=$(system_profiler SPPowerDataType | grep "Charging" | awk '{print $2}' | head -1)
+
+
+#if [[ "$fully_charged" == "Yes" ]]; then
+  #battery_level=100
+#else
+  #battery_capacity=$(system_profiler SPPowerDataType | grep "Full Charge Capacity" | awk '{print $5}')
+  #current_charge=$(system_profiler SPPowerDataType | grep "Charge Remaining" | awk '{print $4}')
+  #battery_level=$(((current_charge * 100 / battery_capacity)))
+#fi
+
+#battery_color=colour6
+
+#if [[ $battery_level -le 60 ]]; then
+  #battery_color=colour208
+#fi
+
+#if [[ $battery_level -le 20 ]]; then
+  #battery_color=colour1
+#fi
+
+#charging_indicator=' '
+#if [[ "$charging" == "Yes" ]]; then
+  #charging_indicator="+"
+#fi
+
+#power_segment="#[fg=$battery_color]❮$charging_indicator$battery_level%%#[default]"
+
 # This seems to default always to 80...
 local window_width=$(tmux display-message -p "#{window_width}")
 local tmux_status_right=""
+
+tmux_status_right=""
 
 if [[ $window_width -gt $node_lower_bound ]]; then
   tmux_status_right="$tmux_status_right$node_segment"
@@ -69,6 +102,6 @@ if [[ $window_width -gt $php_lower_bound ]]; then
 fi
 
 
-tmux_status_right="$tmux_status_right  $time_segment"
+tmux_status_right="$tmux_status_right   $power_segment$time_segment"
 tmux display-message -p "$tmux_status_right"
 
