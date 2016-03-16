@@ -182,3 +182,7 @@ fstash() {
   done
 }
 
+export FZF_DEFAULT_OPTS='
+  --bind ctrl-f:page-down,ctrl-b:page-up
+  --color hl:3,hl+:3
+'
