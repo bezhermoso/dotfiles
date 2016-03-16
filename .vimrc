@@ -577,3 +577,10 @@ nnoremap <silent> g:: :call SourceVimscript("currentline")<cr>
 nnoremap <leader><leader> :noh<cr>
 
 let g:startify_bookmarks = ['~/.vimrc', '~/.zprofile', '~/.zshrc']
+
+hi StartifyHeader ctermfg=6
+hi StartifyNumber ctermfg=2
+hi StartifyBracket ctermfg=16
+hi StartifyFile ctermfg=3
+hi StartifyPath ctermfg=8
+hi StartifySection ctermfg=4
