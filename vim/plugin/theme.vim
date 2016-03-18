@@ -35,6 +35,6 @@ endif
 hi StartifyHeader ctermfg=6
 hi StartifyNumber ctermfg=2
 hi StartifyBracket ctermfg=16
-hi StartifyFile ctermfg=3
+hi StartifyFile ctermfg=15
 hi StartifyPath ctermfg=8
 hi StartifySection ctermfg=4
