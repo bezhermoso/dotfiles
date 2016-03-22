@@ -113,3 +113,4 @@ nnoremap <C-w>o <Nop>
 nnoremap <left> :cprev<cr>
 nnoremap <right> :cnext<cr>
 
+nnoremap <leader><leader> :noh<cr>

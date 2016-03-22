@@ -28,7 +28,9 @@ set foldlevel=1
 "set ttimeoutlen=50
 set timeoutlen=1000 ttimeoutlen=0
 set backspace=indent,eol,start
-set listchars=tab:▸\ ,eol:¬
+"set listchars=tab:▸\ ,eol:¬
+set listchars=tab:▸\ ,trail:∙
+  
 set list
 set ruler
 set showcmd

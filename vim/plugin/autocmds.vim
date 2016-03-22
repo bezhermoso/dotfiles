@@ -36,4 +36,5 @@ augroup pencil
                             "\ | call textobj#sentence#init()
 augroup END
 
-autocmd  FileType  php setlocal omnifunc=phpcomplete_extended#CompletePHP let g:phpcomplete_index_composer_command=""
+autocmd  FileType  php setlocal omnifunc=phpcomplete_extended#CompletePHP
+let g:phpcomplete_index_composer_command=""

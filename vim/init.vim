@@ -94,6 +94,7 @@ Plug 'jwalton512/vim-blade'
 Plug 'jiangmiao/auto-pairs'
 Plug 'benekastah/neomake'
 Plug 'mhinz/vim-startify'
+Plug 'morhetz/gruvbox'
 "NEW PLUGINS HERE
 call plug#end()
 
@@ -117,3 +118,4 @@ runtime macros/matchit.vim
 "let g:unite_source_rec_async_command = [ 'ag', '-l', '-g', '', '--nocolor' ]
 
 let g:startify_bookmarks = ['~/.vimrc', '~/.zprofile', '~/.zshrc']
+let g:startify_change_to_dir=0
