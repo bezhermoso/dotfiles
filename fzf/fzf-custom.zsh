@@ -72,7 +72,7 @@ cf () {
 #}
 
 ff() {
-  ag --nobreak --nonumbers --noheading . | fzf
+  vim $(ag --nobreak --nonumbers --noheading . | fzf | cut -d : -f 1)
 }
 
 # fbr - checkout git branch
