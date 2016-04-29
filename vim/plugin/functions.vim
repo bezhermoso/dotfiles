@@ -78,3 +78,13 @@ endfunction
 
 vnoremap <leader>H :call ConvertToLiquidHighlighting()<cr>
 nnoremap <leader>H  :0,$call ConvertToLiquidHighlighting()<cr>
+
+function! s:OpenPlugin(plugin, splittype)
+  let dir='~/.dotfiles/vim/plugin/'
+  if (a:splittype == 'v')
+    execute "vsplit" . dir . a:plugin . ".vim"
+  else
+    execute "split" . dir . a:plugin . ".vim"
+  endif
+endfunc
+command! -complete=shellcmd -nargs=+ Opp call s:OpenPlugin(<q-args>, "v")

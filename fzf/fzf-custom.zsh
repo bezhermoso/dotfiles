@@ -72,7 +72,13 @@ cf () {
 #}
 
 ff() {
-  vim $(ag --nobreak --nonumbers --noheading . | fzf | cut -d : -f 1)
+  local out file key
+  out=$(ag --nobreak --nonumbers --noheading . | fzf-tmux --exit-0 --expect=ctrl-o,ctrl-e)
+  key=$(head -1 <<< "$out")
+  file=$(echo "$out" | tail -1 | cut -d : -f 1)
+  if [ -n "$file" ]; then
+    [ "$key" = ctrl-o ] && open "$file" || ${EDITOR:-vim} "$file"
+  fi
 }
 
 # fbr - checkout git branch
@@ -166,3 +172,5 @@ export FZF_DEFAULT_OPTS='
   --bind ctrl-f:page-down,ctrl-b:page-up
   --color hl:3,hl+:3
 '
+
+#bindkey '^F' ff

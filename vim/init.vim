@@ -95,6 +95,8 @@ Plug 'jiangmiao/auto-pairs'
 Plug 'benekastah/neomake'
 Plug 'mhinz/vim-startify'
 Plug 'morhetz/gruvbox'
+Plug 'joeytwiddle/sexy_scroller.vim'
+Plug 'junegunn/vim-xmark', {'do': 'make'}
 "NEW PLUGINS HERE
 call plug#end()
 
