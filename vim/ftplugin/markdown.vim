@@ -5,5 +5,8 @@ nnoremap <leader>h3<Space> I### <esc>
 nnoremap <leader>h4<Space> I#### <esc>
 nnoremap <leader>h5<Space> I##### <esc>
 nnoremap <leader>h6<Space> I###### <esc>
+setlocal tabstop=2
+setlocal shiftwidth=2
+setlocal softtabstop=2
 "nnoremap <leader>H<Space> :HeaderDecrease<cr>
 "nnoremap <leader>h<Space> :HeaderDecrease<cr>

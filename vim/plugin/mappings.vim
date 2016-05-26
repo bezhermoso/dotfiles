@@ -114,3 +114,8 @@ nnoremap <left> :cprev<cr>
 nnoremap <right> :cnext<cr>
 
 nnoremap <leader><leader> :noh<cr>
+
+nnoremap <Tab> za
+nnoremap <S-Tab> zA
+
+

@@ -87,8 +87,8 @@ Plug 'stephpy/vim-yaml'
 Plug 'python.vim'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
-Plug 'm2mdas/phpcomplete-extended', {'for': 'php'}
-Plug 'm2mdas/phpcomplete-extended-symfony', {'for': 'php'}
+"Plug 'm2mdas/phpcomplete-extended', {'for': 'php'}
+"Plug 'm2mdas/phpcomplete-extended-symfony', {'for': 'php'}
 Plug 'arnaud-lb/vim-php-namespace', {'for': 'php'}
 Plug 'jwalton512/vim-blade'
 Plug 'jiangmiao/auto-pairs'
@@ -97,6 +97,11 @@ Plug 'mhinz/vim-startify'
 Plug 'morhetz/gruvbox'
 Plug 'joeytwiddle/sexy_scroller.vim'
 Plug 'junegunn/vim-xmark', {'do': 'make'}
+Plug 'leafgarland/typescript-vim'
+Plug '2072/PHP-Indenting-for-Vim'
+Plug 'mkusher/padawan.vim'
+Plug 'textobj-syntax'
+
 "NEW PLUGINS HERE
 call plug#end()
 
@@ -121,3 +126,5 @@ runtime macros/matchit.vim
 
 let g:startify_bookmarks = ['~/.vimrc', '~/.zprofile', '~/.zshrc']
 let g:startify_change_to_dir=0
+
+let NERDTreeCascadeOpenSingleChildDir=0

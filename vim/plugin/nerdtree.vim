@@ -5,4 +5,3 @@ nnoremap <leader>gn :NERDTreeFind<cr>
 nnoremap <leader>a :Ag
 
 let NERDTreeShowHidden=1
-
