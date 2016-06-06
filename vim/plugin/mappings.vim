@@ -118,4 +118,4 @@ nnoremap <leader><leader> :noh<cr>
 nnoremap <Tab> za
 nnoremap <S-Tab> zA
 
-
+command! W <cr>
