@@ -1,5 +1,5 @@
 
-set clipboard=unnamed
+"set clipboard=unnamed
 set pastetoggle=<F2>
 set autoread
 
