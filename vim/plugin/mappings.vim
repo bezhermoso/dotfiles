@@ -57,8 +57,8 @@ nnoremap <C-k> <C-w>k
 nnoremap <C-h> <C-w>h
 nnoremap <C-l> <C-w>l
 " Resize panes
-nnoremap + <C-w>+
-nnoremap - <C-w>-
+"nnoremap + <C-w>+
+"nnoremap - <C-w>-
 "Execute current line in shell and paste output into buffer
 nnoremap <leader>Q !!bash
 
@@ -115,7 +115,7 @@ nnoremap <right> :cnext<cr>
 
 nnoremap <leader><leader> :noh<cr>
 
-nnoremap <Tab> za
-nnoremap <S-Tab> zA
+nnoremap <Tab><Tab> za
+nnoremap <S-Tab><S-Tab> zA
 
 command! W <cr>
