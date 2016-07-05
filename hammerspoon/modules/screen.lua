@@ -18,6 +18,8 @@ local function isInScreen(sc, win)
   return win:screen() == sc
 end
 
+mousePositions = {}
+
 local function moveMouseToScreen(sc)
   local pt = geometry.rectMidPoint(sc:fullFrame())
   mouse.setAbsolutePosition(pt)
@@ -28,6 +30,8 @@ local function focusScreen(sc, moveMouse)
   --If no windows exist, bring focus to desktop. Otherwise, set focus on
   --front-most application window.
   if not sc then return end
+
+  mousePositions[window.focusedWindow():screen():id()] = mouse.getAbsolutePosition()
 
   local windows = fnutils.filter(
     window.orderedWindows(),
