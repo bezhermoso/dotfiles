@@ -101,6 +101,7 @@ Plug 'leafgarland/typescript-vim'
 Plug '2072/PHP-Indenting-for-Vim'
 Plug 'mkusher/padawan.vim'
 Plug 'textobj-syntax'
+Plug 'tpope/vim-vinegar'
 
 "NEW PLUGINS HERE
 call plug#end()
