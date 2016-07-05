@@ -6,6 +6,7 @@ command! -bang -nargs=* AgU call fzf#vim#ag(<q-args>, '--skip-vcs-ignores --hidd
 
 nnoremap <leader>f :Files<cr>
 nnoremap <leader>F :History<cr>
+nnoremap <leader>gf :GitFiles<cr>
 
 function! s:fzf_statusline()
   " Override statusline as you like
