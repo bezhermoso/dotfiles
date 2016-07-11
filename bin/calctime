@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+from=$1
+to=$2
+
+if [[ -z $from ]]; then
+  read -p "From: " from
+  read -p "To: " to
+fi
+
+IFS=: read from_hr from_min <<< "$from"
+IFS=: read to_hr to_min <<< "$to"
+
+
+
+secs_from=$(date -j -f "%D %T" "01/01/70 $from_hr:$from_min:00" +%s)
+secs_to=$(date -j -f "%D %T" "01/01/70 $to_hr:$to_min:00" +%s)
+
+diff=$(($secs_to-$secs_from))
+if [[ $diff -lt 0 ]]; then
+  secs_to=$(date -j -f "%D %T" "01/01/70 $(($to_hr+12)):$to_min:00" +%s)
+  diff=$((secs_to-$secs_from))
+fi
+
+hours=$(echo "scale=2; ($diff) / (60 * 60)" | bc)
+
+
+echo "Duration: $hours hours"
+
