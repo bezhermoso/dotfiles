@@ -49,3 +49,8 @@ let g:gruvbox_invert_indent_guides=1
 let g:gruvbox_invert_signs=1
 colorscheme gruvbox
 
+
+set background=dark
+if shell_background == 'light'
+  set background=light
+endif
