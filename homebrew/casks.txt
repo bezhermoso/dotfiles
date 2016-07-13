@@ -25,7 +25,6 @@ goofy
 google-chrome
 google-drive
 hammerspoon
-heroku-toolbelt (!)
 intellij-idea-ce
 istat-menus
 iterm2-beta

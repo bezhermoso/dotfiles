@@ -31,7 +31,6 @@ brew cask install $(cat ~/.dotfiles/homebrew/casks.txt)
 
 ## zsh
 
-
 ```bash
 ln -s ~/.dotfiles/zsh/.zshenv ~/.zshenv
 
