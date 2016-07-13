@@ -1,41 +1,73 @@
-### Vim
+# dotfiles
 
-Install MacVim
+Clone under `$HOME/.dotfiles` with `--recursive` flag
 
-> brew install macvim --override-system-vim --with-python3 --with-lua --with-luajit
 
-Install [`vim-plug`](https://github.com/junegunn/vim-plug):
+## Homebrew
 
-> curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+Most of the stuff here would not work 100% without some dependencies which are found in `homebrew/brews.txt`. This is probably the best first step:
 
-Run `:PlugInstall` within Vim.
+```bash
+# Install Homebrew
+/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 
-### Warning: 
-
-Installing [YouCompleteMe](https://github.com/Valloric/YouCompleteMe) with `vim-plug`
-causes `:PlugInstall` to freeze. Quick solution is to comment out `Plug
-'Valoric/YouCompleteMe'` from `.vimrc` and run `:PlugInstall YouCompletMe`
-manually. From there, go into `~/.vim/plugged/YouCompleteMe` and build it from
-there.
-
-### Powerline
-
-```
-git clone git@github.com:powerline/powerline.git
-cd powerline
-pip install --user -e .
+# Install brews:
+brew install $(cat homebrew/brews.txt)
 ```
 
+
+## GUI applications (and some fonts)
+
+```bash
+# Install Cask:
+brew tap caskroom/cask
+
+# Tap homebrew-fonts:
+brew tap caskroom/fonts
+
+# Install applications:
+brew cask install $(cat homebrew/casks.txt)
 ```
-pip install --user vim-power --pre
+
+## zsh
+
+
+```bash
+ln -s ~/.dotfiles/zsh/.zshenv ~/.zshenv
+
+# Restart terminal. Then:
+
+zplug install
 ```
 
-### Tmux
 
-Requires Tmux 2.1
+## neovim
 
-#### tmux 2.* on Ubuntu installation guide
+```bash
+ln -s ~/.dotfiles/vim ~/.config/nvim
 
+# Install `vim-plug`:
+curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+
+# Run :PlugInstall:
+nvim +PlugInstall
+```
+
+## tmux
+
+Requires Tmux 2.1+
+
+```bash
+
+ln -s ~/.dotfiles/tmux/tmux.conf ~/.tmux.conf
+
+# Install `tpm`:
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+```
+
+Start a new `tmux` session and invoke `C-s M-I` to install the plugins.
+
+#### tmux 2.* on Ubuntu
 ```bash
 sudo apt-get update
 sudo apt-get install -y python-software-properties software-properties-common
