@@ -12,7 +12,7 @@ Most of the stuff here would not work 100% without some dependencies which are f
 /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 
 # Install brews:
-brew install $(cat homebrew/brews.txt)
+brew install $(cat ~/.dotfiles/homebrew/brews.txt)
 ```
 
 
@@ -26,7 +26,7 @@ brew tap caskroom/cask
 brew tap caskroom/fonts
 
 # Install applications:
-brew cask install $(cat homebrew/casks.txt)
+brew cask install $(cat ~/.dotfiles/homebrew/casks.txt)
 ```
 
 ## zsh
@@ -47,7 +47,7 @@ zplug install
 ln -s ~/.dotfiles/vim ~/.config/nvim
 
 # Install `vim-plug`:
-curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
 # Run :PlugInstall:
 nvim +PlugInstall
