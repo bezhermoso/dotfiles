@@ -1,0 +1,4 @@
+[submodule "zprezto"]
+	path = zsh/.zprezto
+	url = git@github.com:bezhermoso/prezto.git
+	branch = mine
