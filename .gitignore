@@ -1,3 +1,4 @@
 vim/plugged/*
 vim/viminfo*
 .DS_Store
+zsh/.zhistory
