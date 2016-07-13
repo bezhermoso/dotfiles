@@ -119,3 +119,5 @@ nnoremap <Tab><Tab> za
 nnoremap <S-Tab><S-Tab> zA
 
 command! W <cr>
+nnoremap + "+
+vnoremap + "+
