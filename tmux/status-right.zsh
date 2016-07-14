@@ -51,7 +51,7 @@ tmux_time_colors=(colour24 colour29 colour42)
 tmux_time_format="%H:%M"
 tmux_date_format="%b %d"
 
-time_segment="#[fg=$tmux_time_colors[3]]  $(date +$tmux_date_format) /#[fg=$tmux_time_colors[3]] $(date +$tmux_time_format) "
+time_segment="#[fg=$tmux_time_colors[3]] ● $(date +$tmux_date_format) #[fg=$tmux_time_colors[3]]$(date +$tmux_time_format) "
 
 $power_segment=""
 #local battery_level
