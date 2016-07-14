@@ -2,3 +2,6 @@ vim/plugged/*
 vim/viminfo*
 .DS_Store
 zsh/.zhistory
+zsh/.zcoredump
+zsh/.zcoredump.zwc
+zsh/.zcompcache
