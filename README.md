@@ -1,3 +1,5 @@
+![preview](http://i.imgur.com/HZVdt5O.png)
+
 # dotfiles
 
 Clone under `$HOME/.dotfiles` with `--recursive` flag
