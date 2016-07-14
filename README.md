@@ -1,4 +1,4 @@
-![preview](http://i.imgur.com/HZVdt5O.png)
+![preview](http://i.imgur.com/Uf1ucHy.png)
 
 # dotfiles
 
