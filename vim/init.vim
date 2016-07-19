@@ -4,7 +4,6 @@
 
 set nocompatible
 
-filetype plugin indent on
 syntax on
 set synmaxcol=500
 
@@ -118,6 +117,7 @@ set shell=$SHELL
 
 runtime macros/matchit.vim
 
+filetype plugin indent on
 "set exrc
 "set secure
 
@@ -129,3 +129,4 @@ let g:startify_bookmarks = ['~/.vimrc', '~/.zprofile', '~/.zshrc']
 let g:startify_change_to_dir=0
 
 let NERDTreeCascadeOpenSingleChildDir=0
+

@@ -17,6 +17,7 @@ autocmd BufNewFile,BufRead *.{handlebars,hbs} setlocal filetype=javascript
 autocmd BufNewFile,BufRead *.{module,install,theme} setlocal filetype=php
 autocmd BufNewFile,BufRead *.blade.php setlocal filetype=html
 autocmd BufNewFile,BufRead *.twig setlocal filetype=html
+autocmd BufNewFile,BufRead Dockerfile.* setlocal filetype=dockerfile
 
 let g:jsx_ext_required=0
 " Enable spellcheck on git commits & markdown files
