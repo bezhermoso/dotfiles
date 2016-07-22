@@ -1,0 +1,2 @@
+
+set viewoptions-=options

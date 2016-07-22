@@ -101,6 +101,7 @@ Plug '2072/PHP-Indenting-for-Vim'
 Plug 'mkusher/padawan.vim'
 Plug 'textobj-syntax'
 Plug 'tpope/vim-vinegar'
+Plug 'restore_view.vim'
 
 "NEW PLUGINS HERE
 call plug#end()
