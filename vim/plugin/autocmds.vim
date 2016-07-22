@@ -38,3 +38,6 @@ augroup pencil
 augroup END
 
 let g:padawan#composer_command="/usr/local/bin/composer"
+
+autocmd BufWinLeave *.* mkview!
+autocmd BufWinEnter *.* silent loadview
