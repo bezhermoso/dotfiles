@@ -102,6 +102,7 @@ Plug 'mkusher/padawan.vim'
 Plug 'textobj-syntax'
 Plug 'tpope/vim-vinegar'
 Plug 'restore_view.vim'
+Plug 'SyntaxRange'
 
 "NEW PLUGINS HERE
 call plug#end()
