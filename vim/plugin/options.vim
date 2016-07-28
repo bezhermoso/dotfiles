@@ -13,7 +13,7 @@ set title
 
 set ruler
 set laststatus=2
-set scrolloff=3
+set scrolloff=8
 
 set guioptions-=T
 set guioptions-=r
