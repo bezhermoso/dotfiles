@@ -4,4 +4,4 @@
 	branch = mine
 [submodule "base16-shell"]
 	path = base16-shell
-	url = git@github.com:chriskempson/base16-shell.git
+	url = git@github.com:bezhermoso/base16-shell.git
