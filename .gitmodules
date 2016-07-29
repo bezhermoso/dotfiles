@@ -2,3 +2,6 @@
 	path = zsh/.zprezto
 	url = git@github.com:bezhermoso/prezto.git
 	branch = mine
+[submodule "base16-shell"]
+	path = base16-shell
+	url = git@github.com:chriskempson/base16-shell.git
