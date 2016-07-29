@@ -3,7 +3,7 @@
 source "$HOME/.tmux-statuslinerc"
 
 sep="❮"
-ruby_colors=(colour52 colour124)
+ruby_colors=(colour52 colour1)
 ruby_version=$($TMUX_CONFIG_DIR/get-tmux-env.zsh TMUX_RUBY_V)
 ruby_lower_bound=120
 ruby_version="${ruby_version:----}"
@@ -36,7 +36,7 @@ else
   python_segment=
 fi
 
-php_colors=(colour55 colour99)
+php_colors=(colour63 colour99)
 php_fg=white
 php_lower_bound=120
 php_version=$($TMUX_CONFIG_DIR/get-tmux-env.zsh TMUX_PHP_V)
