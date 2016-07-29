@@ -21,7 +21,7 @@ Plug 'tpope/vim-fugitive'
 " " Avoid a name conflict with L9
 " Plug 'user/L9', {'name': 'newL9'}
 Plug 'L9'
-Plug 'scrooloose/nerdtree', { 'on': ['NERDTreeToggle', 'NERDTreeFind', 'NERDTreeFocus'] }
+Plug 'scrooloose/nerdtree', { 'on': ['NERDTreeToggle', 'NERDTreeFind', 'NERDTreeFocus', 'NERDTreeClose'] }
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'chriskempson/base16-vim'
 Plug 'rstacruz/sparkup', {'rtp': 'vim/'}
@@ -103,6 +103,7 @@ Plug 'textobj-syntax'
 Plug 'tpope/vim-vinegar'
 Plug 'restore_view.vim'
 Plug 'SyntaxRange'
+Plug 'mattsacks/vim-eddie'
 
 "NEW PLUGINS HERE
 call plug#end()

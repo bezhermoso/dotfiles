@@ -4,9 +4,9 @@ set rtp+=/usr/local/opt/fzf
 command! -bang -nargs=* Agu call fzf#vim#ag(<q-args>, '--skip-vcs-ignores', {'down': '~40%'})
 command! -bang -nargs=* AgU call fzf#vim#ag(<q-args>, '--skip-vcs-ignores --hidden', {'down': '~40%'})
 
-nnoremap <leader>f :Files<cr>
-nnoremap <leader>F :History<cr>
-nnoremap <leader>gf :GitFiles<cr>
+nnoremap <leader>f :NERDTreeClose <bar> Files<cr>
+nnoremap <leader>F :NERDTreeClose <bar> History<cr>
+nnoremap <leader>gf :HERDTreeClose <bar> GitFiles<cr>
 
 function! s:fzf_statusline()
   " Override statusline as you like
