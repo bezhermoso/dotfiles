@@ -50,7 +50,7 @@ set smartcase
 set wrap
 set textwidth=79
 set formatoptions=qrn1
-set colorcolumn=80
+set colorcolumn=+1
 set fo-=t
 
 " http://stackoverflow.com/a/9528322
