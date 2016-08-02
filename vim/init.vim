@@ -51,7 +51,7 @@ Plug 'beberlei/vim-php-refactor', { 'for': 'php' }
 "Plug 'easymotion/vim-easymotion'
 Plug 'reedes/vim-pencil'
 Plug 'junegunn/goyo.vim'
-Plug 'scrooloose/syntastic'
+"Plug 'scrooloose/syntastic'
 Plug 'chrisbra/unicode.vim'
 "Plug 'majutsushi/tagbar'
 Plug 'xolox/vim-easytags'
@@ -92,7 +92,7 @@ Plug 'arnaud-lb/vim-php-namespace', {'for': 'php'}
 Plug 'jwalton512/vim-blade'
 Plug 'jiangmiao/auto-pairs'
 Plug 'benekastah/neomake'
-Plug 'mhinz/vim-startify'
+"Plug 'mhinz/vim-startify'
 Plug 'morhetz/gruvbox'
 Plug 'joeytwiddle/sexy_scroller.vim'
 Plug 'junegunn/vim-xmark', {'do': 'make'}
@@ -103,7 +103,7 @@ Plug 'textobj-syntax'
 Plug 'tpope/vim-vinegar'
 Plug 'restore_view.vim'
 Plug 'SyntaxRange'
-Plug 'mattsacks/vim-eddie'
+Plug 'neomake/neomake'
 
 "NEW PLUGINS HERE
 call plug#end()
