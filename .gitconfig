@@ -25,6 +25,8 @@
 
 [alias]
   commits = commit -S
+	amend = commit --amend
+	amends = commit -S --amend
 
 # vim:
 #[merge]
