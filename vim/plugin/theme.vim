@@ -13,8 +13,9 @@ if !empty($VIM_COLOR)
 else
     colorscheme base16-bright
 endif
+
 "let g:airline_theme="term"
-let g:airline_theme="base16_mod"
+let g:airline_theme="lucius"
 let g:airline_powerline_fonts=0
 "let g:airline_symbols={}
 "let g:airline_symbols.linenr = '␤'
@@ -52,3 +53,14 @@ set background=dark
 if shell_background == 'light'
   set background=light
 endif
+
+"if &diff
+    "colorscheme gruvbox
+"endif
+
+" Override the diff-mode highlights of base16.
+highlight DiffAdd    term=bold ctermfg=0 ctermbg=2
+highlight DiffDelete term=bold ctermfg=0 ctermbg=1
+highlight DiffChange ctermfg=0 ctermbg=4 term=none
+highlight DiffText   ctermfg=232 ctermbg=3 term=none
+
