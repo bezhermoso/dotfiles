@@ -104,6 +104,7 @@ Plug 'tpope/vim-vinegar'
 Plug 'restore_view.vim'
 Plug 'SyntaxRange'
 Plug 'neomake/neomake'
+Plug 'kshenoy/vim-signature'
 
 "NEW PLUGINS HERE
 call plug#end()
