@@ -2,6 +2,7 @@ android-sdk
 ansiweather
 autoconf
 automake
+bfg
 cmake
 composer
 cowsay
@@ -12,6 +13,7 @@ duck
 emacs
 faac
 fasd
+figlet
 fish
 fortune
 freetype
@@ -23,6 +25,7 @@ gifsicle
 git
 git-lfs
 gmp
+gnupg
 graphicsmagick
 heroku
 htop-osx
@@ -32,6 +35,8 @@ icu4c
 imagemagick
 jpeg
 jq
+keybase
+kwm
 lame
 libav
 libevent
@@ -41,6 +46,7 @@ libtool
 libxml2
 mcrypt
 mhash
+mutt
 mycli
 mysql
 namei
@@ -54,6 +60,7 @@ pcre2
 php70
 phpbrew
 pkg-config
+postgresql
 pyenv
 python
 python3
@@ -63,11 +70,13 @@ readline
 reattach-to-user-namespace
 ruby-build
 screenfetch
+speedtest_cli
 sqlite
 ssh-copy-id
 subliminal
 the_silver_searcher
 tmux
+tokyo-cabinet
 tree
 tty-clock
 unison

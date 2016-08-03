@@ -11,8 +11,9 @@ coconutbattery
 colorpicker-skalacolor
 cyberduck
 daisydisk
-dockertoolbox
+dockertoolbox 
 dropbox
+endurance
 fantastical
 firefox
 fitbit-connect
@@ -25,11 +26,13 @@ goofy
 google-chrome
 google-drive
 hammerspoon
+heroku-toolbelt 
 intellij-idea-ce
 istat-menus
 iterm2-beta
 java
 karabiner
+keybase
 lacona
 osxfuse
 paw
