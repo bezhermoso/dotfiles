@@ -20,16 +20,6 @@ let g:airline_powerline_fonts=0
 "let g:airline_symbols={}
 "let g:airline_symbols.linenr = '␤'
 
-" COLORS
-"hi Search ctermfg=0 ctermbg=11 guifg=Black
-"hi LineNr ctermfg=242
-"hi Comment ctermfg=245
-"hi MatchParen ctermbg=105
-"hi TabLineSel ctermbg=24 ctermfg=4
-"hi ColorColumn ctermbg=black
-if shell_background == 'dark'
-"  hi CursorLine cterm=NONE ctermbg=239
-endif
 
 hi StartifyHeader ctermfg=6
 hi StartifyNumber ctermfg=2
@@ -64,3 +54,16 @@ highlight DiffDelete term=bold ctermfg=0 ctermbg=1
 highlight DiffChange ctermfg=0 ctermbg=4 term=none
 highlight DiffText   ctermfg=232 ctermbg=3 term=none
 
+
+hi Search ctermfg=0 ctermbg=4
+hi IncSearch ctermfg=0 ctermbg=5
+
+" COLORS
+"hi LineNr ctermfg=242
+"hi Comment ctermfg=245
+"hi MatchParen ctermbg=105
+"hi TabLineSel ctermbg=24 ctermfg=4
+"hi ColorColumn ctermbg=black
+if shell_background == 'dark'
+"  hi CursorLine cterm=NONE ctermbg=239
+endif
