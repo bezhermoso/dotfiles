@@ -29,7 +29,7 @@ hi StartifyPath ctermfg=8
 hi StartifySection ctermfg=4
 
 " let g:gruvbox_italic=1
-" "let g:gruvbox_contrast_dark="medium"
+" let g:gruvbox_contrast_dark="medium"
 " let g:gruvbox_contrast_light="hard"
 " let g:gruvbox_invert_selection=0
 " let g:gruvbox_italicize_comments=0
@@ -57,6 +57,7 @@ highlight DiffText   ctermfg=232 ctermbg=3 term=none
 
 hi Search ctermfg=0 ctermbg=4
 hi IncSearch ctermfg=0 ctermbg=5
+hi CursorLineNr ctermfg=7
 
 " COLORS
 "hi LineNr ctermfg=242
