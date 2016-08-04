@@ -22,7 +22,7 @@ Plug 'tpope/vim-fugitive'
 " Plug 'user/L9', {'name': 'newL9'}
 Plug 'L9'
 Plug 'scrooloose/nerdtree', { 'on': ['NERDTreeToggle', 'NERDTreeFind', 'NERDTreeFocus', 'NERDTreeClose'] }
-Plug 'ctrlpvim/ctrlp.vim'
+Plug 'ctrlpvim/ctrlp.vim', { 'on': ['CtrlP', 'CtrlPMRUFiles']  }
 Plug 'chriskempson/base16-vim'
 Plug 'rstacruz/sparkup', {'rtp': 'vim/'}
 Plug 'godlygeek/tabular'
@@ -38,9 +38,9 @@ Plug 'tpope/vim-repeat'
 Plug 'unblevable/quick-scope'
 "Plug 'lsdr/monokai'
 "Plug 'altercation/vim-colors-solarized'
-Plug 'rking/ag.vim'
+"Plug 'rking/ag.vim'
 Plug 'tpope/vim-endwise', { 'for': 'ruby' }
-Plug 'mattn/flappyvird-vim'
+"Plug 'mattn/flappyvird-vim'
 "Plug 'shawncplus/phpcomplete.vim'
 Plug 'StanAngeloff/php.vim'
 " ZoomWin doesn't work well in neovim
