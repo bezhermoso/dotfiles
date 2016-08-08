@@ -18,6 +18,10 @@ endfunction
 
 autocmd! User FzfStatusLine call <SID>fzf_statusline()
 
+if has('neovim')
+  let g:fzf_layout = { 'window': 'enew' }
+endif
+
 "let g:fzf_colors =
   "\ { 'fg':      ['fg', 'Normal'],
   "\ 'bg':      ['bg', 'Normal'],
@@ -31,3 +35,4 @@ autocmd! User FzfStatusLine call <SID>fzf_statusline()
   "\ 'marker':  ['fg', 'Keyword'],
   "\ 'spinner': ['fg', 'Label'],
   "\ 'header':  ['fg', 'Comment'] }
+
