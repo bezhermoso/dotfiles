@@ -5,7 +5,7 @@
 set nocompatible
 
 syntax on
-set synmaxcol=500
+set synmaxcol=120
 
 " Set comma as leader key
 let mapleader="\<Space>"
