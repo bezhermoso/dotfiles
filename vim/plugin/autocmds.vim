@@ -11,13 +11,15 @@ augroup END
 
 " Special file type associations "autocmd BufNewFile,BufRead Vagrantfile set filetype=ruby
 autocmd BufNewFile,BufRead {Vagrant,Gem,Berks}file set filetype=ruby
-"autocmd BufNewFile,BufRead Berksfile set filetype=ruby
+autocmd BufNewFile,BufRead Gemfile.lock setlocal filetype=ruby
+autocmd BufNewFile,BufRead Berksfile set filetype=ruby
 autocmd BufNewFile,BufRead *.md setlocal filetype=markdown
 autocmd BufNewFile,BufRead *.{handlebars,hbs} setlocal filetype=javascript
 autocmd BufNewFile,BufRead *.{module,install,theme} setlocal filetype=php
 autocmd BufNewFile,BufRead *.blade.php setlocal filetype=html
 autocmd BufNewFile,BufRead *.twig setlocal filetype=html
 autocmd BufNewFile,BufRead Dockerfile.* setlocal filetype=dockerfile
+autocmd BufNewFile,BufRead composer.{json,lock} setlocal filetype=json
 
 let g:jsx_ext_required=0
 " Enable spellcheck on git commits & markdown files
@@ -25,7 +27,7 @@ autocmd BufRead COMMIT_EDITMSG setlocal spell!
 autocmd BufRead *.{md,markdown} setlocal spell!
 autocmd FileChangedShell * echo "Warning: File changed on disk"
 
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
+autocmd BufEnter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
 
 
 augroup pencil
