@@ -81,3 +81,71 @@ end)
 
 -- END PSEUDO FULL-SCREEN --
 
+local function halfScreen(win, position)
+  local sc = win:screen()
+  local screenFrame = sc:frame()
+  local winFrame = win:frame()
+  local w = screenFrame.w * 0.5 - (padding * 1.25)
+  local h = screenFrame.h - (padding * 2)
+  local x = screenFrame.x + padding
+  local y = screenFrame.y + padding
+  if position == "right" then
+    x = x + screenFrame.w * 0.5 - (padding * 0.5)
+  end
+  local newRect = geometry.rect(x, y, w, h)
+  win:setFrame(newRect)
+end
+
+-- position: 0-3, clock-wise starting from top-left.
+local function quarterScreen(win, position)
+  local sc = win:screen()
+  local screenFrame = sc:frame()
+  local winFrame = win:frame()
+  local w = screenFrame.w * 0.5 - (padding * 1.25)
+  local h = screenFrame.h * 0.5 - (padding * 1.25)
+  local x = screenFrame.x + padding
+  local y = screenFrame.y + padding
+
+
+  if position == 1 or position == 3 then
+    x = x + screenFrame.w * 0.5 - (padding * 0.75)
+  end
+
+  if position == 2 or position == 3 then
+    y = y + screenFrame.h * 0.5 - (padding * 0.75)
+  end
+
+  local newRect = geometry.rect(x, y, w, h)
+  win:setFrame(newRect)
+end
+
+--hotkey.bind({"ctrl","alt", "cmd"}, "left", function()
+  --local win = window.frontmostWindow()
+  --if win and not win:isFullScreen() then halfScreen(win, "left") end
+--end)
+
+--hotkey.bind({"ctrl","alt", "cmd"}, "right", function()
+  --local win = window.frontmostWindow()
+  --if win and not win:isFullScreen() then halfScreen(win, "right") end
+--end)
+
+--hotkey.bind({"ctrl","alt"}, "left", function()
+  --local win = window.frontmostWindow()
+  --if win and not win:isFullScreen() then quarterScreen(win, 2) end
+--end)
+
+--hotkey.bind({"ctrl","alt"}, "right", function()
+  --local win = window.frontmostWindow()
+  --if win and not win:isFullScreen() then quarterScreen(win, 3) end
+--end)
+
+--hotkey.bind({"ctrl","alt", "shift"}, "left", function()
+  --local win = window.frontmostWindow()
+  --if win and not win:isFullScreen() then quarterScreen(win, 0) end
+--end)
+
+--hotkey.bind({"ctrl","alt", "shift"}, "right", function()
+  --local win = window.frontmostWindow()
+  --if win and not win:isFullScreen() then quarterScreen(win, 1) end
+--end)
+
