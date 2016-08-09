@@ -1,4 +1,4 @@
-![preview](http://i.imgur.com/f3QBhFR.png)
+![preview](http://i.imgur.com/AVBW9UI.png)
 
 # dot ● files
 
