@@ -1,1 +1,1 @@
-/Users/bez/.dotfiles/zsh/.zprezto/runcoms/zlogout
+.zprezto/runcoms/zlogout
