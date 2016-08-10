@@ -1,4 +1,5 @@
 1password
+airdroid
 alfred
 android-studio
 appcleaner
@@ -50,5 +51,6 @@ torbrowser
 transmission
 ubersicht
 virtualbox
+visual-studio-code
 vlc
 vox
