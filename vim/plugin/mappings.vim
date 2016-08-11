@@ -121,3 +121,9 @@ nnoremap <S-Tab><S-Tab> zA
 command! W <cr>
 nnoremap + "+
 vnoremap + "+
+
+noremap <leader>t2 :set shiftwidth=2 softtabstop=2<CR>
+noremap <leader>t4 :set shiftwidth=4 softtabstop=4<CR>
+
+noremap <Up> :cnext<CR>
+noremap <Down> :cprevious<CR>
