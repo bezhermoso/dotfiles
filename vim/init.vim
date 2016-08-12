@@ -105,6 +105,7 @@ Plug 'restore_view.vim'
 Plug 'SyntaxRange'
 Plug 'neomake/neomake'
 Plug 'kshenoy/vim-signature'
+Plug 'tpope/vim-speeddating'
 
 "NEW PLUGINS HERE
 call plug#end()
