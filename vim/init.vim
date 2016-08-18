@@ -106,6 +106,8 @@ Plug 'SyntaxRange'
 Plug 'neomake/neomake'
 Plug 'kshenoy/vim-signature'
 Plug 'tpope/vim-speeddating'
+Plug 'tpope/vim-abolish'
+Plug 'YankRing.vim'
 
 "NEW PLUGINS HERE
 call plug#end()
