@@ -42,6 +42,7 @@ pocketcast
 radiant-player
 rightfont
 safari-technology-preview
+sequel-pro
 skype
 spectacle
 sshfs
