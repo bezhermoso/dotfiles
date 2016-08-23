@@ -1,10 +1,11 @@
 #!/usr/bin/env zsh
 
-source "$HOME/.tmux-statuslinerc"
+fpath=($HOME/.dotfiles/zsh/.zprezto/modules/tmux-lang-versions/functions $fpath)
+autoload tmux-get-env
 
 sep=" <"
 ruby_colors=(colour52 colour1)
-ruby_version=$($TMUX_CONFIG_DIR/get-tmux-env.zsh TMUX_RUBY_V)
+ruby_version=$(tmux-get-env TMUX_RUBY_V)
 ruby_lower_bound=120
 ruby_version="${ruby_version:----}"
 if [[ -n $ruby_version ]]; then
@@ -14,7 +15,7 @@ else
 fi
 
 node_colors=(colour22 colour29)
-node_version="$($TMUX_CONFIG_DIR/get-tmux-env.zsh TMUX_NODEJS_V)"
+node_version="$(tmux-get-env TMUX_NODEJS_V)"
 node_lower_bound=120
 node_version="${node_version:----}"
 if [[ -n $node_version ]]; then
@@ -26,7 +27,7 @@ fi
 
 python_colors=(colour208 colour227)
 python_fg=black
-python_version=$($TMUX_CONFIG_DIR/get-tmux-env.zsh TMUX_PYTHON_V)
+python_version=$(tmux-get-env TMUX_PYTHON_V)
 python_lower_bound=120
 python_version="${python_version:----}"
 
@@ -39,7 +40,7 @@ fi
 php_colors=(colour63 colour99)
 php_fg=white
 php_lower_bound=120
-php_version=$($TMUX_CONFIG_DIR/get-tmux-env.zsh TMUX_PHP_V)
+php_version=$(tmux-get-env TMUX_PHP_V)
 php_version="${php_version:----}"
 if [[ -n $python_version ]]; then
   php_segment="#[fg=$php_colors[1]]$sep php=$php_version#[default]"
