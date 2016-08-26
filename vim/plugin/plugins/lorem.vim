@@ -1,19 +1,33 @@
 
-if !executable("lorem-ipsum")
+if !exists("g:lorem_executable")
+  let g:lorem_executable="lorem-ipsum"
+endif
+
+if !executable(g:lorem_executable)
   finish
 endif
 
-function! InsertLoremIpsum(args)
-  let cline = line('.')
-  let ccolumn = col('.')
-  execute append(line('.'), LoremIpsum(a:args))
-  call cursor(cline, ccolumn)
-endfunction
-
-
-" Our interface to the `lorem` executable.
+let lorem = {}
 function! LoremIpsum(args)
-  return systemlist("lorem-ipsum " . a:args)
+  let cmd = g:lorem_executable
+  if type(a:args) == 1
+    let cmd = cmd . ' ' . a:args
+  endif
+  let outlist = systemlist(cmd)
+  let outlist_copy = copy(outlist)
+  call filter(outlist_copy, 'strlen(v:val) > 0')
+  if len(outlist_copy) == 1
+    return outlist_copy[0]
+  else
+    return outlist
+  endif
 endfunction
 
-command! -nargs=* Lorem call InsertLoremIpsum('<args>')
+function! LoremIpsumInsert(args)
+  let ln = line('.')
+  let col = col('.')
+  let output = LoremIpsum(a:args)
+  put =output
+endfunction
+
+command! -nargs=* Lorem call LoremIpsumInsert('<args>')
