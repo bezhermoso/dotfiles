@@ -1,4 +1,5 @@
 1password
+adobe-reader
 airdroid
 alfred
 android-studio
@@ -12,7 +13,6 @@ coconutbattery
 colorpicker-skalacolor
 cyberduck
 daisydisk
-dockertoolbox 
 dropbox
 endurance
 fantastical
@@ -27,7 +27,6 @@ goofy
 google-chrome
 google-drive
 hammerspoon
-heroku-toolbelt 
 intellij-idea-ce
 istat-menus
 iterm2-beta

@@ -57,6 +57,7 @@ libtool
 libusb
 libusb-compat
 libxml2
+lorem
 lua
 mcrypt
 mhash

@@ -1,0 +1,10 @@
+caskroom/cask
+caskroom/fonts
+caskroom/versions
+homebrew/core
+homebrew/php
+homebrew/services
+koekeishiya/kwm
+mkdryden/misc
+neovim/neovim
+rogual/neovim-dot-app

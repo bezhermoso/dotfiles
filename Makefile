@@ -3,6 +3,7 @@ brew-inventory:
 	brew cask list | sed 's/(!)//' | tee homebrew/casks.txt
 
 brew-install:
+	brew tap $(cat homebrew/taps.txt)
 	brew install --force $(cat homebrew/brews.txt)
 	brew cask install --force $(cat homebrew/casks.txt)
 
