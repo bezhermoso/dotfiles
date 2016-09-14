@@ -108,6 +108,7 @@ Plug 'kshenoy/vim-signature'
 Plug 'tpope/vim-speeddating'
 Plug 'tpope/vim-abolish'
 Plug 'YankRing.vim'
+Plug 'tpope/vim-sleuth'
 
 "NEW PLUGINS HERE
 call plug#end()
