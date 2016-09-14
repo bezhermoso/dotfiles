@@ -25,8 +25,8 @@
 
 [alias]
   commits = commit -S
-	amend = commit --amend
-	amends = commit -S --amend
+  amend = commit --amend
+  amends = commit -S --amend
 
 # vim:
 #[merge]
@@ -35,3 +35,5 @@
 #
 #[mergetool]
 #  prompt = false
+[log]
+  showSignature = true
