@@ -10,3 +10,17 @@ let g:neomake_javascript_eslint_maker = {
     \ 'errorformat': '%f: line %l\, col %c\, %m'
     \ }
 
+function! neomake#makers#ft#typescript#tsc()
+    return {
+                \ 'args': [
+                \ '-m', 'commonjs',
+                \ '--noEmit', '--experimentalDecorators',
+                \ '--target', 'es6'
+                \ ],
+                \ 'errorformat':
+                \ '%E%f %#(%l\,%c): error %m,' .
+                \ '%E%f %#(%l\,%c): %m,' .
+                \ '%Eerror %m,' .
+                \ '%C%\s%\+%m'
+                \ }
+endfunction
