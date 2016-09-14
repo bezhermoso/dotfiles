@@ -58,6 +58,7 @@ highlight DiffText   ctermfg=232 ctermbg=3 term=none
 hi Search ctermfg=0 ctermbg=4
 hi IncSearch ctermfg=0 ctermbg=5
 hi CursorLineNr ctermfg=7
+hi Error ctermfg=15 cterm=bold,undercurl
 
 " COLORS
 "hi LineNr ctermfg=242
