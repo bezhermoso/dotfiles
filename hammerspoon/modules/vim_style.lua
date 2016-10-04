@@ -6,7 +6,7 @@ local function trigger(key)
   end
 end
 
-hs.hotkey.bind({"ctrl"}, 'h', trigger('left'), nil, trigger('left'))
-hs.hotkey.bind({"ctrl"}, 'j', trigger('down'), nil, trigger('down') )
-hs.hotkey.bind({"ctrl"}, 'k', trigger('up') , nil, trigger('up') )
-hs.hotkey.bind({"ctrl"}, 'l', trigger('right'), nil, trigger('right') )
+hs.hotkey.bind({"ctrl", "alt"}, 'h', trigger('left'), nil, trigger('left'))
+hs.hotkey.bind({"ctrl", "alt"}, 'j', trigger('down'), nil, trigger('down') )
+hs.hotkey.bind({"ctrl", "alt"}, 'k', trigger('up') , nil, trigger('up') )
+hs.hotkey.bind({"ctrl", "alt"}, 'l', trigger('right'), nil, trigger('right') )
