@@ -109,6 +109,7 @@ Plug 'tpope/vim-speeddating'
 Plug 'tpope/vim-abolish'
 Plug 'YankRing.vim'
 Plug 'tpope/vim-sleuth'
+Plug 'NLKNguyen/papercolor-theme'
 
 "NEW PLUGINS HERE
 call plug#end()
