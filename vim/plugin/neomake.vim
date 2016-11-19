@@ -10,17 +10,17 @@ let g:neomake_javascript_eslint_maker = {
     \ 'errorformat': '%f: line %l\, col %c\, %m'
     \ }
 
-function! neomake#makers#ft#typescript#tsc()
+function! neomake#makers#ft#typescript#tsc() abort
+    " tsc should not be passed a single file.  Changing to the file's dir will
+    " make it look upwards for a tsconfig.json file.
     return {
-                \ 'args': [
-                \ '-m', 'commonjs',
-                \ '--noEmit', '--experimentalDecorators',
-                \ '--target', 'es6'
-                \ ],
-                \ 'errorformat':
-                \ '%E%f %#(%l\,%c): error %m,' .
-                \ '%E%f %#(%l\,%c): %m,' .
-                \ '%Eerror %m,' .
-                \ '%C%\s%\+%m'
-                \ }
+        \ 'args': ['--noEmit', '--experimentalDecorators'],
+        \ 'append_file': 0,
+        \ 'cwd': '%:p:h',
+        \ 'errorformat':
+            \ '%E%f %#(%l\,%c): error %m,' .
+            \ '%E%f %#(%l\,%c): %m,' .
+            \ '%Eerror %m,' .
+            \ '%C%\s%\+%m'
+        \ }
 endfunction

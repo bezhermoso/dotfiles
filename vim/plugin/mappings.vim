@@ -96,9 +96,10 @@ nnoremap <silent> ,F :let word=expand("<cword>")<CR>:vsp<CR>:exec("tag ". word)<
 " use ,gf to go to file in a vertical split
 nnoremap <silent> ,gf :vertical botright wincmd f<CR>
 
-nnoremap <C-l> gt
+nnoremap <C-h> gt
 nnoremap <C-k> gT
 nnoremap <C-e>n :tabnew<cr>
+nnoremap <C-e>x :tabc<cr>
 nnoremap gp `[v`]
 nnoremap <F1> <Nop>
 inoremap <F1> <Nop>

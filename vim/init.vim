@@ -94,7 +94,7 @@ Plug 'jiangmiao/auto-pairs'
 Plug 'benekastah/neomake'
 "Plug 'mhinz/vim-startify'
 Plug 'morhetz/gruvbox'
-Plug 'joeytwiddle/sexy_scroller.vim'
+"Plug 'joeytwiddle/sexy_scroller.vim'
 Plug 'junegunn/vim-xmark', {'do': 'make'}
 Plug 'leafgarland/typescript-vim'
 Plug '2072/PHP-Indenting-for-Vim'
@@ -110,6 +110,7 @@ Plug 'tpope/vim-abolish'
 Plug 'YankRing.vim'
 Plug 'tpope/vim-sleuth'
 Plug 'NLKNguyen/papercolor-theme'
+Plug 'algotech/ultisnips-php'
 
 "NEW PLUGINS HERE
 call plug#end()
@@ -139,3 +140,5 @@ let g:startify_change_to_dir=0
 
 let NERDTreeCascadeOpenSingleChildDir=0
 
+let g:python_host_prog=$HOME . '/.pyenv/versions/neovim-2.7/bin/python'
+let g:python3_host_prog=$HOME . '/.pyenv/versions/neovim-3.5/bin/python3'
