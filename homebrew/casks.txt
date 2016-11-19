@@ -13,12 +13,14 @@ coconutbattery
 colorpicker-skalacolor
 cyberduck
 daisydisk
+dockertoolbox (!)
 dropbox
 endurance
 fantastical
 firefox
 fitbit-connect
 flash-player
+font-fira-code
 font-fira-mono
 font-hack
 gitbook-editor
@@ -26,7 +28,9 @@ github-desktop
 goofy
 google-chrome
 google-drive
+google-play-music-desktop-player
 hammerspoon
+heroku-toolbelt (!)
 intellij-idea-ce
 istat-menus
 iterm2-beta
@@ -34,7 +38,11 @@ java
 karabiner
 keybase
 lacona
+little-snitch
+micro-snitch
 osxfuse
+oversight
+panda
 paw
 phpstorm
 pocketcast
@@ -50,6 +58,7 @@ the-unarchiver
 torbrowser
 transmission
 ubersicht
+vagrant
 virtualbox
 visual-studio-code
 vlc

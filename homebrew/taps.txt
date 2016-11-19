@@ -1,6 +1,7 @@
 caskroom/cask
 caskroom/fonts
 caskroom/versions
+homebrew/completions
 homebrew/core
 homebrew/php
 homebrew/services
