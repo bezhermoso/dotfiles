@@ -110,6 +110,7 @@ source-highlight
 speedtest_cli
 sqlite
 ssh-copy-id
+sshfs
 subliminal
 the_silver_searcher
 tmux
