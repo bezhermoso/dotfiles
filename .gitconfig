@@ -4,7 +4,7 @@
   name = Bez Hermoso
 
 [core]
-  editor = 'emacsclient'
+  editor = 'nvim'
 
 [filter "lfs"]
 	clean = git-lfs clean -- %f

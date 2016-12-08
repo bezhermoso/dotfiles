@@ -111,6 +111,7 @@ Plug 'YankRing.vim'
 Plug 'tpope/vim-sleuth'
 Plug 'NLKNguyen/papercolor-theme'
 Plug 'algotech/ultisnips-php'
+Plug 'airblade/vim-gitgutter'
 
 "NEW PLUGINS HERE
 call plug#end()
