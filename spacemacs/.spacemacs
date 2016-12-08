@@ -139,16 +139,18 @@ values."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(spacemacs-dark
-                         base16-google-light
+   dotspacemacs-themes '(
                          base16-materia
+                         spacemacs-dark
+                         base16-google-light
+                         spacemacs-light
                          )
    ;; If non nil the cursor color matches the state color in GUI Emacs.
    dotspacemacs-colorize-cursor-according-to-state t
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
    ;; quickly tweak the mode-line size to make separators look not too crappy.
    dotspacemacs-default-font '("Fira Code"
-                               :size 14
+                               :size 16
                                :weight normal
                                :width normal
                                :powerline-scale 1.1)
@@ -318,14 +320,14 @@ you should place your code here."
   ;; Turn off powerline
   (setq powerline-default-separator nil)
   ;; Colortheme fix in terminal
-  (custom-set-faces (if (not window-system) '(default ((t (:background "nil"))))))
-  (custom-set-faces (if (window-system) '(default ((t (background dark))))))
+  ;; (custom-set-faces (if (not window-system) '(default ((t (:background "nil"))))))
+  ;; (custom-set-faces (if (window-system) '(default ((t (background dark))))))
 
   (setq-default left-fringe-width 5)
-  (set-face-attribute 'linum nil :background "black")
+  ;; (set-face-attribute 'linum nil :background "black")
   (setq linum-format "%d ") 
 
-  (load-theme 'base16-materia)
+  ;; (load-theme 'base16-materia)
   (global-undo-tree-mode)
   (setq js-indent-level 2)
   (setq typescript-indent-level 2)
@@ -340,7 +342,7 @@ you should place your code here."
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
    (quote
-    ("d9850d120be9d94dd7ae69053630e89af8767c36b131a3aa7b06f14007a24656" "c11421683c971b41d154b1a4ef20a2c800537b72fefa618b50b184bbfe6b48a0" "25c242b3c808f38b0389879b9cba325fb1fa81a0a5e61ac7cae8da9a32e2811b" "2a998a3b66a0a6068bcb8b53cd3b519d230dd1527b07232e54c8b9d84061d48d" "36746ad57649893434c443567cb3831828df33232a7790d232df6f5908263692" "d9dab332207600e49400d798ed05f38372ec32132b3f7d2ba697e59088021555" default)))
+    ("bffa9739ce0752a37d9b1eee78fc00ba159748f50dc328af4be661484848e476" "ef04dd1e33f7cbd5aa3187981b18652b8d5ac9e680997b45dc5d00443e6a46e3" "d9850d120be9d94dd7ae69053630e89af8767c36b131a3aa7b06f14007a24656" "c11421683c971b41d154b1a4ef20a2c800537b72fefa618b50b184bbfe6b48a0" "25c242b3c808f38b0389879b9cba325fb1fa81a0a5e61ac7cae8da9a32e2811b" "2a998a3b66a0a6068bcb8b53cd3b519d230dd1527b07232e54c8b9d84061d48d" "36746ad57649893434c443567cb3831828df33232a7790d232df6f5908263692" "d9dab332207600e49400d798ed05f38372ec32132b3f7d2ba697e59088021555" default)))
  '(evil-want-Y-yank-to-eol nil)
  '(package-selected-packages
    (quote
@@ -350,4 +352,4 @@ you should place your code here."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(default ((t (:background "nil")))))
