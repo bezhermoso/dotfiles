@@ -13,7 +13,7 @@ coconutbattery
 colorpicker-skalacolor
 cyberduck
 daisydisk
-dockertoolbox (!)
+dockertoolbox 
 dropbox
 endurance
 fantastical
@@ -23,14 +23,16 @@ flash-player
 font-fira-code
 font-fira-mono
 font-hack
+genymotion
 gitbook-editor
 github-desktop
 goofy
 google-chrome
 google-drive
 google-play-music-desktop-player
+gpgtools
 hammerspoon
-heroku-toolbelt (!)
+heroku-toolbelt 
 intellij-idea-ce
 istat-menus
 iterm2-beta
@@ -39,6 +41,7 @@ karabiner
 keybase
 lacona
 little-snitch
+malwarebytes-anti-malware
 micro-snitch
 osxfuse
 oversight
@@ -47,12 +50,13 @@ paw
 phpstorm
 pocketcast
 radiant-player
+reactotron
 rightfont
 safari-technology-preview
 sequel-pro
 skype
 spectacle
-sshfs
+sshfs 
 steam
 the-unarchiver
 torbrowser

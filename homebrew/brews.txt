@@ -12,8 +12,9 @@ cscope
 ctags
 curl
 dirmngr
+dnsmasq
 duck
-emacs
+emacs-plus
 exiftool
 faac
 fasd
@@ -35,6 +36,7 @@ glib
 gmp
 gnupg
 gnupg2
+gnutls
 gobject-introspection
 gpg-agent
 graphicsmagick
@@ -46,6 +48,7 @@ httpie
 hub
 icu4c
 imagemagick
+ispell
 jhead
 jpeg
 jq
@@ -63,13 +66,18 @@ libgpg-error
 libksba
 libpng
 librsvg
+libtasn1
+libtermkey
 libtiff
 libtool
 libusb
 libusb-compat
+libuv
+libvterm
 libxml2
 lorem
 lua
+markdown
 mcrypt
 mhash
 mobile-shell
@@ -79,6 +87,7 @@ mycli
 mysql
 namei
 neovim
+nettle
 node
 oniguruma
 openssl
@@ -89,6 +98,7 @@ pcre2
 php70
 phpbrew
 pinentry
+pinentry-mac
 pixman
 pkg-config
 postgresql
@@ -117,11 +127,13 @@ tmux
 tokyo-cabinet
 tree
 tty-clock
+unibilium
 unison
 unixodbc
 utf8proc
 vagrant-completion
 watch
+watchman
 wget
 x264
 xvid
