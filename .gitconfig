@@ -35,5 +35,3 @@
 #
 #[mergetool]
 #  prompt = false
-[log]
-  showSignature = true
