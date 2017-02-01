@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+rev="${1:-artifacts/latest}"
+servers="${@:2}"
+remote_sha=$(git ls-remote git@github.com:activelamp/iamucla-logon.git --branch $rev | awk '{print $1}')
+
+get-versions() {
+    echo "$rev:|$remote_sha"
+    for server in $servers
+    do
+        server_sha=$(echo "git --git-dir=/var/www/html/thor/.git rev-parse HEAD" | ssh $server -- bash)
+        echo "$server:|$server_sha"
+    done
+}
+
+get-versions | column -s'|' -t
+

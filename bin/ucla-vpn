@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+function _connect() {
+osascript <<-EOF
+    tell application "System Events"
+        tell current location of network preferences
+            set vpn to service "ITServicesVPN"
+            if exists vpn then connect vpn
+        end tell
+    end tell
+EOF
+}
+
+function _disconnect() {
+osascript <<-EOF
+    tell application "System Events"
+        tell current location of network preferences
+            set vpn to service "ITServicesVPN"
+            if exists vpn then disconnect vpn
+        end tell
+    end tell
+EOF
+}
+
+input=$1
+
+[[ $input == 'on' ]] && _connect
+[[ $input == 'off' ]] && _disconnect
