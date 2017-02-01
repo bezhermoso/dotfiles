@@ -1,0 +1,92 @@
+#compdef tmuxp
+
+_tmuxp() {
+
+  local curcontext="$curcontext" state line
+  typeset -A opt_args
+
+  _arguments -C \
+    ":command:->command" \
+    "*::options:->options" \
+    "--log_level:Log level:(DEBUG INFO WARNING ERROR CRITICAL)" \
+    "--help:Show help"
+
+    case $state in
+      (command)
+        local -a subcommands
+        subcommands=(
+        'convert:Convert a tmuxp config between JSON and YAML.'
+        'freeze:Snapshot a session into a config.'
+        'import:Import a teamocil/tmuxinator config.'
+        'load:Load tmuxp workspaces.'
+        )
+        _describe -t commands 'commands' subcommands
+        ;;
+      (options)
+        case $line[1] in
+          (load)
+            __tmuxp_load
+            ;;
+          (import)
+            __tmuxp_import
+            ;;
+          (freeze)
+            _arguments -C \
+              '1:: :{_wanted tmux-sessions exp "session name" compadd $(tmux ls -F "#{session_name}")}'
+            ;;
+          (convert)
+            _arguments -C \
+              '1:: :_files -g "*.(json|yaml|yml)"'
+            ;;
+        esac
+    esac
+
+}
+
+__tmuxp_load() {
+  local state line
+  typeset -A opt_args
+  _arguments -C \
+    '*:sessions:->sessions' \
+    '--yes:yes' \
+    '-d[Load the session without attaching it]' \
+    '-2[Force tmux to assume the terminal supports 256 colors]' \
+    '-8[Like -2, but indicates that the terminal supports 88 colors]'
+
+  # Cant get the options to be recognized when there are sessions that has
+  # a dash.
+
+  case $state in
+    (sessions)
+      local s
+      _wanted user-sessions expl 'User sessions' compadd \
+        $(
+          for file in ~/.tmuxp/*.(json|yml|yaml)
+          do
+            s=${file:t:r}
+            [[ -z "${line[(r)$s]}" ]] && echo $s
+          done)
+          _wanted sessions expl 'Other sessions' compadd $(for file in ./*.(json|yaml|yml); do echo $file; done)
+      ;;
+  esac
+}
+
+__tmuxp_import() {
+  local state line
+  typeset -A opt_args
+  _arguments -C \
+    '1::program:(tmuxinator teamocil)' \
+    '2::project:->project'
+
+  case $state in
+    (project)
+      if [[ $line[1] == 'tmuxinator' ]]
+      then
+        _wanted tmuxinator-projects exp 'tmuxinator projects' compadd $(tmuxinator completions start)
+      fi
+      ;;
+  esac
+}
+
+_tmuxp "$@"
+
