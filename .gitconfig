@@ -7,9 +7,9 @@
   editor = 'nvim'
 
 [filter "lfs"]
-	clean = git-lfs clean -- %f
-	smudge = git-lfs smudge -- %f
-	required = true
+  clean = git-lfs clean -- %f
+  smudge = git-lfs smudge -- %f
+  required = true
 
 # neovim:
 [merge]
@@ -27,6 +27,9 @@
   commits = commit -S
   amend = commit --amend
   amends = commit -S --amend
+  rebases = rebase -S
+  diffw = diff --word-diff
+	plog = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
 
 # vim:
 #[merge]
@@ -36,4 +39,4 @@
 #[mergetool]
 #  prompt = false
 [gpg]
-	program = gpg2
+  program = gpg2
