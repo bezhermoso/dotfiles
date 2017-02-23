@@ -6,6 +6,6 @@ color title-focus 232 white underline bold
 color title-blur 232 white normal
 bind generic I !git add -i %(file)
 bind generic + !@sh -c "echo %(commit) | pbcopy"
-set line-graphics = utf-8
+#set line-graphics = utf-8
 set reference-format = (branch) <tag>
 set diff-highlight = diff-highlight
