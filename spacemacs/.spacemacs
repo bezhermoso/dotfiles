@@ -95,6 +95,7 @@ values."
    ;; Spacemacs and never uninstall them. (default is `used-only')
    dotspacemacs-install-packages 'used-but-keep-unused))
 
+
 (defun dotspacemacs/init ()
   "Initialization function.
 This function is called at the very startup of Spacemacs initialization
@@ -158,6 +159,7 @@ values."
                          spacemacs-dark
                          material-light
                          spacemacs-light
+
                          )
    ;; If non nil the cursor color matches the state color in GUI Emacs.
    dotspacemacs-colorize-cursor-according-to-state t
@@ -312,6 +314,10 @@ values."
    ;; delete only whitespace for changed lines or `nil' to disable cleanup.
    ;; (default nil)
    dotspacemacs-whitespace-cleanup nil
+
+   linum-format " %4d \u2502"
+   linum-relative-format " %4s \u2502"
+
    ))
 
 (defun dotspacemacs/user-init ()
@@ -348,11 +354,7 @@ you should place your code here."
   ;; (custom-set-faces (if (window-system) '(default ((t (background dark))))))
 
   (setq-default left-fringe-width 5)
-  ;; (set-face-attribute 'linum nil :background "black")
-  (setq linum-format " %4d \u2502")
-
   (global-undo-tree-mode)
-
 
   ;; Indents
   (setq js-indent-level 2)
@@ -439,44 +441,6 @@ you should place your code here."
         (diff-header :background "brightblack")
       ))
     )
-
-  ;; (custom-theme-set-faces
-  ;;   'base16-bright
-  ;;   '(hl-line ((t (:background "color-18"))))
-  ;;   '(magit-section-highlight ((t (:background "color-18"))))
-  ;;   '(helm-selection ((t (:background "color-18"))))
-  ;;   '(helm-selection-line ((t (:background "color-18"))))
-  ;;   '(helm-header ((t (:background "brightblack"))))
-  ;;   '(linum ((t (:background "color-18" :foreground "brightblack"))))
-  ;;   '(powerline-active1 ((t (:background "color-18"))))
-  ;;   '(powerline-active2 ((t (:background "color-18"))))
-  ;;   '(powerline-inactive1 ((t (:background "color-18"))))
-  ;;   '(powerline-inactive2 ((t (:background "color-18"))))
-  ;;   '(mode-line ((t (:background "color-18"))))
-  ;;   '(mode-line-inactive ((t (:background "color-18" :foreground "brightblack"))))
-  ;;   '(region ((t (:background "brightblack"))))
-  ;;   '(helm-source-header ((t (:background "brightblack"))))
-  ;;   '(diff-header ((t (:background "brightblack")))))
-
-  ;; (custom-theme-set-faces
-  ;;  'base16-materia
-  ;;  '(set-background-color "black")
-  ;;  '(hl-line ((t (:background "color-18"))))
-  ;;  '(magit-section-highlight ((t (:background "color-18"))))
-  ;;  '(helm-selection ((t (:background "color-18"))))
-  ;;  '(helm-selection-line ((t (:background "color-18"))))
-  ;;  '(helm-header ((t (:background "brightblack"))))
-  ;;  '(linum ((t (:background "color-18" :foreground "brightblack"))))
-  ;;  '(powerline-active1 ((t (:background "color-18"))))
-  ;;  '(powerline-active2 ((t (:background "color-18"))))
-  ;;  '(powerline-inactive1 ((t (:background "color-18"))))
-  ;;  '(powerline-inactive2 ((t (:background "color-18"))))
-  ;;  '(mode-line ((t (:background "color-18"))))
-  ;;  '(mode-line-inactive ((t (:background "color-18" :foreground "brightblack"))))
-  ;;  '(region ((t (:background "brightblack"))))
-  ;;  '(helm-source-header ((t (:background "brightblack"))))
-  ;;  '(diff-header ((t (:background "brightblack"))))
-  ;;  )
   ;; (if (not (display-graphic-p))
   ;;     (progn
   ;;       (enable-theme 'base16-materia) (set-background-color "black")))
