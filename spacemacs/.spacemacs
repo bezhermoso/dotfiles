@@ -60,6 +60,7 @@ values."
      php
      javascript
      typescript
+     theming
      html
      yaml
      )
@@ -418,54 +419,64 @@ you should place your code here."
         (process-send-string proc text)
         (process-send-eof proc))))
 
-  (custom-theme-set-faces
-    'base16-bright
-    '(hl-line ((t (:background "color-18"))))
-    '(magit-section-highlight ((t (:background "color-18"))))
-    '(helm-selection ((t (:background "color-18"))))
-    '(helm-selection-line ((t (:background "color-18"))))
-    '(helm-header ((t (:background "brightblack"))))
-    '(linum ((t (:background "color-18" :foreground "brightblack"))))
-    '(powerline-active1 ((t (:background "color-18"))))
-    '(powerline-active2 ((t (:background "color-18"))))
-    '(powerline-inactive1 ((t (:background "color-18"))))
-    '(powerline-inactive2 ((t (:background "color-18"))))
-    '(mode-line ((t (:background "color-18"))))
-    '(mode-line-inactive ((t (:background "color-18" :foreground "brightblack"))))
-    '(region ((t (:background "brightblack"))))
-    '(helm-source-header ((t (:background "brightblack"))))
-    '(diff-header ((t (:background "brightblack"))))
-   )
-
-  (custom-theme-set-faces
-   'base16-materia
-   '(set-background-color "black")
-   '(hl-line ((t (:background "color-18"))))
-   '(magit-section-highlight ((t (:background "color-18"))))
-   '(helm-selection ((t (:background "color-18"))))
-   '(helm-selection-line ((t (:background "color-18"))))
-   '(helm-header ((t (:background "brightblack"))))
-   '(linum ((t (:background "color-18" :foreground "brightblack"))))
-   '(powerline-active1 ((t (:background "color-18"))))
-   '(powerline-active2 ((t (:background "color-18"))))
-   '(powerline-inactive1 ((t (:background "color-18"))))
-   '(powerline-inactive2 ((t (:background "color-18"))))
-   '(mode-line ((t (:background "color-18"))))
-   '(mode-line-inactive ((t (:background "color-18" :foreground "brightblack"))))
-   '(region ((t (:background "brightblack"))))
-   '(helm-source-header ((t (:background "brightblack"))))
-   '(diff-header ((t (:background "brightblack"))))
-   )
-
-  (defun update-colors (&optional frame)
-    "Load alternate theme on terminal."
-    (unless (display-graphic-p)
-      (progn
-        (enable-theme 'base16-materia) (set-background-color "black"))
-      )
+  (setq theming-modifications
+    '((base16-materia
+        (default :background "black")
+        (hl-line :background "color-18")
+        (magit-section-highlight background "color-18")
+        (helm-selection :background "color-18")
+        (helm-selection-line :background "color-18")
+        (helm-header :background "brightblack")
+        (linum :background "color-18" :foreground "brightblack")
+        (powerline-active1 :background "color-18")
+        (powerline-active2 :background "color-18")
+        (powerline-inactive1 :background "color-18")
+        (powerline-inactive2 :background "color-18")
+        (mode-line :background "color-18")
+        (mode-line-inactive :background "color-18" :foreground "brightblack")
+        (region :background "brightblack")
+        (helm-source-header :background "brightblack")
+        (diff-header :background "brightblack")
+      ))
     )
-  (add-hook 'after-make-frame-functions 'update-colors)
-  (update-colors)
+
+  ;; (custom-theme-set-faces
+  ;;   'base16-bright
+  ;;   '(hl-line ((t (:background "color-18"))))
+  ;;   '(magit-section-highlight ((t (:background "color-18"))))
+  ;;   '(helm-selection ((t (:background "color-18"))))
+  ;;   '(helm-selection-line ((t (:background "color-18"))))
+  ;;   '(helm-header ((t (:background "brightblack"))))
+  ;;   '(linum ((t (:background "color-18" :foreground "brightblack"))))
+  ;;   '(powerline-active1 ((t (:background "color-18"))))
+  ;;   '(powerline-active2 ((t (:background "color-18"))))
+  ;;   '(powerline-inactive1 ((t (:background "color-18"))))
+  ;;   '(powerline-inactive2 ((t (:background "color-18"))))
+  ;;   '(mode-line ((t (:background "color-18"))))
+  ;;   '(mode-line-inactive ((t (:background "color-18" :foreground "brightblack"))))
+  ;;   '(region ((t (:background "brightblack"))))
+  ;;   '(helm-source-header ((t (:background "brightblack"))))
+  ;;   '(diff-header ((t (:background "brightblack")))))
+
+  ;; (custom-theme-set-faces
+  ;;  'base16-materia
+  ;;  '(set-background-color "black")
+  ;;  '(hl-line ((t (:background "color-18"))))
+  ;;  '(magit-section-highlight ((t (:background "color-18"))))
+  ;;  '(helm-selection ((t (:background "color-18"))))
+  ;;  '(helm-selection-line ((t (:background "color-18"))))
+  ;;  '(helm-header ((t (:background "brightblack"))))
+  ;;  '(linum ((t (:background "color-18" :foreground "brightblack"))))
+  ;;  '(powerline-active1 ((t (:background "color-18"))))
+  ;;  '(powerline-active2 ((t (:background "color-18"))))
+  ;;  '(powerline-inactive1 ((t (:background "color-18"))))
+  ;;  '(powerline-inactive2 ((t (:background "color-18"))))
+  ;;  '(mode-line ((t (:background "color-18"))))
+  ;;  '(mode-line-inactive ((t (:background "color-18" :foreground "brightblack"))))
+  ;;  '(region ((t (:background "brightblack"))))
+  ;;  '(helm-source-header ((t (:background "brightblack"))))
+  ;;  '(diff-header ((t (:background "brightblack"))))
+  ;;  )
   ;; (if (not (display-graphic-p))
   ;;     (progn
   ;;       (enable-theme 'base16-materia) (set-background-color "black")))
@@ -474,13 +485,19 @@ you should place your code here."
   (setq interprogram-cut-function 'paste-to-osx)
   (setq interprogram-paste-function 'copy-from-osx)
 
+  (defun remove-background-color ()
+    "Useful for transparent terminal."
+    (unless (display-graphic-p (selected-frame))
+      (set-face-background 'default "unspecified-bg" (selected-frame))))
+  (remove-background-color)
+
   ;; (custom-theme-set-faces
   ;;  'material
   ;;  '(default ((t (:background "#000000"))))
   ;;  '(linum ((t (:background "#000000"))))
   ;;  )
-
   )
+
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
