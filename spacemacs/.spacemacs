@@ -6,6 +6,7 @@
   "Configuration Layers declaration.
 You should not put any user code in this function besides modifying the variable
 values."
+
   (setq-default
    ;; Base distribution to use. This is a layer contained in the directory
    ;; `+distribution'. For now available distributions are `spacemacs-base'
@@ -78,6 +79,7 @@ values."
      dockerfile-mode
      ac-php
      color-theme-approximate
+    color-theme-sanityinc-tomorrow
      )
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
@@ -189,7 +191,7 @@ values."
    ;; works in the GUI. (default nil)
    dotspacemacs-distinguish-gui-tab nil
    ;; If non nil `Y' is remapped to `y$' in Evil states. (default nil)
-   dotspacemacs-remap-Y-to-y$ t
+   dotspacemacs-remap-Y-to-y$ nil
    ;; If non-nil, the shift mappings `<' and `>' retain visual state if used
    ;; there. (default t)
    dotspacemacs-retain-visual-state-on-shift t
@@ -346,14 +348,7 @@ you should place your code here."
 
   (setq-default left-fringe-width 5)
   ;; (set-face-attribute 'linum nil :background "black")
-  (setq linum-format "%d ")
-
-  ;; (if (display-graphic-p) 
-  ;;     (enable-theme 'solarized) 
-  ;;   (enable-theme 'wheatgrass))
-  ;; (load-theme 'material)
-  (color-theme-approximate-on)
-
+  (setq linum-format " %4d \u2502")
 
   (global-undo-tree-mode)
 
@@ -361,6 +356,7 @@ you should place your code here."
   ;; Indents
   (setq js-indent-level 2)
   (setq typescript-indent-level 2)
+
 
   (defadvice ansi-term (before ansi-term-force-shell)
     (interactive (list (getenv "SHELL"))))
@@ -405,6 +401,7 @@ you should place your code here."
                (auto-complete-mode t)
                (require 'ac-php)
                (setq ac-sources  '(ac-source-php ) )
+
                (yas-global-mode 1)
                (define-key php-mode-map  (kbd "C-]") 'ac-php-find-symbol-at-point)   ;goto define
                (define-key php-mode-map  (kbd "C-t") 'ac-php-location-stack-back   ) ;go back
@@ -420,6 +417,59 @@ you should place your code here."
       (let ((proc (start-process "pbcopy" "*Messages*" "reattach-to-user-namespace" "pbcopy")))
         (process-send-string proc text)
         (process-send-eof proc))))
+
+  (custom-theme-set-faces
+    'base16-bright
+    '(hl-line ((t (:background "color-18"))))
+    '(magit-section-highlight ((t (:background "color-18"))))
+    '(helm-selection ((t (:background "color-18"))))
+    '(helm-selection-line ((t (:background "color-18"))))
+    '(helm-header ((t (:background "brightblack"))))
+    '(linum ((t (:background "color-18" :foreground "brightblack"))))
+    '(powerline-active1 ((t (:background "color-18"))))
+    '(powerline-active2 ((t (:background "color-18"))))
+    '(powerline-inactive1 ((t (:background "color-18"))))
+    '(powerline-inactive2 ((t (:background "color-18"))))
+    '(mode-line ((t (:background "color-18"))))
+    '(mode-line-inactive ((t (:background "color-18" :foreground "brightblack"))))
+    '(region ((t (:background "brightblack"))))
+    '(helm-source-header ((t (:background "brightblack"))))
+    '(diff-header ((t (:background "brightblack"))))
+   )
+
+  (custom-theme-set-faces
+   'base16-materia
+   '(set-background-color "black")
+   '(hl-line ((t (:background "color-18"))))
+   '(magit-section-highlight ((t (:background "color-18"))))
+   '(helm-selection ((t (:background "color-18"))))
+   '(helm-selection-line ((t (:background "color-18"))))
+   '(helm-header ((t (:background "brightblack"))))
+   '(linum ((t (:background "color-18" :foreground "brightblack"))))
+   '(powerline-active1 ((t (:background "color-18"))))
+   '(powerline-active2 ((t (:background "color-18"))))
+   '(powerline-inactive1 ((t (:background "color-18"))))
+   '(powerline-inactive2 ((t (:background "color-18"))))
+   '(mode-line ((t (:background "color-18"))))
+   '(mode-line-inactive ((t (:background "color-18" :foreground "brightblack"))))
+   '(region ((t (:background "brightblack"))))
+   '(helm-source-header ((t (:background "brightblack"))))
+   '(diff-header ((t (:background "brightblack"))))
+   )
+
+  (defun update-colors (&optional frame)
+    "Load alternate theme on terminal."
+    (unless (display-graphic-p)
+      (progn
+        (enable-theme 'base16-materia) (set-background-color "black"))
+      )
+    )
+  (add-hook 'after-make-frame-functions 'update-colors)
+  (update-colors)
+  ;; (if (not (display-graphic-p))
+  ;;     (progn
+  ;;       (enable-theme 'base16-materia) (set-background-color "black")))
+  (color-theme-approximate-on)
 
   (setq interprogram-cut-function 'paste-to-osx)
   (setq interprogram-paste-function 'copy-from-osx)
@@ -439,13 +489,39 @@ you should place your code here."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(ansi-color-faces-vector
+   [default bold shadow italic underline bold bold-italic bold])
  '(custom-safe-themes
    (quote
     ("98cc377af705c0f2133bb6d340bf0becd08944a588804ee655809da5d8140de6" "bffa9739ce0752a37d9b1eee78fc00ba159748f50dc328af4be661484848e476" "ef04dd1e33f7cbd5aa3187981b18652b8d5ac9e680997b45dc5d00443e6a46e3" "d9850d120be9d94dd7ae69053630e89af8767c36b131a3aa7b06f14007a24656" "c11421683c971b41d154b1a4ef20a2c800537b72fefa618b50b184bbfe6b48a0" "25c242b3c808f38b0389879b9cba325fb1fa81a0a5e61ac7cae8da9a32e2811b" "2a998a3b66a0a6068bcb8b53cd3b519d230dd1527b07232e54c8b9d84061d48d" "36746ad57649893434c443567cb3831828df33232a7790d232df6f5908263692" "d9dab332207600e49400d798ed05f38372ec32132b3f7d2ba697e59088021555" default)))
  '(evil-want-Y-yank-to-eol nil)
+ '(fci-rule-color "#003f8e")
+ '(hl-sexp-background-color "#121212")
  '(package-selected-packages
    (quote
-    (ranger color-theme-approximate color-theme-sanityinc-tomorrow vimrc-mode dactyl-mode bind-key packed avy iedit smartparens bind-map highlight evil helm helm-core async projectile hydra dash tern-django ac-php auto-complete dockerfile-mode intero hlint-refactor hindent helm-hoogle haskell-snippets flycheck-haskell company-ghci company-ghc ghc haskell-mode cmm-mode yapfify pyvenv pytest pyenv-mode py-isort pip-requirements live-py-mode hy-mode helm-pydoc cython-mode anaconda-mode pythonic rvm ruby-tools ruby-test-mode rubocop rspec-mode robe rbenv rake minitest chruby bundler inf-ruby jsx-mode company-tern company-php company material-theme fzf web-mode tagedit slim-mode scss-mode sass-mode pug-mode less-css-mode helm-css-scss haml-mode emmet-mode yaml-mode web-beautify tide typescript-mode tern phpunit phpcbf php-extras php-auto-yasnippets livid-mode skewer-mode simple-httpd json-mode json-snatcher json-reformat js2-refactor yasnippet multiple-cursors js2-mode js-doc drupal-mode php-mode coffee-mode base16-theme ag xterm-color smeargle shell-pop orgit org-projectile org-present org org-pomodoro alert log4e gntp org-download multi-term mmm-mode markdown-toc markdown-mode magit-gitflow htmlize helm-gitignore gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter gh-md flycheck-pos-tip pos-tip flycheck evil-magit magit magit-popup git-commit with-editor eshell-z eshell-prompt-extras esh-help diff-hl ws-butler window-numbering which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spacemacs-theme spaceline restart-emacs request rainbow-delimiters quelpa popwin persp-mode pcre2el paradox org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide ido-vertical-mode hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu elisp-slime-nav dumb-jump define-word column-enforce-mode clean-aindent-mode auto-highlight-symbol auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line))))
+    (ranger color-theme-approximate color-theme-sanityinc-tomorrow vimrc-mode dactyl-mode bind-key packed avy iedit smartparens bind-map highlight evil helm helm-core async projectile hydra dash tern-django ac-php auto-complete dockerfile-mode intero hlint-refactor hindent helm-hoogle haskell-snippets flycheck-haskell company-ghci company-ghc ghc haskell-mode cmm-mode yapfify pyvenv pytest pyenv-mode py-isort pip-requirements live-py-mode hy-mode helm-pydoc cython-mode anaconda-mode pythonic rvm ruby-tools ruby-test-mode rubocop rspec-mode robe rbenv rake minitest chruby bundler inf-ruby jsx-mode company-tern company-php company material-theme fzf web-mode tagedit slim-mode scss-mode sass-mode pug-mode less-css-mode helm-css-scss haml-mode emmet-mode yaml-mode web-beautify tide typescript-mode tern phpunit phpcbf php-extras php-auto-yasnippets livid-mode skewer-mode simple-httpd json-mode json-snatcher json-reformat js2-refactor yasnippet multiple-cursors js2-mode js-doc drupal-mode php-mode coffee-mode base16-theme ag xterm-color smeargle shell-pop orgit org-projectile org-present org org-pomodoro alert log4e gntp org-download multi-term mmm-mode markdown-toc markdown-mode magit-gitflow htmlize helm-gitignore gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter gh-md flycheck-pos-tip pos-tip flycheck evil-magit magit magit-popup git-commit with-editor eshell-z eshell-prompt-extras esh-help diff-hl ws-butler window-numbering which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spacemacs-theme spaceline restart-emacs request rainbow-delimiters quelpa popwin persp-mode pcre2el paradox org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide ido-vertical-mode hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu elisp-slime-nav dumb-jump define-word column-enforce-mode clean-aindent-mode auto-highlight-symbol auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line)))
+ '(vc-annotate-background nil)
+ '(vc-annotate-color-map
+   (quote
+    ((20 . "#ff9da4")
+     (40 . "#ffc58f")
+     (60 . "#ffeead")
+     (80 . "#d1f1a9")
+     (100 . "#99ffff")
+     (120 . "#bbdaff")
+     (140 . "#ebbbff")
+     (160 . "#ff9da4")
+     (180 . "#ffc58f")
+     (200 . "#ffeead")
+     (220 . "#d1f1a9")
+     (240 . "#99ffff")
+     (260 . "#bbdaff")
+     (280 . "#ebbbff")
+     (300 . "#ff9da4")
+     (320 . "#ffc58f")
+     (340 . "#ffeead")
+     (360 . "#d1f1a9"))))
+ '(vc-annotate-very-old-color nil))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
