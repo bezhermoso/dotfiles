@@ -11,6 +11,7 @@ cowsay
 cscope
 ctags
 curl
+diff-so-fancy
 dirmngr
 dnsmasq
 duck
@@ -23,6 +24,7 @@ fish
 fontconfig
 fortune
 fpp
+freetds
 freetype
 fswatch
 fzf
@@ -32,6 +34,7 @@ gettext
 gifsicle
 git
 git-lfs
+git-standup
 glib
 gmp
 gnupg
@@ -50,10 +53,11 @@ icu4c
 imagemagick
 ispell
 jhead
+jid
+jmeter
 jpeg
 jq
 jrnl
-keybase
 kwm
 lame
 libassuan
@@ -70,6 +74,7 @@ libtasn1
 libtermkey
 libtiff
 libtool
+libunistring
 libusb
 libusb-compat
 libuv
@@ -77,6 +82,7 @@ libvterm
 libxml2
 lorem
 lua
+lzo
 markdown
 mcrypt
 mhash
@@ -91,6 +97,8 @@ nettle
 node
 oniguruma
 openssl
+openvpn
+p11-kit
 pandoc
 pango
 pcre
@@ -104,10 +112,12 @@ pkg-config
 postgresql
 protobuf
 pth
+pv
 pyenv
 pyenv-virtualenv
 python
 python3
+ranger
 rbenv
 re2c
 readline
@@ -122,7 +132,9 @@ sqlite
 ssh-copy-id
 sshfs
 subliminal
+terminus
 the_silver_searcher
+tig
 tmux
 tokyo-cabinet
 tree
