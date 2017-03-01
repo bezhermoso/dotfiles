@@ -1,5 +1,7 @@
 ;; -*- mode: emacs-lisp -*-
 ;; This file is loaded by Spacemacs at startup.
+
+
 ;; It must be stored in your home directory.
 
 (defun dotspacemacs/layers ()
@@ -122,6 +124,7 @@ values."
    dotspacemacs-elpa-timeout 5
    ;; If non nil then spacemacs will check for updates at startup
    ;; when the current branch is not `develop'. Note that checking for
+
    ;; new versions works via git commands, thus it calls GitHub services
    ;; whenever you start Emacs. (default nil)
    dotspacemacs-check-for-update nil
@@ -414,30 +417,36 @@ you should place your code here."
                (define-key php-mode-map  (kbd "C-t") 'ac-php-location-stack-back) ;go back
                ))
 
-  (setq theming-modifications
-    '((base16-materia
-        (default :background "black")
-        (hl-line :background "color-18")
-        (magit-section-highlight background "color-18")
-        (helm-selection :background "color-18")
-        (helm-selection-line :background "color-18")
-        (helm-header :background "brightblack")
-        (linum :background "color-18" :foreground "brightblack")
-        (powerline-active1 :background "color-18" :foreground "brightblue")
-        (powerline-active2 :background "color-18" :foreground "color-16")
-        (powerline-inactive1 :background "color-18")
-        (powerline-inactive2 :background "color-18")
-        (mode-line :background "color-18")
-        (mode-line-inactive :background "color-18" :foreground "brightblack")
-        (region :background "brightblack")
-        (helm-source-header :background "brightblack")
-        (diff-header :background "brightblack")
-      ))
+  (unless window-system
+    (setq theming-modifications
+          '((base16-materia
+             (default :background "black")
+             (hl-line :background "color-18")
+             (magit-section-highlight background "color-18")
+             (helm-selection :background "color-18")
+             (helm-selection-line :background "color-18")
+             (helm-header :background "brightblack")
+             (linum :background "color-18" :foreground "brightblack")
+             (powerline-active1 :background "color-18" :foreground "brightblue")
+             (powerline-active2 :background "color-18" :foreground "color-16")
+             (powerline-inactive1 :background "color-18")
+             (powerline-inactive2 :background "color-18")
+             (mode-line :background "color-18")
+             (mode-line-inactive :background "color-18" :foreground "brightblack")
+             (region :background "brightblack")
+             (helm-source-header :background "brightblack")
+             (diff-header :background "brightblack")
+             ))
+          )
     )
-  ;; (if (not (display-graphic-p))
-  ;;     (progn
-  ;;       (enable-theme 'base16-materia) (set-background-color "black")))
+
   (color-theme-approximate-on)
+  (load-theme 'base16-materia)
+
+  ;; (defun setup-terminal-colors (&rest frame)
+  ;;   (unless window-system (load-theme 'base16-materia))
+  ;;   )
+  ;; (add-hook 'after-make-frame-functions 'setup-terminal-colors t)
 
   (defun copy-from-osx ()
     "Use OSX clipboard to paste."
@@ -474,11 +483,11 @@ you should place your code here."
    (quote
     ("98cc377af705c0f2133bb6d340bf0becd08944a588804ee655809da5d8140de6" "bffa9739ce0752a37d9b1eee78fc00ba159748f50dc328af4be661484848e476" "ef04dd1e33f7cbd5aa3187981b18652b8d5ac9e680997b45dc5d00443e6a46e3" "d9850d120be9d94dd7ae69053630e89af8767c36b131a3aa7b06f14007a24656" "c11421683c971b41d154b1a4ef20a2c800537b72fefa618b50b184bbfe6b48a0" "25c242b3c808f38b0389879b9cba325fb1fa81a0a5e61ac7cae8da9a32e2811b" "2a998a3b66a0a6068bcb8b53cd3b519d230dd1527b07232e54c8b9d84061d48d" "36746ad57649893434c443567cb3831828df33232a7790d232df6f5908263692" "d9dab332207600e49400d798ed05f38372ec32132b3f7d2ba697e59088021555" default)))
  '(evil-want-Y-yank-to-eol nil)
- '(fci-rule-color "#003f8e")
+ '(fci-rule-color "#003f8e" t)
  '(hl-sexp-background-color "#121212")
  '(package-selected-packages
    (quote
-    (insert-shebang fish-mode magit-gh-pulls github-search github-clone github-browse-file gist gh marshal logito pcache ht smex lua-mode helm-cscope docker tablist docker-tramp reveal-in-osx-finder pbcopy osx-trash osx-dictionary launchctl ranger color-theme-approximate color-theme-sanityinc-tomorrow vimrc-mode dactyl-mode bind-key packed avy iedit smartparens bind-map highlight evil helm helm-core async projectile hydra dash tern-django ac-php auto-complete dockerfile-mode intero hlint-refactor hindent helm-hoogle haskell-snippets flycheck-haskell company-ghci company-ghc ghc haskell-mode cmm-mode yapfify pyvenv pytest pyenv-mode py-isort pip-requirements live-py-mode hy-mode helm-pydoc cython-mode anaconda-mode pythonic rvm ruby-tools ruby-test-mode rubocop rspec-mode robe rbenv rake minitest chruby bundler inf-ruby jsx-mode company-tern company-php company material-theme fzf web-mode tagedit slim-mode scss-mode sass-mode pug-mode less-css-mode helm-css-scss haml-mode emmet-mode yaml-mode web-beautify tide typescript-mode tern phpunit phpcbf php-extras php-auto-yasnippets livid-mode skewer-mode simple-httpd json-mode json-snatcher json-reformat js2-refactor yasnippet multiple-cursors js2-mode js-doc drupal-mode php-mode coffee-mode base16-theme ag xterm-color smeargle shell-pop orgit org-projectile org-present org org-pomodoro alert log4e gntp org-download multi-term mmm-mode markdown-toc markdown-mode magit-gitflow htmlize helm-gitignore gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter gh-md flycheck-pos-tip pos-tip flycheck evil-magit magit magit-popup git-commit with-editor eshell-z eshell-prompt-extras esh-help diff-hl ws-butler window-numbering which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spacemacs-theme spaceline restart-emacs request rainbow-delimiters quelpa popwin persp-mode pcre2el paradox org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide ido-vertical-mode hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu elisp-slime-nav dumb-jump define-word column-enforce-mode clean-aindent-mode auto-highlight-symbol auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line)))
+    (base16-materia-theme insert-shebang fish-mode magit-gh-pulls github-search github-clone github-browse-file gist gh marshal logito pcache ht smex lua-mode helm-cscope docker tablist docker-tramp reveal-in-osx-finder pbcopy osx-trash osx-dictionary launchctl ranger color-theme-approximate color-theme-sanityinc-tomorrow vimrc-mode dactyl-mode bind-key packed avy iedit smartparens bind-map highlight evil helm helm-core async projectile hydra dash tern-django ac-php auto-complete dockerfile-mode intero hlint-refactor hindent helm-hoogle haskell-snippets flycheck-haskell company-ghci company-ghc ghc haskell-mode cmm-mode yapfify pyvenv pytest pyenv-mode py-isort pip-requirements live-py-mode hy-mode helm-pydoc cython-mode anaconda-mode pythonic rvm ruby-tools ruby-test-mode rubocop rspec-mode robe rbenv rake minitest chruby bundler inf-ruby jsx-mode company-tern company-php company material-theme fzf web-mode tagedit slim-mode scss-mode sass-mode pug-mode less-css-mode helm-css-scss haml-mode emmet-mode yaml-mode web-beautify tide typescript-mode tern phpunit phpcbf php-extras php-auto-yasnippets livid-mode skewer-mode simple-httpd json-mode json-snatcher json-reformat js2-refactor yasnippet multiple-cursors js2-mode js-doc drupal-mode php-mode coffee-mode base16-theme ag xterm-color smeargle shell-pop orgit org-projectile org-present org org-pomodoro alert log4e gntp org-download multi-term mmm-mode markdown-toc markdown-mode magit-gitflow htmlize helm-gitignore gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter gh-md flycheck-pos-tip pos-tip flycheck evil-magit magit magit-popup git-commit with-editor eshell-z eshell-prompt-extras esh-help diff-hl ws-butler window-numbering which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spacemacs-theme spaceline restart-emacs request rainbow-delimiters quelpa popwin persp-mode pcre2el paradox org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide ido-vertical-mode hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu elisp-slime-nav dumb-jump define-word column-enforce-mode clean-aindent-mode auto-highlight-symbol auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line)))
  '(vc-annotate-background nil)
  '(vc-annotate-color-map
    (quote
@@ -506,5 +515,5 @@ you should place your code here."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
-)
+ )
 
