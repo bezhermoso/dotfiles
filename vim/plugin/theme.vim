@@ -17,6 +17,7 @@ endif
 "let g:airline_theme="term"
 let g:airline_theme="lucius"
 let g:airline_powerline_fonts=0
+
 "let g:airline_symbols={}
 "let g:airline_symbols.linenr = '␤'
 
@@ -59,6 +60,7 @@ hi Search ctermfg=0 ctermbg=4
 hi IncSearch ctermfg=0 ctermbg=5
 hi CursorLineNr ctermfg=7
 hi Error ctermfg=15 cterm=bold,undercurl
+
 
 " COLORS
 "hi LineNr ctermfg=242
