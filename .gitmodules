@@ -1,7 +1,10 @@
 [submodule "zprezto"]
 	path = zsh/.zprezto
 	url = git@github.com:bezhermoso/prezto.git
-	branch = mine
+	branch = master
 [submodule "base16-shell"]
 	path = base16-shell
 	url = git@github.com:bezhermoso/base16-shell.git
+[submodule "org-article"]
+	path = emacs/org-article
+	url = git://github.com/tsdye/org-article.git
