@@ -4,6 +4,11 @@
 
 ;; It must be stored in your home directory.
 
+(defun noop-custom-set-faces (orig-fun &rest args)
+  (message "custom-set-faces called with args %S. We do nothing." args)
+  )
+;; (advice-add 'custom-set-faces :around #'noop-custom-set-faces)
+
 (defun dotspacemacs/layers ()
   "Configuration Layers declaration.
 You should not put any user code in this function besides modifying the variable
@@ -167,7 +172,7 @@ values."
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
    dotspacemacs-themes '(
-                         material
+                         base16-materia
                          spacemacs-dark
                          material-light
                          spacemacs-light
@@ -336,10 +341,10 @@ values."
 
    markdown-command "marked --gfm --tables"
 
-   markdown-css-paths '("file:///Users/bez/.dotfiles/css/github-markdown.css")
+   markdown-css-paths '("file:///Users/bez/.dotfiles/css/github-markdown.css"))
 
-
-   ))
+  (add-to-list 'spacemacs-theme-name-to-package
+               '(base16-materia . base16-theme)))
 
 (defun dotspacemacs/user-init ()
   "Initialization function for user code.
@@ -378,10 +383,11 @@ you should place your code here."
   (global-undo-tree-mode)
   (git-gutter-mode)
 
-  ;; Indents
+  ;; Set indentations JS and Typescript to 2 spaces.
   (setq js-indent-level 2)
   (setq typescript-indent-level 2)
 
+  ;; Use $SHELL env for ansi-term
   (defadvice ansi-term (before ansi-term-force-shell)
     (interactive (list (getenv "SHELL"))))
   (ad-activate 'ansi-term)
@@ -414,16 +420,47 @@ you should place your code here."
 
   (add-hook 'before-save-hook  'force-backup-of-buffer)
 
+  ;; Customize GUI Emacs frame size on start.
   (add-to-list 'default-frame-alist '(height . 50))
   (add-to-list 'default-frame-alist '(width . 120))
 
   (with-eval-after-load 'org
-    ;; Org-specific configuration
+
+    (unless (boundp 'org-latex-classes)
+      (setq org-latex-classes nil))
+    (add-to-list 'org-latex-classes
+            '("org-article"
+              "\\documentclass{org-article}
+\\usepackage[AUTO]{inputenc}
+\\usepackage[AUTO]{inputenc}
+\\usepackage[hyperref,x11names]{xcolor}
+\\hypersetup{colorlinks,urlcolor=SteelBlue4,linkcolor=Firebrick4}
+             [NO-DEFAULT-PACKAGES]
+             [EXTRA]"
+                   ("\\section{%s}" . "\\section*{%s}")
+                   ("\\subsection{%s}" . "\\subsection*{%s}")
+                   ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                   ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                   ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+
+    ;; Simplified org-bullets
+    (setq org-bullets-bullet-list '("●" "◎" "○" "◇"))
+
     (require 'ob-js)
     (require 'ob-ruby)
     (require 'ob-python)
-    )
 
+    ;; Register "latex:[link]" link types
+    (org-add-link-type
+     "latex" nil
+     (lambda (path desc format)
+       (cond
+        ((eq format 'html)
+         (format "<span class=\"%s\">%s</span>" path desc))
+        ((eq format 'latex)
+         (format "\\%s{%s}" path desc))))))
+
+  ;; PHP Configuration
   (add-hook 'php-mode-hook
             '(lambda ()
                (auto-complete-mode t)
@@ -434,10 +471,22 @@ you should place your code here."
                (define-key php-mode-map  (kbd "C-t") 'ac-php-location-stack-back) ;go back
                ))
 
+  ;; Remove ugly boxes around Org-mode headings
+  (setq theming-modifications
+        '(
+          (base16-materia
+            (org-level-1 :background "#263238" :box nil)
+            (org-level-2 :background "#263238" :box nil)
+           )
+          ))
+
+  ;; Theme overrides to make Spacemacs looks pretty on terminal as well.
   (unless window-system
     (setq theming-modifications
           '((base16-materia
              (default :background "black")
+             (org-level-1 :background "black" :box nil)
+             (org-level-2 :background "black" :box nil)
              (hl-line :background "color-18")
              (magit-section-highlight background "color-18")
              (helm-selection :background "color-18")
@@ -456,13 +505,10 @@ you should place your code here."
              ))
           ))
 
-
-  (setq custom-file "~/.emacs-custom.el")
-  (setq org-bullets-bullet-list '("●" "◎" "○" "◇"))
-
   (color-theme-approximate-on)
-  (load-theme 'base16-materia)
 
+  ;; SAMPLE CODE FOR RUNNING CODE BASED ON FRAME TYPE i.e. GUI vs TERMINAL
+  ;;
   ;; (defun setup-terminal-colors (&rest frame)
   ;;   (unless window-system (load-theme 'base16-materia))
   ;;   )
@@ -487,6 +533,7 @@ you should place your code here."
     (unless (display-graphic-p (selected-frame))
       (set-face-background 'default "unspecified-bg" (selected-frame))))
   (remove-background-color)
+
   )
 
 
