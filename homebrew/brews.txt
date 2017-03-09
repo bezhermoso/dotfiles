@@ -1,5 +1,6 @@
 android-sdk
 ansiweather
+archey
 autoconf
 automake
 bfg
@@ -58,7 +59,6 @@ jmeter
 jpeg
 jq
 jrnl
-kwm
 lame
 libassuan
 libav

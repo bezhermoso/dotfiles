@@ -15,6 +15,7 @@ colorpicker-skalacolor
 cyberduck
 daisydisk
 discord
+docker
 dockertoolbox 
 dropbox
 endurance
@@ -26,6 +27,7 @@ flux
 font-fira-code
 font-fira-mono
 font-hack
+forklift
 genymotion
 gitbook-editor
 github-desktop

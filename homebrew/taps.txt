@@ -1,11 +1,12 @@
 caskroom/cask
 caskroom/fonts
 caskroom/versions
+d12frosted/emacs-plus
 homebrew/completions
 homebrew/core
+homebrew/fuse
 homebrew/php
 homebrew/services
-koekeishiya/kwm
 mkdryden/misc
 neovim/neovim
 rogual/neovim-dot-app
