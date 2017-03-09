@@ -1,6 +1,7 @@
 brew-inventory:
 	brew list | sed 's/(!)//' | tee homebrew/brews.txt
 	brew cask list | sed 's/(!)//' | tee homebrew/casks.txt
+	brew tap --list | tee homebrew/taps.txt
 
 brew-install:
 	brew tap $(cat homebrew/taps.txt)
