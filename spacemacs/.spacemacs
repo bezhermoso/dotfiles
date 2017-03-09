@@ -40,6 +40,7 @@ values."
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
    '(
+     csv
      emacs-lisp
      haskell
      html
@@ -370,10 +371,10 @@ you should place your code here."
   (setq vc-follow-symlinks t)
 
   ;; Turn off powerline
-  (setq powerline-default-separator nil)
+  (setq powerline-default-separator 'bar)
 
   ;; Always use ASCII in neotree
-  (setq neo-theme 'ascii)
+  (setq neo-theme 'nerd)
 
   ;; Colortheme fix in terminal
   ;; (custom-set-faces (if (not window-system) '(default ((t (:background "nil"))))))
@@ -432,7 +433,6 @@ you should place your code here."
             '("org-article"
               "\\documentclass{org-article}
 \\usepackage[AUTO]{inputenc}
-\\usepackage[AUTO]{inputenc}
 \\usepackage[hyperref,x11names]{xcolor}
 \\hypersetup{colorlinks,urlcolor=SteelBlue4,linkcolor=Firebrick4}
              [NO-DEFAULT-PACKAGES]
@@ -475,8 +475,12 @@ you should place your code here."
   (setq theming-modifications
         '(
           (base16-materia
-            (org-level-1 :background "#263238" :box nil)
-            (org-level-2 :background "#263238" :box nil)
+            (org-level-1 :background "#263238" :foreground "LightYellow1" :box nil :height 1.3 :weight bold :underline t)
+            (org-level-2 :background "#263238" :foreground "LightYellow2" :box nil :height 1.2)
+            (org-block :background "black" :foreground "light green")
+            (org-block-begin-line :background "gray20")
+            (org-block-end-line :background "gray20")
+            (org-table :background "black")
            )
           ))
 
@@ -484,9 +488,10 @@ you should place your code here."
   (unless window-system
     (setq theming-modifications
           '((base16-materia
-             (default :background "black")
-             (org-level-1 :background "black" :box nil)
+             (default :background "black" :foreground "LightYellow1" :box nil :height 1.3 :weight bold :underline t)
+             (org-level-1 :background "black" :foreground "LightYellow2" :box nil :height 1.2)
              (org-level-2 :background "black" :box nil)
+             (org-block :background "black" :foreground "green")
              (hl-line :background "color-18")
              (magit-section-highlight background "color-18")
              (helm-selection :background "color-18")
@@ -554,7 +559,7 @@ you should place your code here."
  '(hl-sexp-background-color "#121212")
  '(package-selected-packages
    (quote
-    (powerline spinner parent-mode pkg-info epl flx anzu goto-chg undo-tree diminish ac-php-core f xcscope s popup package-build ox-reveal ox-gfm base16-materia-theme insert-shebang fish-mode magit-gh-pulls github-search github-clone github-browse-file gist gh marshal logito pcache ht smex lua-mode helm-cscope docker tablist docker-tramp reveal-in-osx-finder pbcopy osx-trash osx-dictionary launchctl ranger color-theme-approximate color-theme-sanityinc-tomorrow vimrc-mode dactyl-mode bind-key packed avy iedit smartparens bind-map highlight evil helm helm-core async projectile hydra dash tern-django ac-php auto-complete dockerfile-mode intero hlint-refactor hindent helm-hoogle haskell-snippets flycheck-haskell company-ghci company-ghc ghc haskell-mode cmm-mode yapfify pyvenv pytest pyenv-mode py-isort pip-requirements live-py-mode hy-mode helm-pydoc cython-mode anaconda-mode pythonic rvm ruby-tools ruby-test-mode rubocop rspec-mode robe rbenv rake minitest chruby bundler inf-ruby jsx-mode company-tern company-php company material-theme fzf web-mode tagedit slim-mode scss-mode sass-mode pug-mode less-css-mode helm-css-scss haml-mode emmet-mode yaml-mode web-beautify tide typescript-mode tern phpunit phpcbf php-extras php-auto-yasnippets livid-mode skewer-mode simple-httpd json-mode json-snatcher json-reformat js2-refactor yasnippet multiple-cursors js2-mode js-doc drupal-mode php-mode coffee-mode base16-theme ag xterm-color smeargle shell-pop orgit org-projectile org-present org org-pomodoro alert log4e gntp org-download multi-term mmm-mode markdown-toc markdown-mode magit-gitflow htmlize helm-gitignore gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter gh-md flycheck-pos-tip pos-tip flycheck evil-magit magit magit-popup git-commit with-editor eshell-z eshell-prompt-extras esh-help diff-hl ws-butler window-numbering which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spacemacs-theme spaceline restart-emacs request rainbow-delimiters quelpa popwin persp-mode pcre2el paradox org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide ido-vertical-mode hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu elisp-slime-nav dumb-jump define-word column-enforce-mode clean-aindent-mode auto-highlight-symbol auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line)))
+    (csv-mode powerline spinner parent-mode pkg-info epl flx anzu goto-chg undo-tree diminish ac-php-core f xcscope s popup package-build ox-reveal ox-gfm base16-materia-theme insert-shebang fish-mode magit-gh-pulls github-search github-clone github-browse-file gist gh marshal logito pcache ht smex lua-mode helm-cscope docker tablist docker-tramp reveal-in-osx-finder pbcopy osx-trash osx-dictionary launchctl ranger color-theme-approximate color-theme-sanityinc-tomorrow vimrc-mode dactyl-mode bind-key packed avy iedit smartparens bind-map highlight evil helm helm-core async projectile hydra dash tern-django ac-php auto-complete dockerfile-mode intero hlint-refactor hindent helm-hoogle haskell-snippets flycheck-haskell company-ghci company-ghc ghc haskell-mode cmm-mode yapfify pyvenv pytest pyenv-mode py-isort pip-requirements live-py-mode hy-mode helm-pydoc cython-mode anaconda-mode pythonic rvm ruby-tools ruby-test-mode rubocop rspec-mode robe rbenv rake minitest chruby bundler inf-ruby jsx-mode company-tern company-php company material-theme fzf web-mode tagedit slim-mode scss-mode sass-mode pug-mode less-css-mode helm-css-scss haml-mode emmet-mode yaml-mode web-beautify tide typescript-mode tern phpunit phpcbf php-extras php-auto-yasnippets livid-mode skewer-mode simple-httpd json-mode json-snatcher json-reformat js2-refactor yasnippet multiple-cursors js2-mode js-doc drupal-mode php-mode coffee-mode base16-theme ag xterm-color smeargle shell-pop orgit org-projectile org-present org org-pomodoro alert log4e gntp org-download multi-term mmm-mode markdown-toc markdown-mode magit-gitflow htmlize helm-gitignore gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter gh-md flycheck-pos-tip pos-tip flycheck evil-magit magit magit-popup git-commit with-editor eshell-z eshell-prompt-extras esh-help diff-hl ws-butler window-numbering which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spacemacs-theme spaceline restart-emacs request rainbow-delimiters quelpa popwin persp-mode pcre2el paradox org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide ido-vertical-mode hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu elisp-slime-nav dumb-jump define-word column-enforce-mode clean-aindent-mode auto-highlight-symbol auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line)))
  '(vc-annotate-background nil)
  '(vc-annotate-color-map
    (quote
@@ -582,5 +587,10 @@ you should place your code here."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(org-block ((t (:background "black" :foreground "light green"))))
+ '(org-block-begin-line ((t (:background "gray20"))))
+ '(org-block-end-line ((t (:background "gray20"))))
+ '(org-level-1 ((t (:background "#263238" :foreground "LightYellow1" :box nil :height 1.3 :weight bold :underline t))))
+ '(org-level-2 ((t (:background "#263238" :foreground "LightYellow2" :box nil :height 1.2))))
+ '(org-table ((t (:background "black")))))
 
