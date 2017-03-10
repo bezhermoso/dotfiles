@@ -7,7 +7,7 @@
 (defun noop-custom-set-faces (orig-fun &rest args)
   (message "custom-set-faces called with args %S. We do nothing." args)
   )
-;; (advice-add 'custom-set-faces :around #'noop-custom-set-faces)
+(advice-add 'custom-set-faces :around #'noop-custom-set-faces)
 
 (defun dotspacemacs/layers ()
   "Configuration Layers declaration.
@@ -587,10 +587,4 @@ you should place your code here."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(org-block ((t (:background "black" :foreground "light green"))))
- '(org-block-begin-line ((t (:background "gray20"))))
- '(org-block-end-line ((t (:background "gray20"))))
- '(org-level-1 ((t (:background "#263238" :foreground "LightYellow1" :box nil :height 1.3 :weight bold :underline t))))
- '(org-level-2 ((t (:background "#263238" :foreground "LightYellow2" :box nil :height 1.2))))
- '(org-table ((t (:background "black")))))
-
+)
