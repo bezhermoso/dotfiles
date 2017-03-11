@@ -335,16 +335,19 @@ values."
    ;; (default nil)
    dotspacemacs-whitespace-cleanup nil
 
-   linum-format " %4d \u2502"
-   linum-relative-format " %4s \u2502"
+   linum-format " %4d "
+   linum-relative-format " %4s "
 
    shell-file-name "/bin/sh"
 
    org-html-doctype "html5"
 
+   org-todo-keywords '("TODO" "PENDING(@)" "DONE")
+
    markdown-command "marked --gfm --tables"
 
    markdown-css-paths '("file:///Users/bez/.dotfiles/css/github-markdown.css"))
+
 
   (add-to-list 'spacemacs-theme-name-to-package
                '(base16-materia . base16-theme)))
