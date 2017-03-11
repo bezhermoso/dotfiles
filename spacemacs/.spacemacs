@@ -74,6 +74,8 @@ values."
           )
      osx
      (shell :variables
+            shell-default-shell 'ansi-term
+            shell-default-term-shell (getenv "SHELL")
             shell-default-height 30
             shell-default-position 'bottom)
      ;; spell-checking
@@ -387,11 +389,6 @@ you should place your code here."
   ;; Set indentations JS and Typescript to 2 spaces.
   (setq js-indent-level 2)
   (setq typescript-indent-level 2)
-
-  ;; Use $SHELL env for ansi-term
-  (defadvice ansi-term (before ansi-term-force-shell)
-    (interactive (list (getenv "SHELL"))))
-  (ad-activate 'ansi-term)
 
   ;; Taken from http://stackoverflow.com/a/20824625/908451
   (setq version-control t     ;; Use version numbers for backups.
