@@ -16,7 +16,6 @@ cyberduck
 daisydisk
 discord
 docker
-dockertoolbox 
 dropbox
 endurance
 fantastical
@@ -38,7 +37,6 @@ google-drive
 google-play-music-desktop-player
 gpgtools
 hammerspoon
-heroku-toolbelt 
 iina
 intellij-idea-ce
 istat-menus
@@ -48,6 +46,7 @@ java
 karabiner
 keybase
 lacona
+lastpass
 launchbar
 little-snitch
 malwarebytes-anti-malware
@@ -57,21 +56,17 @@ oversight
 panda
 paw
 phpstorm
-pocketcast 
-radiant-player
 reactotron
 rightfont
 safari-technology-preview
 sequel-pro
 skype
 spectacle
-sshfs 
 steam
 the-unarchiver
 thunderbird
 torbrowser
 transmission
-ubersicht
 unified-remote
 vagrant
 vimr

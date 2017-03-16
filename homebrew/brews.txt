@@ -80,6 +80,7 @@ libusb-compat
 libuv
 libvterm
 libxml2
+lolcat
 lorem
 lua
 lzo
@@ -137,6 +138,8 @@ the_silver_searcher
 tig
 tmux
 tokyo-cabinet
+torus
+transmission
 tree
 tty-clock
 unibilium
@@ -144,6 +147,7 @@ unison
 unixodbc
 utf8proc
 vagrant-completion
+vault
 watch
 watchman
 wget
