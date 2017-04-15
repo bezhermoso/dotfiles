@@ -7,7 +7,7 @@
 (defun noop-custom-set-faces (orig-fun &rest args)
   (message "custom-set-faces called with args %S. We do nothing." args)
   )
-(advice-add 'custom-set-faces :around #'noop-custom-set-faces)
+;;(advice-add 'custom-set-faces :around #'noop-custom-set-faces)
 
 (defun dotspacemacs/layers ()
   "Configuration Layers declaration.
@@ -100,6 +100,9 @@ values."
      ac-php
      color-theme-approximate
      color-theme-sanityinc-tomorrow
+     org-jira
+     evil-replace-with-register
+     po-mode
      )
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
@@ -170,7 +173,7 @@ values."
    ;; True if the home buffer should respond to resize events.
    dotspacemacs-startup-buffer-responsive t
    ;; Default major mode of the scratch buffer (default `text-mode')
-   dotspacemacs-scratch-mode 'markdown-mode
+   dotspacemacs-scratch-mode 'org-mode
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
@@ -302,7 +305,23 @@ values."
    ;; If non nil line numbers are turned on in all `prog-mode' and `text-mode'
    ;; derivatives. If set to `relative', also turns on relative line numbers.
    ;; (default nil)
-   dotspacemacs-line-numbers 'relative
+
+   ;; Control line numbers activation.
+   ;; If set to `t' or `relative' line numbers are turned on in all `prog-mode' and
+   ;; `text-mode' derivatives. If set to `relative', line numbers are relative.
+   ;; This variable can also be set to a property list for finer control:
+   ;; '(:relative nil
+   ;;   :disabled-for-modes dired-mode
+   ;;                       doc-view-mode
+   ;;                       markdown-mode
+   ;;                       org-mode
+   ;;                       pdf-view-mode
+   ;;                       text-mode
+   ;;   :size-limit-kb 1000)
+   dotspacemacs-line-numbers
+   '(:relative t
+     :size-limit-kb 1000
+     )
    ;; Code folding method. Possible values are `evil' and `origami'.
    ;; (default 'evil)
    dotspacemacs-folding-method 'evil
@@ -338,15 +357,23 @@ values."
    linum-format " %4d "
    linum-relative-format " %4s "
 
+   line-spacing 0.25
+
    shell-file-name "/bin/sh"
 
    org-html-doctype "html5"
 
-   org-todo-keywords '("TODO" "PENDING(@)" "DONE")
+   org-todo-keywords '("TODO" "DONE" "PENDING(@)")
+
+   epg-gpg-program "/usr/local/bin/gpg2"
 
    markdown-command "marked --gfm --tables"
 
+   browse-url-mailto-function 'browse-url-generic
+   browse-url-generic-program "open"
+
    markdown-css-paths '("file:///Users/bez/.dotfiles/css/github-markdown.css"))
+
 
 
   (add-to-list 'spacemacs-theme-name-to-package
@@ -369,6 +396,11 @@ This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
 
+  (require 'epa-file)
+  (custom-set-variables '(epg-gpg-program  "/usr/local/bin/gpg2"))
+  (epa-file-enable)
+  (setenv "GPG_AGENT_INFO" nil)
+
   ;; Stop Emacs from writing `.#*` files. Might be beneficial to let Emacs write to an alternate dir instead.
   (setq create-lockfiles nil)
 
@@ -386,8 +418,6 @@ you should place your code here."
   ;; (custom-set-faces (if (window-system) '(default ((t (background dark))))))
 
   (setq-default left-fringe-width 5)
-  (global-undo-tree-mode)
-  (git-gutter-mode)
 
   ;; Set indentations JS and Typescript to 2 spaces.
   (setq js-indent-level 2)
@@ -444,11 +474,25 @@ you should place your code here."
                    ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
 
     ;; Simplified org-bullets
-    (setq org-bullets-bullet-list '("●" "◎" "○" "◇"))
+    (setq
+
+     initial-major-mode 'org-mode
+     org-bullets-bullet-list '("●" "◎" "○" "◇")
+
+
+
+     ;; org-jira configuration
+     jiralib-url "https://activelamp.atlassian.net:443"
+     org-jira-working-dir "~/Google Drive/Org Notes/org-jira"
+     org-reveal-root "https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.4.1/"
+
+     )
 
     (require 'ob-js)
     (require 'ob-ruby)
     (require 'ob-python)
+    (require 'org-projectile)
+
 
     ;; Register "latex:[link]" link types
     (org-add-link-type
@@ -471,27 +515,50 @@ you should place your code here."
                (define-key php-mode-map  (kbd "C-t") 'ac-php-location-stack-back) ;go back
                ))
 
-  ;; Remove ugly boxes around Org-mode headings
-  (setq theming-modifications
-        '(
-          (base16-materia
-            (org-level-1 :background "#263238" :foreground "LightYellow1" :box nil :height 1.3 :weight bold :underline t)
-            (org-level-2 :background "#263238" :foreground "LightYellow2" :box nil :height 1.2)
-            (org-block :background "black" :foreground "light green")
-            (org-block-begin-line :background "gray20")
-            (org-block-end-line :background "gray20")
-            (org-table :background "black")
-           )
-          ))
-
-  ;; Theme overrides to make Spacemacs looks pretty on terminal as well.
-  (unless window-system
+  (defun gui-overrides()
+    (message "GUI overrides!" nil)
     (setq theming-modifications
-          '((base16-materia
-             (default :background "black" :foreground "LightYellow1" :box nil :height 1.3 :weight bold :underline t)
-             (org-level-1 :background "black" :foreground "LightYellow2" :box nil :height 1.2)
-             (org-level-2 :background "black" :box nil)
-             (org-block :background "black" :foreground "green")
+          '(
+            (base16-materia
+             (org-level-1 :background "#263238"
+                          :foreground "LightYellow1"
+                          :box nil
+                          :height 1.3
+                          :weight bold
+                          :underline t)
+             (org-level-2 :background "#263238"
+                          :foreground "LightYellow2"
+                          :box nil
+                          :height 1.2)
+             (org-block :background "black"
+                        :foreground "light green")
+             (org-block-begin-line :background "gray20")
+             (org-block-end-line :background "gray20")
+             (org-table :background "black")
+             (org-tag :foreground "SpringGreen2"
+                      :underline nil)
+             )
+            )))
+
+  (defun terminal-overrides()
+    (message "Terminal overrides!" nil)
+    (setq theming-modifications
+          '(
+            (base16-materia
+             (default :background "black")
+             (org-level-1 :background "black"
+                          :foreground "LightYellow2"
+                          :box nil)
+             (org-level-2 :background "black"
+                          :box nil
+                          :foreground "LightYellow1"
+                          :box nil
+                          :weight bold
+                          :underline t)
+             (org-block :background "black"
+                        :foreground "green")
+             (org-tag :foreground "green"
+                      :underline nil)
              (hl-line :background "color-18")
              (magit-section-highlight background "color-18")
              (helm-selection :background "color-18")
@@ -509,15 +576,26 @@ you should place your code here."
              (diff-header :background "brightblack")
              ))
           ))
+  ;; Remove ugly boxes around Org-mode headings
 
-  (color-theme-approximate-on)
+  (defun color-overrides()
+    (if window-system
+        (gui-overrides) (terminal-overrides))
+    (spacemacs/update-theme)
+    )
+
+  (color-overrides)
+
 
   ;; SAMPLE CODE FOR RUNNING CODE BASED ON FRAME TYPE i.e. GUI vs TERMINAL
   ;;
-  ;; (defun setup-terminal-colors (&rest frame)
-  ;;   (unless window-system (load-theme 'base16-materia))
-  ;;   )
-  ;; (add-hook 'after-make-frame-functions 'setup-terminal-colors t)
+  (defun setup-color-overrides (&rest frame)
+    (message "Make frame overrides" nil)
+    (color-overrides)
+    )
+  (add-hook 'after-make-frame-functions 'setup-color-overrides t)
+
+  ;; (color-theme-approximate-on)
 
   (defun copy-from-osx ()
     "Use OSX clipboard to paste."
@@ -554,12 +632,16 @@ you should place your code here."
  '(custom-safe-themes
    (quote
     ("98cc377af705c0f2133bb6d340bf0becd08944a588804ee655809da5d8140de6" "bffa9739ce0752a37d9b1eee78fc00ba159748f50dc328af4be661484848e476" "ef04dd1e33f7cbd5aa3187981b18652b8d5ac9e680997b45dc5d00443e6a46e3" "d9850d120be9d94dd7ae69053630e89af8767c36b131a3aa7b06f14007a24656" "c11421683c971b41d154b1a4ef20a2c800537b72fefa618b50b184bbfe6b48a0" "25c242b3c808f38b0389879b9cba325fb1fa81a0a5e61ac7cae8da9a32e2811b" "2a998a3b66a0a6068bcb8b53cd3b519d230dd1527b07232e54c8b9d84061d48d" "36746ad57649893434c443567cb3831828df33232a7790d232df6f5908263692" "d9dab332207600e49400d798ed05f38372ec32132b3f7d2ba697e59088021555" default)))
+ '(epg-gpg-program "/usr/local/bin/gpg2")
  '(evil-want-Y-yank-to-eol nil)
  '(fci-rule-color "#003f8e" t)
  '(hl-sexp-background-color "#121212")
+ '(org-agenda-files
+   (quote
+    ("~/org-jira/UCLAIAM.org" "~/org/meetings/ucla/2017-03-14.org")))
  '(package-selected-packages
    (quote
-    (csv-mode powerline spinner parent-mode pkg-info epl flx anzu goto-chg undo-tree diminish ac-php-core f xcscope s popup package-build ox-reveal ox-gfm base16-materia-theme insert-shebang fish-mode magit-gh-pulls github-search github-clone github-browse-file gist gh marshal logito pcache ht smex lua-mode helm-cscope docker tablist docker-tramp reveal-in-osx-finder pbcopy osx-trash osx-dictionary launchctl ranger color-theme-approximate color-theme-sanityinc-tomorrow vimrc-mode dactyl-mode bind-key packed avy iedit smartparens bind-map highlight evil helm helm-core async projectile hydra dash tern-django ac-php auto-complete dockerfile-mode intero hlint-refactor hindent helm-hoogle haskell-snippets flycheck-haskell company-ghci company-ghc ghc haskell-mode cmm-mode yapfify pyvenv pytest pyenv-mode py-isort pip-requirements live-py-mode hy-mode helm-pydoc cython-mode anaconda-mode pythonic rvm ruby-tools ruby-test-mode rubocop rspec-mode robe rbenv rake minitest chruby bundler inf-ruby jsx-mode company-tern company-php company material-theme fzf web-mode tagedit slim-mode scss-mode sass-mode pug-mode less-css-mode helm-css-scss haml-mode emmet-mode yaml-mode web-beautify tide typescript-mode tern phpunit phpcbf php-extras php-auto-yasnippets livid-mode skewer-mode simple-httpd json-mode json-snatcher json-reformat js2-refactor yasnippet multiple-cursors js2-mode js-doc drupal-mode php-mode coffee-mode base16-theme ag xterm-color smeargle shell-pop orgit org-projectile org-present org org-pomodoro alert log4e gntp org-download multi-term mmm-mode markdown-toc markdown-mode magit-gitflow htmlize helm-gitignore gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter gh-md flycheck-pos-tip pos-tip flycheck evil-magit magit magit-popup git-commit with-editor eshell-z eshell-prompt-extras esh-help diff-hl ws-butler window-numbering which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spacemacs-theme spaceline restart-emacs request rainbow-delimiters quelpa popwin persp-mode pcre2el paradox org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide ido-vertical-mode hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu elisp-slime-nav dumb-jump define-word column-enforce-mode clean-aindent-mode auto-highlight-symbol auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line)))
+    (po-mode winum evil-replace-with-register org-jira csv-mode powerline spinner parent-mode pkg-info epl flx anzu goto-chg undo-tree diminish ac-php-core f xcscope s popup package-build ox-reveal ox-gfm base16-materia-theme insert-shebang fish-mode magit-gh-pulls github-search github-clone github-browse-file gist gh marshal logito pcache ht smex lua-mode helm-cscope docker tablist docker-tramp reveal-in-osx-finder pbcopy osx-trash osx-dictionary launchctl ranger color-theme-approximate color-theme-sanityinc-tomorrow vimrc-mode dactyl-mode bind-key packed avy iedit smartparens bind-map highlight evil helm helm-core async projectile hydra dash tern-django ac-php auto-complete dockerfile-mode intero hlint-refactor hindent helm-hoogle haskell-snippets flycheck-haskell company-ghci company-ghc ghc haskell-mode cmm-mode yapfify pyvenv pytest pyenv-mode py-isort pip-requirements live-py-mode hy-mode helm-pydoc cython-mode anaconda-mode pythonic rvm ruby-tools ruby-test-mode rubocop rspec-mode robe rbenv rake minitest chruby bundler inf-ruby jsx-mode company-tern company-php company material-theme fzf web-mode tagedit slim-mode scss-mode sass-mode pug-mode less-css-mode helm-css-scss haml-mode emmet-mode yaml-mode web-beautify tide typescript-mode tern phpunit phpcbf php-extras php-auto-yasnippets livid-mode skewer-mode simple-httpd json-mode json-snatcher json-reformat js2-refactor yasnippet multiple-cursors js2-mode js-doc drupal-mode php-mode coffee-mode base16-theme ag xterm-color smeargle shell-pop orgit org-projectile org-present org org-pomodoro alert log4e gntp org-download multi-term mmm-mode markdown-toc markdown-mode magit-gitflow htmlize helm-gitignore gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter gh-md flycheck-pos-tip pos-tip flycheck evil-magit magit magit-popup git-commit with-editor eshell-z eshell-prompt-extras esh-help diff-hl ws-butler window-numbering which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spacemacs-theme spaceline restart-emacs request rainbow-delimiters quelpa popwin persp-mode pcre2el paradox org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide ido-vertical-mode hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu elisp-slime-nav dumb-jump define-word column-enforce-mode clean-aindent-mode auto-highlight-symbol auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line)))
  '(vc-annotate-background nil)
  '(vc-annotate-color-map
    (quote
@@ -587,4 +669,10 @@ you should place your code here."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
-)
+ '(org-block ((t (:background "black" :foreground "light green"))))
+ '(org-block-begin-line ((t (:background "gray20"))))
+ '(org-block-end-line ((t (:background "gray20"))))
+ '(org-level-1 ((t (:background "#263238" :foreground "LightYellow1" :box nil :height 1.3 :weight bold :underline t))))
+ '(org-level-2 ((t (:background "#263238" :foreground "LightYellow2" :box nil :height 1.2))))
+ '(org-table ((t (:background "black"))))
+ '(org-tag ((t (:foreground "SpringGreen2" :underline nil)))))
