@@ -11,11 +11,11 @@ set t_Co=256
 if !empty($VIM_COLOR)
     colorscheme $VIM_COLOR
 else
-    colorscheme base16-bright
+    colorscheme base16-default-dark
 endif
 
 "let g:airline_theme="term"
-let g:airline_theme="lucius"
+let g:airline_theme="badcat"
 let g:airline_powerline_fonts=0
 
 "let g:airline_symbols={}
