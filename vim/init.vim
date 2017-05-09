@@ -20,7 +20,7 @@ Plug 'tpope/vim-fugitive'
 " Plug 'rstacruz/sparkup', {'rtp': 'vim/'}
 " " Avoid a name conflict with L9
 " Plug 'user/L9', {'name': 'newL9'}
-Plug 'L9'
+Plug 'vim-scripts/L9'
 Plug 'scrooloose/nerdtree', { 'on': ['NERDTreeToggle', 'NERDTreeFind', 'NERDTreeFocus', 'NERDTreeClose'] }
 Plug 'ctrlpvim/ctrlp.vim', { 'on': ['CtrlP', 'CtrlPMRUFiles']  }
 Plug 'chriskempson/base16-vim'
@@ -68,8 +68,8 @@ Plug 'nelstrom/vim-textobj-rubyblock', {'for': 'ruby'}
 Plug 'rizzatti/dash.vim'
 Plug 'vim-scripts/groovy.vim', {'for': 'groovy'}
 Plug 'dag/vim2hs', {'for': 'haskell'}
-Plug 'netrw.vim'
-Plug 'ReplaceWithRegister'
+Plug 'vim-scripts/netrw.vim'
+Plug 'vim-scripts/ReplaceWithRegister'
 Plug 'tpope/vim-commentary'
 Plug 'kana/vim-textobj-entire'
 Plug 'kana/vim-textobj-line'
@@ -83,7 +83,7 @@ Plug 'pangloss/vim-javascript'
 "Plug 'mxw/vim-jsx'
 "Plug 'rstacruz/vim-hyperstyle'
 Plug 'stephpy/vim-yaml'
-Plug 'python.vim'
+Plug 'vim-scripts/python.vim'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 "Plug 'm2mdas/phpcomplete-extended', {'for': 'php'}
@@ -99,15 +99,15 @@ Plug 'junegunn/vim-xmark', {'do': 'make'}
 Plug 'leafgarland/typescript-vim'
 Plug '2072/PHP-Indenting-for-Vim'
 Plug 'mkusher/padawan.vim'
-Plug 'textobj-syntax'
+Plug 'vim-scripts/textobj-syntax'
 Plug 'tpope/vim-vinegar'
-Plug 'restore_view.vim'
-Plug 'SyntaxRange'
+Plug 'vim-scripts/restore_view.vim'
+Plug 'vim-scripts/SyntaxRange'
 Plug 'neomake/neomake'
 Plug 'kshenoy/vim-signature'
 Plug 'tpope/vim-speeddating'
 Plug 'tpope/vim-abolish'
-Plug 'YankRing.vim'
+Plug 'vim-scripts/YankRing.vim'
 Plug 'tpope/vim-sleuth'
 Plug 'NLKNguyen/papercolor-theme'
 Plug 'algotech/ultisnips-php'
