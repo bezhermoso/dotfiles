@@ -10,7 +10,7 @@ augroup CursorLine
 augroup END
 
 " Special file type associations "autocmd BufNewFile,BufRead Vagrantfile set filetype=ruby
-autocmd BufNewFile,BufRead {Vagrant,Gem,Berks}file set filetype=ruby
+autocmd BufNewFile,BufRead {Vagrant,Gem,Berks,Brew}file set filetype=ruby
 autocmd BufNewFile,BufRead Gemfile.lock setlocal filetype=ruby
 autocmd BufNewFile,BufRead Berksfile set filetype=ruby
 autocmd BufNewFile,BufRead *.md setlocal filetype=markdown
