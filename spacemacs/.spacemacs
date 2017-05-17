@@ -1,7 +1,5 @@
 ;; -*- mode: emacs-lisp -*-
 ;; This file is loaded by Spacemacs at startup.
-
-
 ;; It must be stored in your home directory.
 
 (defun noop-custom-set-faces (orig-fun &rest args)
@@ -13,7 +11,6 @@
   "Configuration Layers declaration.
 You should not put any user code in this function besides modifying the variable
 values."
-
   (setq-default
    ;; Base distribution to use. This is a layer contained in the directory
    ;; `+distribution'. For now available distributions are `spacemacs-base'
@@ -35,7 +32,6 @@ values."
    ;; If non-nil layers with lazy install support are lazy installed.
    ;; List of additional paths where to look for configuration layers.
    ;; Paths must have a trailing slash (i.e. `~/.mycontribs/')
-
    dotspacemacs-configuration-layer-path '()
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
@@ -141,7 +137,6 @@ values."
    dotspacemacs-elpa-timeout 5
    ;; If non nil then spacemacs will check for updates at startup
    ;; when the current branch is not `develop'. Note that checking for
-
    ;; new versions works via git commands, thus it calls GitHub services
    ;; whenever you start Emacs. (default nil)
    dotspacemacs-check-for-update nil
@@ -303,10 +298,6 @@ values."
    ;; scrolling overrides the default behavior of Emacs which recenters point
    ;; when it reaches the top or bottom of the screen. (default t)
    dotspacemacs-smooth-scrolling t
-   ;; If non nil line numbers are turned on in all `prog-mode' and `text-mode'
-   ;; derivatives. If set to `relative', also turns on relative line numbers.
-   ;; (default nil)
-
    ;; Control line numbers activation.
    ;; If set to `t' or `relative' line numbers are turned on in all `prog-mode' and
    ;; `text-mode' derivatives. If set to `relative', line numbers are relative.
@@ -355,23 +346,23 @@ values."
    ;; (default nil)
    dotspacemacs-whitespace-cleanup nil
 
-   linum-format " %4d "
-   linum-relative-format " %4s "
+   ;; linum-format " %4d "
+   ;; linum-relative-format " %4s "
 
-   line-spacing 0.25
+   ;; line-spacing 0.25
 
-   shell-file-name "/bin/sh"
+   ;; shell-file-name "/bin/sh"
 
-   org-html-doctype "html5"
+   ;; org-html-doctype "html5"
 
-   org-todo-keywords '("TODO" "DONE" "PENDING")
+   ;; org-todo-keywords '("TODO" "DONE" "PENDING")
 
-   epg-gpg-program "/usr/local/bin/gpg2"
+   ;; epg-gpg-program "/usr/local/bin/gpg2"
 
-   markdown-command "marked --gfm --tables"
+   ;; markdown-command "marked --gfm --tables"
 
-   browse-url-mailto-function 'browse-url-generic
-   browse-url-generic-program "open"
+   ;; browse-url-mailto-function 'browse-url-generic
+   ;; browse-url-generic-program "open"
 
    markdown-css-paths '("file:///Users/bez/.dotfiles/css/github-markdown.css"))
 
@@ -737,6 +728,6 @@ you should place your code here."
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
+
  ;; If there is more than one, they won't work right.
  )
