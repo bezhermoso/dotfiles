@@ -1,0 +1,40 @@
+#!/usr/bin/env zsh
+
+_mpd_now_playing() {
+  if (( $+commands[mpc] )); then
+    #echo "Hello"
+    local mpd_data=$(gtimeout 1s mpc -h 127.0.0.1 -f "%title% - %artist%" 2>/dev/null)
+    if [[ $? -eq 0 ]] && [[ $(echo "$mpd_data" | wc -l) -eq 3 ]]; then
+      wk 'NR==1' <(echo "$mpd_data")
+      return 0
+    fi
+  fi
+  return 1
+}
+
+_gpm_now_playing() {
+  if (( $+commands[gpmdp] )); then
+    local playback_data=$(gpmdp 2>/dev/null)
+    if [[ -n $playback_data ]]; then
+      local title=$(awk -F= '{print $2}' <(echo "$playback_data" | grep TITLE))
+      local artist=$(awk -F= '{print $2}' <(echo "$playback_data" | grep ARTIST))
+      if [[ "$title" != 'null' ]]; then
+        echo "$title - $artist"
+      fi
+    fi
+  fi
+  return 1
+}
+
+_now_playing_tmux_status() {
+  local now_playing
+  now_playing="$(_mpd_now_playing)"
+  if [[ $? -gt 0 ]]; then
+    now_playing="$(_gpm_now_playing)"
+  fi
+  if [[ -n "$now_playing" ]]; then
+    tmux display-message -p '#[fg=colour244]♫ '$now_playing'#[default]'
+  fi
+}
+
+_now_playing_tmux_status

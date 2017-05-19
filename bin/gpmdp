@@ -1,0 +1,26 @@
+#!/usr/bin/env node
+
+const fs = require('fs');
+const path = require('path');
+
+const PLAYBACK_FILE = path.join(process.env.HOME, 'Library', 'Application Support',
+  'Google Play Music Desktop Player', 'json_store', 'playback.json');
+
+fs.readFile(PLAYBACK_FILE, { encoding: 'utf8' }, (error, contents) => {
+  if (error) {
+    console.error(error.message);
+    process.exit(1);
+    return;
+  } else {
+  let data = JSON.parse(contents);
+  let output = `PLAYING=${new Number(data.playing)}
+TITLE=${data.song.title}
+ARTIST=${data.song.artist}
+ALBUM=${data.song.album}
+`;
+    console.log(output);
+    process.exit(0);
+  }
+});
+
+
