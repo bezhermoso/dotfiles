@@ -39,3 +39,9 @@ def_key "J"
     move_sort_order_down
 def_key "K"
     move_sort_order_up
+
+def_key "d"
+    delete_playlist_items
+
+def_key "D"
+    delete_stored_playlist
