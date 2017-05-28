@@ -524,63 +524,6 @@ you should place your code here."
              )
             )))
 
-  (defun terminal-overrides()
-    (message "Terminal overrides!" nil)
-    (setq theming-modifications
-          '(
-            (base16-materia
-             (default :background "black")
-             (org-level-1 :background "black"
-                          :foreground "LightYellow2"
-                          :box nil)
-             (org-level-2 :background "black"
-                          :box nil
-                          :foreground "LightYellow1"
-                          :box nil
-                          :weight bold
-                          :underline t)
-             (org-block :background "black"
-                        :foreground "green")
-             (org-tag :foreground "green"
-                      :underline nil)
-             (hl-line :background "color-18")
-             (magit-section-highlight background "color-18")
-             (helm-selection :background "color-18")
-             (helm-selection-line :background "color-18")
-             (helm-header :background "brightblack")
-             (linum :background "color-18" :foreground "brightblack")
-             (powerline-active1 :background "color-18" :foreground "brightblue")
-             (powerline-active2 :background "color-18" :foreground "color-16")
-             (powerline-inactive1 :background "color-18")
-             (powerline-inactive2 :background "color-18")
-             (mode-line :background "color-18")
-             (mode-line-inactive :background "color-18" :foreground "brightblack")
-             (region :background "brightblack")
-             (helm-source-header :background "brightblack")
-             (diff-header :background "brightblack")
-             ))
-          ))
-  ;; Remove ugly boxes around Org-mode headings
-
-  ;; (defun color-overrides()
-  ;;   (if window-system
-  ;;       (gui-overrides) (terminal-overrides))
-  ;;   (spacemacs/update-theme)
-  ;;   )
-
-  ;; (color-overrides)
-
-
-  ;; SAMPLE CODE FOR RUNNING CODE BASED ON FRAME TYPE i.e. GUI vs TERMINAL
-  ;;
-  (defun setup-color-overrides (&rest frame)
-    (message "Make frame overrides" nil)
-    (color-overrides)
-    )
-  (add-hook 'after-make-frame-functions 'setup-color-overrides t)
-
-  ;; (color-theme-approximate-on)
-
   (defun copy-from-osx ()
     "Use OSX clipboard to paste."
     (shell-command-to-string "reattach-to-user-namespace pbpaste"))
