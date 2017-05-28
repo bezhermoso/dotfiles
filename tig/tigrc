@@ -8,4 +8,4 @@ bind generic I !git add -i %(file)
 bind generic + !@sh -c "echo %(commit) | pbcopy"
 #set line-graphics = utf-8
 set reference-format = (branch) <tag>
-set diff-highlight = diff-highlight
+set diff-highlight = diff-so-fancy
