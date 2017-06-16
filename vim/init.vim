@@ -91,7 +91,6 @@ Plug 'junegunn/fzf.vim'
 Plug 'arnaud-lb/vim-php-namespace', {'for': 'php'}
 Plug 'jwalton512/vim-blade'
 Plug 'jiangmiao/auto-pairs'
-Plug 'benekastah/neomake'
 "Plug 'mhinz/vim-startify'
 Plug 'morhetz/gruvbox'
 "Plug 'joeytwiddle/sexy_scroller.vim'
@@ -103,7 +102,6 @@ Plug 'vim-scripts/textobj-syntax'
 Plug 'tpope/vim-vinegar'
 Plug 'vim-scripts/restore_view.vim'
 Plug 'vim-scripts/SyntaxRange'
-Plug 'neomake/neomake'
 Plug 'kshenoy/vim-signature'
 Plug 'tpope/vim-speeddating'
 Plug 'tpope/vim-abolish'
@@ -113,6 +111,7 @@ Plug 'NLKNguyen/papercolor-theme'
 Plug 'algotech/ultisnips-php'
 Plug 'airblade/vim-gitgutter'
 Plug 'jamessan/vim-gnupg'
+Plug 'w0rp/ale'
 
 "NEW PLUGINS HERE
 call plug#end()
