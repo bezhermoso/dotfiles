@@ -46,18 +46,28 @@ end
 hotkey.bind({"alt"}, "`", function ()
   local focused = window.focusedWindow()
   if not focused then return end
-  local sc = focused:screen()
+  local mouseScreen = mouse.getCurrentScreen()
+  local focusedScreen = focused:screen()
+  local sc = mouseScreen
+  if not mouseScreen == focusedScreen then
+    sc = focusedScreen
+  end
   if not sc then return end
-  focusScreen(window.focusedWindow():screen():next(), true)
+  focusScreen(sc:next(), true)
 end)
 
 --Bring focus to previous display/screen
 hotkey.bind({"alt", "shift"}, "`", function()
   local focused = window.focusedWindow()
   if not focused then return end
-  local sc = focused:screen()
+  local mouseScreen = mouse.getCurrentScreen()
+  local focusedScreen = focused:screen()
+  local sc = mouseScreen
+  if not mouseScreen == focusedScreen then
+    sc = focusedScreen
+  end
   if not sc then return end
-  focusScreen(window.focusedWindow():screen():previous(), true)
+  focusScreen(sc:previous(), true)
 end)
 
 -- END DISPLAY FOCUS SWITCHING --
