@@ -11,38 +11,23 @@ Clone under `$HOME/.dotfiles` with `--recursive` flag
 
 ## Homebrew
 
-Most of the stuff here would not work 100% without some dependencies which are found in `homebrew/brews.txt`. This is probably the best first step:
 
 ```bash
 # Install Homebrew
 /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-
-# Install brews:
-brew install $(cat ~/.dotfiles/homebrew/brews.txt)
 ```
 
-
-## GUI applications (and some fonts)
+Use [Homebrew Bundle](https://github.com/Homebrew/homebrew-bundle) to install dependencies:
 
 ```bash
-# Install Cask:
-brew tap caskroom/cask
-
-# Tap homebrew-fonts:
-brew tap caskroom/fonts
-
-# Install applications:
-brew cask install $(cat ~/.dotfiles/homebrew/casks.txt)
+brew tap Homebrew/bundle
+brew bundle --file=homebrew/Brewfile
 ```
 
 ## zsh
 
 ```bash
 ln -s ~/.dotfiles/zsh/.zshenv ~/.zshenv
-
-# Restart terminal. Then:
-
-zplug install
 ```
 
 
