@@ -28,6 +28,9 @@ autocmd BufRead COMMIT_EDITMSG setlocal spell!
 autocmd BufRead *.{md,markdown} setlocal spell!
 autocmd FileChangedShell * echo "Warning: File changed on disk"
 
+" http://vim.wikia.com/wiki/Editing_crontab
+au BufEnter /private/tmp/crontab.* setl backupcopy=yes
+
 autocmd BufEnter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
 
 
