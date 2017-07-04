@@ -102,3 +102,7 @@ set updatecount=10
 set wrap
 set linebreak
 
+
+if has("nvim")
+  set inccommand=nosplit
+endif
