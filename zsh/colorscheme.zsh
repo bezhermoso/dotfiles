@@ -1,5 +1,5 @@
 # Taken from https://github.com/nicholaspufal/dotfiles/blob/master/symlinks/.colorscheme, with some changes.
-function base16 {
+function __base16 {
   local base16_dir="$HOME/.dotfiles/base16-shell/scripts"
 
   if [[ $# -eq 0 ]]; then
