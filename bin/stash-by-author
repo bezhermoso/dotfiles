@@ -1,0 +1,40 @@
+#!/usr/bin/env zsh
+
+function usage() {
+  print "Usage: stash-by-author -s <source_dir> -d <destination_dir>"
+  exit 1
+}
+
+function _stash-by-author() {
+  local src_dir="$(pwd)"
+  local dest_dir="$(pwd)"
+  local output_log="$(pwd)/stash-by-author.log"
+  while getopts ':s:u:o:' arg; do
+    case $arg in
+      s) src_dir="$OPTARG";;
+      d) dest_dir="$OPTARG";;
+      o) output_log="$OPTARG";;
+      \*) print nothing: $OPTARG; usage;;
+      \?) print invalid option: $OPTARG; usage;;
+    esac
+  done
+  echo "\nSTASH BY AUTHOR\n"
+  echo 'Source directory: '$src_dir
+  echo 'Destination directory: '$dest_dir | tee >(wc -c | read l; printf '=%.0s' {2..$l})
+  echo "\n"
+
+  for resource in $src_dir/*(/); do
+    local resource_basename=$(basename "$resource")
+    local author_name=$(awk -F' - ' '{print $1}' <<< "$resource_basename")
+    [[ "$resource_basename" == "$author_name" ]] && continue
+    if [[ ! -d "$dest_dir/$author_name" ]]; then
+      echo mkdir "$dest_dir/$author_name" && echo '`'$author_name'` created in destination.'
+    fi
+    echo -n 'Moving: `'$resource_basename'` => `'$author_name'`...'
+    echo mv -i "$resource" "$dest_dir/$author_name" && echo "done"
+  done
+  echo "\nDone stashing.\n"
+}
+
+_stash-by-author "$@"
+
