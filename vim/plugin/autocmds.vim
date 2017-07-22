@@ -20,6 +20,8 @@ autocmd BufNewFile,BufRead *.blade.php setlocal filetype=html
 autocmd BufNewFile,BufRead *.twig setlocal filetype=html
 autocmd BufNewFile,BufRead Dockerfile.* setlocal filetype=dockerfile
 autocmd BufNewFile,BufRead composer.{json,lock} setlocal filetype=json
+autocmd BufNewFile,BufRead *.tsql setlocal filetype=sql
+autocmd BufNewFile,BufRead .{eslint,eslintrc} setlocal filetype=json
 autocmd BufNewFile,BufRead PULLREQ_EDITMSG setlocal filetype=gitcommit
 
 let g:jsx_ext_required=0
