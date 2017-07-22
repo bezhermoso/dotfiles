@@ -112,6 +112,7 @@ Plug 'algotech/ultisnips-php'
 Plug 'airblade/vim-gitgutter'
 Plug 'jamessan/vim-gnupg'
 Plug 'w0rp/ale'
+Plug 'gregsexton/gitv', {'on': ['Gitv']}
 
 "NEW PLUGINS HERE
 call plug#end()
