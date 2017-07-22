@@ -47,3 +47,4 @@ augroup END
 
 let g:padawan#composer_command="/usr/local/bin/composer"
 
+autocmd FocusGained * silent! checktime
