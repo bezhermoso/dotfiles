@@ -40,7 +40,7 @@
 #[mergetool]
 #  prompt = false
 [gpg]
-  program = gpg2
+  program = gpg
 [color "diff-highlight"]
   oldHighlight = red bold 52
   newNormal = green bold
