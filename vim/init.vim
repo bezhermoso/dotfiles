@@ -113,6 +113,7 @@ Plug 'airblade/vim-gitgutter'
 Plug 'jamessan/vim-gnupg'
 Plug 'w0rp/ale'
 Plug 'gregsexton/gitv', {'on': ['Gitv']}
+Plug 'tpope/vim-rhubarb'
 
 "NEW PLUGINS HERE
 call plug#end()
