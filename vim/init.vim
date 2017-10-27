@@ -114,6 +114,7 @@ Plug 'jamessan/vim-gnupg'
 Plug 'w0rp/ale'
 Plug 'gregsexton/gitv', {'on': ['Gitv']}
 Plug 'tpope/vim-rhubarb'
+Plug 'rstacruz/vim-remux'
 
 "NEW PLUGINS HERE
 call plug#end()
