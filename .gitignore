@@ -5,3 +5,6 @@ zsh/.zhistory
 zsh/.zcompdump*
 zsh/.zcompcache
 karabiner/log
+php/composer/*
+!php/composer/composer.*
+
