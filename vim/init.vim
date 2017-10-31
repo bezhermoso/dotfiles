@@ -145,6 +145,6 @@ let g:startify_change_to_dir=0
 let NERDTreeCascadeOpenSingleChildDir=0
 
 let g:python_host_prog=$HOME . '/.pyenv/versions/neovim-2.7/bin/python'
-let g:python3_host_prog=$HOME . '/.pyenv/versions/neovim-3.5/bin/python3'
+let g:python3_host_prog=$HOME . '/.pyenv/versions/neovim-3.6/bin/python3'
 
 set tabstop=2
