@@ -115,6 +115,9 @@ Plug 'w0rp/ale'
 Plug 'gregsexton/gitv', {'on': ['Gitv']}
 Plug 'tpope/vim-rhubarb'
 Plug 'rstacruz/vim-remux'
+Plug 'posva/vim-vue'
+Plug 'raghur/vim-ghost', {'do': ':GhostInstall'}
+Plug 'fatih/vim-go'
 
 "NEW PLUGINS HERE
 call plug#end()
