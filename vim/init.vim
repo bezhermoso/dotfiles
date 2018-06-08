@@ -118,6 +118,8 @@ Plug 'rstacruz/vim-remux'
 Plug 'posva/vim-vue'
 Plug 'raghur/vim-ghost', {'do': ':GhostInstall'}
 Plug 'fatih/vim-go'
+Plug 'mustache/vim-mustache-handlebars'
+Plug 'chr4/nginx.vim'
 
 "NEW PLUGINS HERE
 call plug#end()
