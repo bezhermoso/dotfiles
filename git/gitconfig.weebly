@@ -1,52 +1,13 @@
+[include]
+  path = ~/.dotfiles/git/gitconfig.default
+
 [user]
-  email = bez@weebly.com
+	email = bez@weebly.com
   signingkey = E1A44332C871D925F331CCFAB91F85FC69D5EF83
-  name = Bezalel Hermoso
+	name = Bezalel Hermoso
 
-[core]
-  editor = 'nvim'
-  pager = diff-so-fancy | less --tabs=4 -R
-
-[filter "lfs"]
-  clean = git-lfs clean -- %f
-  smudge = git-lfs smudge -- %f
-  required = true
-
-# neovim:
-[merge]
-  conflictstyle = diff3
-  tool = vimdiff
-
-[mergetool]
-  prompt = false
-  keepBackup = false
-
-[mergetool "vimdiff"]
-  cmd = nvim -d $BASE $LOCAL $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'
-
-[alias]
-  commits = commit -S
-  amend = commit --amend
-  amends = commit -S --amend
-  rebases = rebase -S
-  diffw = diff --word-diff
-  plog = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
-
-# vim:
-#[merge]
-#  tool = vimdiff
-#  conflictstyle = diff3
-#
-#[mergetool]
-#  prompt = false
 [gpg]
   program = gpg
-[color "diff-highlight"]
-  oldHighlight = red bold 52
-  newNormal = green bold
-  newHighlight = green bold 22
-  oldNormal = red bold
-[diff-so-fancy]
-  changeHunkIndicators = true
-[commit]
-	gpgsign = true
+
+[hub]
+	host = github.intern.weebly.net
