@@ -147,4 +147,6 @@ let NERDTreeCascadeOpenSingleChildDir=0
 let g:python_host_prog=$HOME . '/.pyenv/versions/neovim-2.7/bin/python'
 let g:python3_host_prog=$HOME . '/.pyenv/versions/neovim-3.5/bin/python3'
 
+let g:NERDCustomDelimiters = { 'yaml': { 'left': '# ','right': '' } }
+
 set tabstop=2
