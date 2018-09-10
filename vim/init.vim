@@ -120,6 +120,10 @@ Plug 'raghur/vim-ghost', {'do': ':GhostInstall'}
 Plug 'fatih/vim-go'
 Plug 'mustache/vim-mustache-handlebars'
 Plug 'chr4/nginx.vim'
+Plug 'andymass/vim-tradewinds'
+Plug 'dhruvasagar/vim-table-mode'
+Plug 'mzlogin/vim-markdown-toc'
+Plug 'RRethy/vim-illuminate'
 
 "NEW PLUGINS HERE
 call plug#end()
