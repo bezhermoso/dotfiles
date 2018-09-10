@@ -14,6 +14,12 @@ else
     colorscheme base16-default-dark
 endif
 
+" set for MacVim
+if has("gui_macvim")
+  colorscheme base16-3024
+  set guifont=Fira\ Code:h18
+endif
+
 "let g:airline_theme="term"
 let g:airline_theme="badcat"
 let g:airline_powerline_fonts=0
