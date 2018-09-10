@@ -1,0 +1,16 @@
+# vi: set syntax=gitconfig :
+
+[user]
+	email = bezalel@squareup.com
+	signingkey = E1A44332C871D925F331CCFAB91F85FC69D5EF83
+	name = Bezalel Hermoso
+
+[hub]
+	host = github.intern.weebly.net
+
+[diff "sopsdiffer"]
+	textconv = sops -d
+
+[diff "sopsdiff"]
+	textconv = sops -d
+

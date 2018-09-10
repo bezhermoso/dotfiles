@@ -12,6 +12,7 @@
   clean = git-lfs clean -- %f
   smudge = git-lfs smudge -- %f
   required = true
+  process = git-lfs filter-process
 
 # neovim:
 [merge]
@@ -53,7 +54,13 @@
   changeHunkIndicators = true
 
 [commit]
-	gpgsign = true
+  gpgsign = true
+
+
+[user]
+  name = "Bez Hermoso"
+  email = "bezalelhermoso@gmail.com"
+  signingkey = 029DBA21BA363EF350C5E6F655BDEC097B885413
 
 [includeIf "gitdir:~/Weebly/**"]
   path = ~/.dotfiles/git/config.weebly
