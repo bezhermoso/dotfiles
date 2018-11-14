@@ -64,3 +64,9 @@
 
 [includeIf "gitdir:~/Weebly/**"]
   path = ~/.dotfiles/git/config.weebly
+
+[includeIf "gitdir:~/go/src/github.intern.weebly.net/**"]
+  path = ~/.dotfiles/git/config.weebly
+
+[includeIf "gitdir:~/.weld"]
+  path = ~/.dotfiles/git/config.weebly
