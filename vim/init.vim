@@ -30,7 +30,7 @@ Plug 'plasticboy/vim-markdown', { 'for': 'markdown' }
 "Plug 'powerline/powerline'
 Plug 'bling/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-Plug 'Valloric/YouCompleteMe'
+" Plug 'Valloric/YouCompleteMe'
 Plug 'scrooloose/nerdcommenter'
 Plug 'guns/xterm-color-table.vim'
 Plug 'tpope/vim-surround'
@@ -97,7 +97,7 @@ Plug 'morhetz/gruvbox'
 Plug 'junegunn/vim-xmark', {'do': 'make'}
 Plug 'leafgarland/typescript-vim'
 Plug '2072/PHP-Indenting-for-Vim'
-Plug 'mkusher/padawan.vim'
+" Plug 'mkusher/padawan.vim'
 Plug 'vim-scripts/textobj-syntax'
 Plug 'tpope/vim-vinegar'
 Plug 'vim-scripts/restore_view.vim'
@@ -124,6 +124,17 @@ Plug 'andymass/vim-tradewinds'
 Plug 'dhruvasagar/vim-table-mode'
 Plug 'mzlogin/vim-markdown-toc'
 Plug 'RRethy/vim-illuminate'
+
+if has('nvim')
+  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+else
+  Plug 'Shougo/deoplete.nvim'
+  Plug 'roxma/nvim-yarp'
+  Plug 'roxma/vim-hug-neovim-rpc'
+endif
+
+Plug 'phpactor/phpactor' ,  {'do': 'composer install --no-ansi', 'for': 'php'}
+Plug 'kristijanhusak/deoplete-phpactor'
 
 "NEW PLUGINS HERE
 call plug#end()
