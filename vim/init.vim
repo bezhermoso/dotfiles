@@ -124,6 +124,8 @@ Plug 'andymass/vim-tradewinds'
 Plug 'dhruvasagar/vim-table-mode'
 Plug 'mzlogin/vim-markdown-toc'
 Plug 'RRethy/vim-illuminate'
+Plug 'luochen1990/rainbow'
+Plug 'wlangstroth/vim-racket'
 
 if has('nvim')
   Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
