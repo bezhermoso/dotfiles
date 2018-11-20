@@ -150,3 +150,5 @@ let g:python3_host_prog=$HOME . '/.pyenv/versions/neovim-3.5/bin/python3'
 let g:NERDCustomDelimiters = { 'yaml': { 'left': '# ','right': '' } }
 
 set tabstop=2
+
+set grepprg=rg\ --vimgrep
