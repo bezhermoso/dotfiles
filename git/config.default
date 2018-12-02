@@ -1,0 +1,7 @@
+# vi: set syntax=gitconfig :
+
+[user]
+  email = bezalelhermoso@gmail.com
+  signingkey = 55BDEC097B885413
+  name = Bez Hermoso
+

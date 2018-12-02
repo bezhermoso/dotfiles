@@ -1,0 +1,26 @@
+-- Name: Base16 Materia
+-- Author: Defman21
+-- Template by Bez Hermoso <bezalelhermoso@gmail.com>
+
+Description = "Base16 "
+
+Default = { Colour = "#CDD3DE" }
+Canvas = { Colour="#263238" }
+Number = { Colour="#EA9560" }
+Escape = { Colour="#D5DBE5" , Italic=true}
+String = { Colour="#8BD649" }
+BlockComment = { Colour="#707880" }
+StringPreProc = String
+LineComment   = BlockComment
+Operator      = { Colour="#CDD3DE" }
+LineNum      = { Color="#707880" }
+PreProcessor      = { Colour="#EC5F67" }
+Interpolation  = Escape
+
+Keywords = {
+  { Colour="#EC5F67", Bold=true},
+  { Colour="#FFCC00"},
+  { Colour="#89DDFF"},
+  { Colour="#FFCC00"},
+  { Colour="#FFCC00" }
+}

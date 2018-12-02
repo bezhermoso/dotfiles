@@ -1,0 +1,26 @@
+-- Name: Base16 Material Lighter
+-- Author: Nate Peterson
+-- Template by Bez Hermoso <bezalelhermoso@gmail.com>
+
+Description = "Base16 "
+
+Default = { Colour = "#80CBC4" }
+Canvas = { Colour="#FAFAFA" }
+Number = { Colour="#F76D47" }
+Escape = { Colour="#80CBC4" , Italic=true}
+String = { Colour="#91B859" }
+BlockComment = { Colour="#CCD7DA" }
+StringPreProc = String
+LineComment   = BlockComment
+Operator      = { Colour="#80CBC4" }
+LineNum      = { Color="#CCD7DA" }
+PreProcessor      = { Colour="#E53935" }
+Interpolation  = Escape
+
+Keywords = {
+  { Colour="#FF5370", Bold=true},
+  { Colour="#FFB62C"},
+  { Colour="#6182B8"},
+  { Colour="#FFB62C"},
+  { Colour="#FFB62C" }
+}
