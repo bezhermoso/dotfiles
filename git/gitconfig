@@ -70,3 +70,7 @@
 
 [includeIf "gitdir:~/.weld"]
   path = ~/.dotfiles/git/config.weebly
+[push]
+	default = simple
+[color]
+	ui = auto
