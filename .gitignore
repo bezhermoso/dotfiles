@@ -7,4 +7,6 @@ zsh/.zcompcache
 karabiner/log
 php/composer/*
 !php/composer/composer.*
+pgcli/history
+pgcli/log
 
