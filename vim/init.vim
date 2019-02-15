@@ -103,6 +103,7 @@ Plug 'mzlogin/vim-markdown-toc'
 Plug 'RRethy/vim-illuminate'
 Plug 'luochen1990/rainbow'
 Plug 'wlangstroth/vim-racket'
+Plug 'zivyangll/git-blame.vim'
 
 if has('nvim')
   Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
