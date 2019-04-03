@@ -11,3 +11,6 @@
 [submodule "og-jira"]
 	path = spacemacs/layers/contrib/org-jira
 	url = https://github.com/baohaojun/org-jira.git
+[submodule "intelli-space"]
+	path = intelli-space
+	url = git@github.com:MarcoIeni/intelli-space.git
