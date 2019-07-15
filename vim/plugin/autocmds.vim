@@ -1,4 +1,3 @@
-
 " Save when vim buffer lose focus
 "au FocusLost * :wa
 
@@ -23,7 +22,6 @@ autocmd BufNewFile,BufRead composer.{json,lock} setlocal filetype=json
 autocmd BufNewFile,BufRead *.tsql setlocal filetype=sql
 autocmd BufNewFile,BufRead .{eslint,eslintrc} setlocal filetype=json
 autocmd BufNewFile,BufRead,BufEnter PULLREQ_EDITMSG setlocal filetype=gitcommit
-autocmd BufNewFile,BufRead,BufEnter */.git/index setlocal filetype=gitcommit
 
 let g:jsx_ext_required=0
 " Enable spellcheck on git commits & markdown files
