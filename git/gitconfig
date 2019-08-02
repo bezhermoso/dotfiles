@@ -1,37 +1,38 @@
 # vi: set syntax=gitconfig :
 
 [include]
-  path = ~/.dotfiles/git/config.default
+	path = ~/.dotfiles/git/config.default
 
 [core]
-  editor = 'nvim'
-  pager = diff-so-fancy | less --tabs=4 -R
+	editor = 'nvim'
+	pager = diff-so-fancy | less --tabs=4 -R
+	commentChar = ";"
 
 [filter "lfs"]
-  clean = git-lfs clean -- %f
-  smudge = git-lfs smudge -- %f
-  required = true
-  process = git-lfs filter-process
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	required = true
+	process = git-lfs filter-process
 
 # neovim:
 [merge]
-  conflictstyle = diff3
-  tool = vimdiff
+	conflictstyle = diff3
+	tool = vimdiff
 
 [mergetool]
-  prompt = false
-  keepBackup = false
+	prompt = false
+	keepBackup = false
 
 [mergetool "vimdiff"]
-  cmd = nvim -d $BASE $LOCAL $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'
+	cmd = nvim -d $BASE $LOCAL $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'
 
 [alias]
-  commits = commit -S
-  amend = commit --amend
-  amends = commit -S --amend
-  rebases = rebase -S
-  diffw = diff --word-diff
-  plog = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+	commits = commit -S
+	amend = commit --amend
+	amends = commit -S --amend
+	rebases = rebase -S
+	diffw = diff --word-diff
+	plog = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
 
 # vim:
 #[merge]
@@ -41,34 +42,34 @@
 #[mergetool]
 #  prompt = false
 [gpg]
-  program = gpg
+	program = gpg
 
 [color "diff-highlight"]
-  oldHighlight = red bold 52
-  newNormal = green bold
-  newHighlight = green bold 22
-  oldNormal = red bold
+	oldHighlight = red bold 52
+	newNormal = green bold
+	newHighlight = green bold 22
+	oldNormal = red bold
 
 [diff-so-fancy]
-  changeHunkIndicators = true
+	changeHunkIndicators = true
 
 [commit]
-  gpgsign = true
+	gpgsign = true
 
 
 [user]
-  name = "Bez Hermoso"
-  email = "bezalelhermoso@gmail.com"
-  signingkey = 029DBA21BA363EF350C5E6F655BDEC097B885413
+	name = Bez Hermoso
+	email = bezalelhermoso@gmail.com
+	signingkey = 029DBA21BA363EF350C5E6F655BDEC097B885413
 
 [includeIf "gitdir:~/Weebly/**"]
-  path = ~/.dotfiles/git/config.weebly
+	path = ~/.dotfiles/git/config.weebly
 
 [includeIf "gitdir:~/go/src/github.intern.weebly.net/**"]
-  path = ~/.dotfiles/git/config.weebly
+	path = ~/.dotfiles/git/config.weebly
 
-[includeIf "gitdir:~/.weld"]
-  path = ~/.dotfiles/git/config.weebly
+[includeIf "gitdir:~/.weld/**"]
+	path = ~/.dotfiles/git/config.weebly
 [push]
 	default = simple
 [color]
