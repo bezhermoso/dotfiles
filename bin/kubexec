@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+function _kube-exec() {
+  cmd="$@"
+  pod=$(_kube-pick-pod)
+  ret=$?
+  if [[ $ret -ne 0 ]]; then
+    echo 'Aborted.'
+    exit $ret
+  fi
+  container=$(_kube-pick-container $pod)
+  ret=$?
+  if [[ $ret -ne 0 ]]; then
+    echo 'Aborted.'
+    exit $ret
+  fi
+  kubectl exec -it $pod -c $container -- $cmd
+}
+
+function _kube-pick-container() {
+  kubectl get pod $@ -o jsonpath='{range .spec.containers[*]}{.name}{"\n"}{end}' | fzf +s --prompt='Container: > '
+  exit $?
+}
+
+function _kube-pick-pod() {
+  podline="$(kubectl get pods | awk 'NR!=1' | fzf --prompt='Pod: > ')"
+  ret=$?
+  if [[ $ret -ne 0 ]]; then
+    exit $ret
+  fi
+  echo $podline | awk '{print $1}'
+}
+
+_kube-exec "$@"
+
