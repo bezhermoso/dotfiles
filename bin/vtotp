@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+SECRET_PATH="$HOME/.totp/openvpn.gpg"
+
+function _vtotp () {
+    secret=$(gpg -d "$SECRET_PATH" 2>/dev/null)
+    oathtool "$secret" --totp -d 7 --base32 --time-step-size 10s | tee >(pbcopy)
+}
+
+_vtotp "$@"

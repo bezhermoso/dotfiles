@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+SECRET_PATH="$HOME/.totp/weebly-ssh.gpg"
+
+function _wtotp () {
+    secret=$(gpg -d "$SECRET_PATH" 2>/dev/null)
+    oathtool "$secret" --totp -d 6 --base32 | tee >(pbcopy)
+}
+
+_wtotp "$@"
