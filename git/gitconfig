@@ -6,6 +6,7 @@
 [core]
 	editor = 'nvim'
 	pager = diff-so-fancy | less --tabs=4 -R
+#	pager = delta --plus-color="#012800" --minus-color="#340001" --theme='base16'
 
 [filter "lfs"]
 	clean = git-lfs clean -- %f
@@ -63,6 +64,12 @@
 	showStash = true
 	submoduleSummary = true
 
+[rebase]
+	autoStash = true
+
+[interactive]
+#	diffFilter = delta --color-only
+
 
 [user]
 	name = Bez Hermoso
@@ -78,6 +85,9 @@
 [includeIf "gitdir:~/.weld/**"]
 	path = ~/.dotfiles/git/config.weebly
 [push]
-	default = simple
+	default = current
 [color]
 	ui = auto
+
+[url "ssh://git@github.intern.weebly.net/"]
+    insteadOf = https://github.intern.weebly.net/
