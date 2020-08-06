@@ -10,7 +10,7 @@ nnoremap / /\v
 vnoremap / /\v
 nnoremap ? ?\v
 vnoremap ? ?\v
-nnoremap <leader>s <esc>:%s//g<left><left>
+"nnoremap <leader>s <esc>:%s//g<left><left>
 
 " Keep search results centered
 nnoremap <silent> n nzz

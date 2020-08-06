@@ -21,7 +21,7 @@ if has("gui_macvim")
 endif
 
 "let g:airline_theme="term"
-let g:airline_theme="badcat"
+let g:airline_theme="base16color"
 let g:airline_powerline_fonts=0
 
 "let g:airline_symbols={}

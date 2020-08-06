@@ -18,9 +18,8 @@ endfunction
 
 autocmd! User FzfStatusLine call <SID>fzf_statusline()
 
-if has('neovim')
-  let g:fzf_layout = { 'window': 'enew' }
-endif
+"let g:fzf_layout = { 'window': 'enew' }
+let g:fzf_layout = {'up':'~90%', 'window': { 'width': 0.8, 'height': 0.8, 'yoffset':0.5, 'xoffset': 0.5, 'highlight': 'Todo', 'border': 'sharp' } }
 
 "let g:fzf_colors =
   "\ { 'fg':      ['fg', 'Normal'],

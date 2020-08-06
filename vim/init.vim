@@ -35,7 +35,7 @@ Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
 Plug 'unblevable/quick-scope'
 Plug 'tpope/vim-endwise', { 'for': 'ruby' }
-Plug 'StanAngeloff/php.vim'
+"Plug 'StanAngeloff/php.vim'
 Plug 'rstacruz/vim-closer'
 Plug 'austintaylor/vim-commaobject'
 Plug 'easymotion/vim-easymotion'
@@ -88,7 +88,7 @@ Plug 'NLKNguyen/papercolor-theme'
 Plug 'algotech/ultisnips-php'
 Plug 'airblade/vim-gitgutter'
 Plug 'jamessan/vim-gnupg'
-Plug 'w0rp/ale'
+"Plug 'w0rp/ale'
 Plug 'gregsexton/gitv', {'on': ['Gitv']}
 Plug 'tpope/vim-rhubarb'
 Plug 'rstacruz/vim-remux'
@@ -104,17 +104,19 @@ Plug 'RRethy/vim-illuminate'
 Plug 'luochen1990/rainbow'
 Plug 'wlangstroth/vim-racket'
 Plug 'zivyangll/git-blame.vim'
+Plug 'neoclide/coc.nvim', {'branch': 'master'}
+Plug 'antoinemadec/coc-fzf'
 
-if has('nvim')
-  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-else
-  Plug 'Shougo/deoplete.nvim'
-  Plug 'roxma/nvim-yarp'
-  Plug 'roxma/vim-hug-neovim-rpc'
-endif
+"if has('nvim')
+  "Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+"else
+  "Plug 'Shougo/deoplete.nvim'
+  "Plug 'roxma/nvim-yarp'
+  "Plug 'roxma/vim-hug-neovim-rpc'
+"endif
 
-Plug 'phpactor/phpactor' ,  {'do': 'composer install --no-ansi', 'for': 'php'}
-Plug 'kristijanhusak/deoplete-phpactor'
+"Plug 'phpactor/phpactor' ,  {'do': 'composer install --no-ansi', 'for': 'php'}
+"Plug 'kristijanhusak/deoplete-phpactor'
 
 "NEW PLUGINS HERE
 call plug#end()

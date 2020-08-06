@@ -1,4 +1,5 @@
-" Include use statement
+finish
+"Include use statement
 nmap <Leader>u :call phpactor#UseAdd()<CR>
 
 " Invoke the context menu
