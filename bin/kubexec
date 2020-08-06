@@ -18,12 +18,12 @@ function _kube-exec() {
 }
 
 function _kube-pick-container() {
-  kubectl get pod $@ -o jsonpath='{range .spec.containers[*]}{.name}{"\n"}{end}' | fzf +s --prompt='Container: > '
+  kubectl get pod $@ -o jsonpath='{range .spec.containers[*]}{.name}{"\n"}{end}' | fzf +s --prompt='Container: > ' --preview=''
   exit $?
 }
 
 function _kube-pick-pod() {
-  podline="$(kubectl get pods | awk 'NR!=1' | fzf --prompt='Pod: > ')"
+  podline="$(kubectl get pods --field-selector status.phase=Running | awk 'NR!=1' | fzf --prompt='Pod: > ' --preview='kubectl describe pod {1}')"
   ret=$?
   if [[ $ret -ne 0 ]]; then
     exit $ret
