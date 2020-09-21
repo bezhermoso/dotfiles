@@ -106,7 +106,6 @@ Plug 'wlangstroth/vim-racket'
 Plug 'zivyangll/git-blame.vim'
 Plug 'neoclide/coc.nvim', {'branch': 'master'}
 Plug 'antoinemadec/coc-fzf'
-
 "if has('nvim')
   "Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 "else
@@ -116,8 +115,6 @@ Plug 'antoinemadec/coc-fzf'
 "endif
 
 "Plug 'phpactor/phpactor' ,  {'do': 'composer install --no-ansi', 'for': 'php'}
-"Plug 'kristijanhusak/deoplete-phpactor'
-
 "NEW PLUGINS HERE
 call plug#end()
 
