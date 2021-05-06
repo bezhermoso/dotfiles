@@ -9,8 +9,8 @@
 	host = github.intern.weebly.net
 
 [diff "sopsdiffer"]
-	textconv = sops -d
+	textconv = weld sops decrypt
 
 [diff "sopsdiff"]
-	textconv = sops -d
+	textconv = weld sops decrypt
 
