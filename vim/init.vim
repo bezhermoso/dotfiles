@@ -74,7 +74,7 @@ Plug 'jwalton512/vim-blade'
 Plug 'jiangmiao/auto-pairs'
 Plug 'mhinz/vim-startify'
 Plug 'morhetz/gruvbox'
-Plug 'junegunn/vim-xmark', {'do': 'make'}
+Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install()  }, 'for': ['markdown', 'vim-plug'] }
 Plug 'leafgarland/typescript-vim'
 Plug 'vim-scripts/textobj-syntax'
 Plug 'tpope/vim-vinegar'
