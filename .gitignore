@@ -2,6 +2,7 @@ vim/plugged/*
 vim/viminfo*
 .DS_Store
 zsh/.zhistory
+zsh/.zsh_history
 zsh/.zcompdump*
 zsh/.zcompcache
 karabiner/log
