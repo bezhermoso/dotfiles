@@ -78,7 +78,7 @@
 
 [user]
 	name = Bez Hermoso
-	email = bezalelhermoso@gmail.com
+	email = bezalel@squareup.com
 	signingkey = 029DBA21BA363EF350C5E6F655BDEC097B885413
 
 [includeIf "gitdir:~/dev/**"]
