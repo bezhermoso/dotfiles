@@ -106,6 +106,7 @@ Plug 'wlangstroth/vim-racket'
 Plug 'zivyangll/git-blame.vim'
 Plug 'neoclide/coc.nvim', {'branch': 'master'}
 Plug 'antoinemadec/coc-fzf'
+Plug 'hashivim/vim-terraform'
 "if has('nvim')
   "Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 "else
