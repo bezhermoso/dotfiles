@@ -104,7 +104,7 @@ Plug 'RRethy/vim-illuminate'
 Plug 'luochen1990/rainbow'
 Plug 'wlangstroth/vim-racket'
 Plug 'zivyangll/git-blame.vim'
-Plug 'neoclide/coc.nvim', {'branch': 'master'}
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'antoinemadec/coc-fzf'
 Plug 'hashivim/vim-terraform'
 "if has('nvim')
