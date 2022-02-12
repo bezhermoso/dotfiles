@@ -10,4 +10,5 @@ php/composer/*
 !php/composer/composer.*
 pgcli/history
 pgcli/log
-
+work-entrypoint.sh
+zsh/.zsh_sessions
