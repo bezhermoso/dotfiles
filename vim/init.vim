@@ -139,7 +139,7 @@ filetype plugin indent on
 "call unite#filters#matcher_default#use(['matcher_fuzzy'])
 "let g:unite_source_rec_async_command = [ 'ag', '-l', '-g', '', '--nocolor' ]
 
-let g:startify_bookmarks = ['~/.vimrc', '~/.zprofile', '~/.zshrc']
+let g:startify_bookmarks = ['~/.vimrc', '~/.zprofile', '~/.zshrc', '~/.dotfiles/vim/init.vim']
 let g:startify_change_to_dir=0
 
 let NERDTreeCascadeOpenSingleChildDir=0
