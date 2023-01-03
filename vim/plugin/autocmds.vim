@@ -20,10 +20,12 @@ autocmd BufNewFile,BufRead *.twig setlocal filetype=html
 autocmd BufNewFile,BufRead Dockerfile.* setlocal filetype=dockerfile
 autocmd BufNewFile,BufRead composer.{json,lock} setlocal filetype=json
 autocmd BufNewFile,BufRead .ecom-ci setlocal filetype=yaml
+autocmd BufNewFile,BufRead *.neon setlocal filetype=yaml
 autocmd BufNewFile,BufRead *.tsql setlocal filetype=sql
 autocmd BufNewFile,BufRead .{eslint,eslintrc} setlocal filetype=json
 autocmd BufNewFile,BufRead,BufEnter PULLREQ_EDITMSG setlocal filetype=gitcommit
 autocmd BufNewFile,BufRead,BufEnter *.yaml.template setlocal filetype=gotexttmpl.yaml
+autocmd BufNewFile,BufRead,BufEnter Makefile setlocal filetype=make noexpandtab
 
 let g:jsx_ext_required=0
 " Enable spellcheck on git commits & markdown files
