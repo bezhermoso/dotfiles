@@ -154,3 +154,4 @@ set tabstop=2
 
 set grepprg=rg\ --vimgrep
 set rtp+=/usr/local/opt/fzf
+

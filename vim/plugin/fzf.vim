@@ -41,3 +41,13 @@ command! -bang -nargs=* Rg
   \   <bang>0 ? fzf#vim#with_preview('up:60%')
   \           : fzf#vim#with_preview('right:50%:hidden', '?'),
   \   <bang>0)
+
+"function! FilesAndBuffers(dir)
+"  let files_cmd = $FZF_DEFAULT_COMMAND
+"  let buffers = filter(range(1, bufnr('$')), 'buflisted(v:val) && getbufvar(v:val, "&filetype") != "qf"')
+"  let files = systemlist(files_cmd)
+"  call fzf#run({'source':buffers,
+"        \ 'options': '--no-preview'
+"        \ })
+"endfunction
+"call FilesAndBuffers("")
