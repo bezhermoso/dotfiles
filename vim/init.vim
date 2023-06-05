@@ -107,6 +107,7 @@ Plug 'zivyangll/git-blame.vim'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'antoinemadec/coc-fzf'
 Plug 'hashivim/vim-terraform'
+Plug 'isobit/vim-caddyfile'
 "if has('nvim')
   "Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 "else
