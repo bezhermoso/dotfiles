@@ -11,7 +11,7 @@ set synmaxcol=500
 let mapleader="\<Space>"
 
 let g:plug_timeout=180
-call plug#begin()
+call plug#begin('~/.vim/plugged')
 Plug 'tpope/vim-fugitive'
 " " git repos on your local machine (i.e. when working on your own plugin)
 " Plug 'file:///home/gmarik/path/to/plugin'
