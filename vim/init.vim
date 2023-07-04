@@ -43,7 +43,7 @@ Plug 'reedes/vim-pencil'
 Plug 'junegunn/goyo.vim'
 Plug 'chrisbra/unicode.vim'
 Plug 'majutsushi/tagbar'
-Plug 'xolox/vim-easytags'
+"Plug 'xolox/vim-easytags'
 Plug 'xolox/vim-misc'
 Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
 Plug 'kchmck/vim-coffee-script'
@@ -108,6 +108,7 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'antoinemadec/coc-fzf'
 Plug 'hashivim/vim-terraform'
 Plug 'isobit/vim-caddyfile'
+Plug 'ludovicchabant/vim-gutentags'
 "if has('nvim')
   "Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 "else
