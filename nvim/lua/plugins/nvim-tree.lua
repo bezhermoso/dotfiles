@@ -10,7 +10,10 @@ return {
 				float = {
 					enable = true,
 					open_win_config = {
-						height = 100
+						height = 100,
+                        border = "shadow",
+                        row = 0,
+                        col = 0,
 					}
 				}
 			}
