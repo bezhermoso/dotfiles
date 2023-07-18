@@ -24,15 +24,6 @@ vim.opt.colorcolumn = '+1'
 -- vim.opt.formatoptions = "qrn1" -- Previous value. Testing out defualt
 -- }}}
 
--- Timeouts {{{
--- Time in milliseconds to wait for a mapped sequence to complete:
--- vim.opt.timeoutlen = 1000
--- -- Time in millisecond to wait for a key code sequence to complete:
--- vim.opt.ttimeoutlen = 0
--- vim.opt.timeout = true
--- vim.opt.updatetime = 1000
--- }}}
-
 -- BUFFERS {{{
 
 vim.opt.title = true
@@ -115,5 +106,11 @@ vim.opt.showmatch = true
 vim.opt.wildmode = "full" -- Trying this out
 -- Show in pop-up menu:
 vim.opt.wildoptions = "pum"
+
+-- }}}
+
+-- SCRIPTING PROVIDERS {{{
+-- let g:python_host_prog=$HOME.'/.pyenv/versions/neovim2/bin/python'
+vim.g.python3_host_prog = '~/.pyenv/versions/neovim3/bin/python'
 
 -- }}}
