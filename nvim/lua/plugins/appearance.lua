@@ -1,6 +1,17 @@
 
 return {
     {
+        'nvim-lualine/lualine.nvim',
+        lazy = false,
+        opts = {
+            options = {
+                theme = 'gruvbox',
+                section_separators = '',
+                component_separators = '',
+            },
+        },
+    },
+    {
         'nvim-tree/nvim-web-devicons',
         lazy = true,
     },
@@ -21,7 +32,7 @@ return {
         priority = 1000,
         lazy = false,
         config = function()
-          --  vim.cmd([[colorscheme catppuccin]])
+            --  vim.cmd([[colorscheme catppuccin]])
         end
     }
 }
