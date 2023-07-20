@@ -6,6 +6,10 @@ return {
     },
     config = function()
         require("nvim-tree").setup({
+            update_to_buf_dir = {
+                enable = false,
+                auto_open = false,
+            },
             view = {
                 float = {
                     enable = true,
