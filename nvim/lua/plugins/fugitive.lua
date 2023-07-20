@@ -1,4 +1,4 @@
 return {
     "tpope/vim-fugitive",
-    lazy = false
+    lazy = false,
 }

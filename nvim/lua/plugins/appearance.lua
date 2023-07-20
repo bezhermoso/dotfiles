@@ -19,7 +19,12 @@ return {
         'ellisonleao/gruvbox.nvim',
         priority = 1000,
         config = function()
-            vim.cmd([[colorscheme base16-gruvbox-dark-hard]])
+            local themepath = vim.fn.expand('~/.vimrc_background')
+            if vim.loop.fs_stat(themepath) then
+                print('Loading theme from ' .. themepath)
+            else
+                vim.cmd('colorscheme base16-gruvbox-' .. vim.o.background .. 'hard')
+            end
         end
     },
     {
