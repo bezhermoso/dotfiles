@@ -1,4 +1,3 @@
-
 return {
     {
         'nvim-lualine/lualine.nvim',
@@ -18,19 +17,22 @@ return {
     {
         'ellisonleao/gruvbox.nvim',
         priority = 1000,
-        config = function()
-            local themepath = vim.fn.expand('~/.vimrc_background')
-            if vim.loop.fs_stat(themepath) then
-                print('Loading theme from ' .. themepath)
-                vim.cmd('source ' .. themepath)
-            else
-                vim.cmd('colorscheme base16-gruvbox-' .. vim.o.background .. '-hard')
-            end
-        end
     },
     {
         'RRethy/nvim-base16',
         priority = 1000,
+        config = function()
+            local base16_adopt_shell_theme = function ()
+            local themepath = vim.fn.expand('~/.vimrc_background')
+                if vim.loop.fs_stat(themepath) then
+                    print('Loading theme from ' .. themepath)
+                    vim.cmd('source ' .. themepath)
+                end
+            end
+            base16_adopt_shell_theme()
+
+            vim.keymap.set('n', '<leader>bt', base16_adopt_shell_theme)
+        end
     },
     {
         "catppuccin/nvim",
