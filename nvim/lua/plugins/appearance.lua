@@ -22,8 +22,9 @@ return {
             local themepath = vim.fn.expand('~/.vimrc_background')
             if vim.loop.fs_stat(themepath) then
                 print('Loading theme from ' .. themepath)
+                vim.cmd('source ' .. themepath)
             else
-                vim.cmd('colorscheme base16-gruvbox-' .. vim.o.background .. 'hard')
+                vim.cmd('colorscheme base16-gruvbox-' .. vim.o.background .. '-hard')
             end
         end
     },
