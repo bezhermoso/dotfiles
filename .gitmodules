@@ -11,6 +11,3 @@
 [submodule "intelli-space"]
 	path = intelli-space
 	url = git@github.com:MarcoIeni/intelli-space.git
-[submodule "git-jump-root"]
-	path = git-jump-root
-	url = git@github.com:bezhermoso/jump-to-git-root.git
