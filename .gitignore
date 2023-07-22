@@ -13,3 +13,5 @@ pgcli/log
 work-entrypoint.sh
 work-entrypoint.post.sh
 zsh/.zsh_sessions
+bin/fleet
+bin/idea
