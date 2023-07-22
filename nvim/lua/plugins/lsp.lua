@@ -18,7 +18,7 @@ return {
         config = function()
             require('mason').setup()
             require('mason-lspconfig').setup({
-                ensure_installed = {'gopls', 'phpactor', 'lua_ls'},
+                ensure_installed = {'gopls', 'phpactor', 'lua_ls', 'intelephense'},
             })
             local on_attach = function ()
                 vim.keymap.set('n', '<leader>mv', vim.lsp.buf.rename, {})
@@ -44,6 +44,9 @@ return {
                         }
                     }
                 }
+            })
+            lspconfig.intelephense.setup({
+                on_attach = on_attach,
             })
         end
     },

@@ -8,7 +8,10 @@ return {
     },
     {
         'nvim-telescope/telescope.nvim',
-        dependencies = { 'nvim-lua/plenary.nvim' },
+        dependencies = {
+            'nvim-lua/plenary.nvim',
+            'nvim-telescope/telescope-ui-select.nvim',
+        },
         keys = {
             {"<leader>F", ":lua require('telescope.builtin').resume()<CR>"},
             {"<leader>fG", ":lua require('telescope.builtin').grep_string()<CR>"},
@@ -29,6 +32,7 @@ return {
             local telescope = require('telescope')
             telescope.setup(opts)
             telescope.load_extension('fzf')
+            telescope.load_extension('ui-select')
         end,
         opts = {
             defaults = {
