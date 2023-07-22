@@ -6,7 +6,7 @@ return {
     },
     config = function()
         require("nvim-tree").setup({
-            update_to_buf_dir = {
+            hijack_directories = {
                 enable = false,
                 auto_open = false,
             },
@@ -15,6 +15,7 @@ return {
                     enable = true,
                     open_win_config = {
                         height = 100,
+                        width = 50,
                         border = "shadow",
                         row = 0,
                         col = 0,
