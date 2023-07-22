@@ -21,12 +21,27 @@ return {
                 ensure_installed = {'gopls', 'phpactor', 'lua_ls', 'intelephense'},
             })
             local on_attach = function ()
-                vim.keymap.set('n', '<leader>mv', vim.lsp.buf.rename, {})
-                vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, {})
-                vim.keymap.set('n', 'gd', vim.lsp.buf.definition, {})
-                vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, {})
-                vim.keymap.set('n', 'gr', require('telescope.builtin').lsp_references, {})
-                vim.keymap.set('n', 'K', vim.lsp.buf.hover, {})
+                vim.keymap.set('n', '<leader>mv', vim.lsp.buf.rename, {
+                    desc = 'LSP: Rename',
+                })
+                vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, {
+                    desc = 'LSP: Code Actions...',
+                })
+                vim.keymap.set('n', 'gd', vim.lsp.buf.definition, {
+                    desc = 'LSP: Go to definition',
+                })
+                vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, {
+                    desc = 'LSP: Go to implementation',
+                })
+                vim.keymap.set('n', 'gr', require('telescope.builtin').lsp_references, {
+                    desc = 'LSP: Show usages'
+                })
+                vim.keymap.set('n', 'K', vim.lsp.buf.hover, {
+                    desc = 'LSP: Show tooltip'
+                })
+                vim.keymap.set('n', '<leader>==', vim.lsp.buf.format, {
+                    desc = 'LSP: Format',
+                })
             end
             local lspconfig = require('lspconfig')
             lspconfig.gopls.setup({
