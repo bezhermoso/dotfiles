@@ -11,7 +11,7 @@ return {
             enabled = true,
         },
         window = {
-            border = "none",
-        }
+            border = "single",
+        },
     }
 }
