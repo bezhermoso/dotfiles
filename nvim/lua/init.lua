@@ -21,3 +21,5 @@ require("lazy").setup("plugins")
 require("core.backup")
 require("core.undo")
 require("core.swap")
+
+require('core.keymaps')
