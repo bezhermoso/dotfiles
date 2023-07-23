@@ -4,7 +4,7 @@ return {
         lazy = false,
         opts = {
             options = {
-                theme = 'gruvbox',
+                theme = 'base16',
                 section_separators = '',
                 component_separators = '',
             },
