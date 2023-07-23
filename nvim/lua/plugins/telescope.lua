@@ -14,7 +14,7 @@ return {
         },
         keys = {
             {"<leader>F", ":lua require('telescope.builtin').resume()<CR>", desc = 'Telescope: Resume'},
-            {"<leader>f*", ":lua require('telescope.builtin').grep_string()<CR>", desc = 'Telescope: Grep string...'},
+            {"<leader>*", ":lua require('telescope.builtin').grep_string()<CR>", desc = 'Telescope: Grep string...', mode = {'v', 'n'}},
             {"<leader>fQ", ":lua require('telescope.builtin').quickfixhistory()<CR>", desc = 'Telescope: Quickfix (History)'},
             {"<leader>fb", ":lua require('telescope.builtin').buffers()<CR>", desc = 'Telescope: Buffers'},
             {"<leader>fc", ":lua require('telescope.builtin').colorscheme()<CR>", desc = 'Telescope: Colorschemes'},
