@@ -4,7 +4,7 @@
 	branch = master
 [submodule "base16-shell"]
 	path = base16-shell
-	url = https://github.com/bezhermoso/base16-shell.git
+	url = https://github.com/tinted-theming/base16-shell.git
 [submodule "org-article"]
 	path = emacs/org-article
 	url = git://github.com/tsdye/org-article.git
