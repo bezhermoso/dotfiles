@@ -36,11 +36,10 @@ ln -s ~/.dotfiles/zsh/.zshenv ~/.zshenv
 ```bash
 ln -s ~/.dotfiles/vim ~/.config/nvim
 
-# Install `vim-plug`:
-curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+# lazy.nvim will bootstrap itself and install dependencies.
+nvim
 
-# Run :PlugInstall:
-nvim +PlugInstall
+# Run :Mason to configure LSPs
 ```
 
 ## tmux
@@ -64,4 +63,17 @@ sudo apt-get install -y python-software-properties software-properties-common
 sudo add-apt-repository -y ppa:pi-rho/dev
 sudo apt-get update
 sudo apt-get install -y tmux=2.0-1~ppa1~t
+```
+
+## bat
+
+```
+ln -s ~/.dotfiles/bat ~/.config/bat
+```
+
+## atuin
+
+```
+ln -s ~/.dotfiles/atuin ~/.config/atuin
+atuin login
 ```
