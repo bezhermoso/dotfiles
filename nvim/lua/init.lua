@@ -16,7 +16,12 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
-require("lazy").setup("plugins")
+require("lazy").setup({
+    spec = 'plugins',
+    dev = {
+        path = '~/Development',
+    },
+})
 
 require("core.backup")
 require("core.undo")

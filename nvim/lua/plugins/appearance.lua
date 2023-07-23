@@ -21,20 +21,25 @@ return {
     {
         'RRethy/nvim-base16',
         priority = 1000,
+        dev = true,
+        lazy = false,
+        dependencies = {
+            'rcarriga/nvim-notify',
+        },
         config = function()
-            local base16_adopt_shell_theme = function()
-                local fn = vim.fn
-                local cmd = vim.cmd
-                local set_theme_path = "$HOME/.config/tinted-theming/set_theme.lua"
-                local is_set_theme_file_readable = fn.filereadable(fn.expand(set_theme_path)) == 1 and true or false
-                if is_set_theme_file_readable then
-                    cmd("let base16colorspace=256")
-                    cmd("source " .. set_theme_path)
+            local base16 = require('base16-colorscheme')
+            base16.setup()
+
+            local load_from_shell = function ()
+                local res = base16.load_from_shell()
+                if res then
+                    vim.notify('Loaded ' .. res, vim.log.levels.INFO)
                 end
             end
-            base16_adopt_shell_theme()
 
-            vim.keymap.set('n', '<leader>bt', base16_adopt_shell_theme)
+            vim.keymap.set('n', '<leader>bt', load_from_shell, {
+                desc = 'Base16: Load colorscheme from base16-shell',
+            })
         end
     },
     {
@@ -46,4 +51,14 @@ return {
             --  vim.cmd([[colorscheme catppuccin]])
         end
     },
+    {
+        'rcarriga/nvim-notify',
+        lazy = false,
+        priority = 1000,
+        config = function()
+            local notify = require('notify')
+            notify.setup()
+            vim.notify = notify
+        end
+    }
 }
