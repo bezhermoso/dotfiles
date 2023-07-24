@@ -36,6 +36,7 @@ return {
                     vim.notify('Loaded ' .. res, vim.log.levels.INFO)
                 end
             end
+            load_from_shell()
 
             vim.keymap.set('n', '<leader>bt', load_from_shell, {
                 desc = 'Base16: Load colorscheme from base16-shell',
