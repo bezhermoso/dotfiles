@@ -56,6 +56,9 @@ return {
         'rcarriga/nvim-notify',
         lazy = false,
         priority = 1000,
+        keys = {
+            {"<leader>]", ":lua require('notify').dismiss()<CR>", desc = 'Dismiss notifications'},
+        },
         config = function()
             local notify = require('notify')
             notify.setup()
