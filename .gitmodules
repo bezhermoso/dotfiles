@@ -8,3 +8,6 @@
 [submodule "org-article"]
 	path = emacs/org-article
 	url = git://github.com/tsdye/org-article.git
+[submodule "base16-fzf"]
+	path = base16-fzf
+	url = git@github.com:tinted-theming/base16-fzf.git
