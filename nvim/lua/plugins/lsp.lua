@@ -23,7 +23,6 @@ return {
             { 'hrsh7th/cmp-calc' },
             { 'f3fora/cmp-spell' },
             { 'tamago324/cmp-zsh' },
-            { 'quangnguyen30192/cmp-nvim-ultisnips' },
             { 'hrsh7th/cmp-nvim-lsp-signature-help' },
             { 'hrsh7th/cmp-emoji' },
             { 'andersevenrud/cmp-tmux' },
