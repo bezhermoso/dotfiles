@@ -82,10 +82,10 @@ return {
             local cmp = require('cmp')
             cmp.setup({
                 sources = {
-                    { name = 'nvim_lsp', priority = 1000 },
-                    { name = 'luasnip', priority = 750 },
-                    { name = 'buffer', priority = 500 },
-                    { name = 'path', priority = 250 },
+                    { name = 'nvim_lsp',              priority = 1000 },
+                    { name = 'luasnip',               priority = 750 },
+                    { name = 'buffer',                priority = 500 },
+                    { name = 'path',                  priority = 250 },
                     { name = 'nvm_lsp_signature_help' },
                     { name = 'calc' },
                     { name = 'spell' },
@@ -101,6 +101,12 @@ return {
             })
             -- }}}
         end
+    },
+    {
+        -- https://github.com/folke/trouble.nvim
+        "folke/trouble.nvim",
+        dependencies = { "nvim-tree/nvim-web-devicons" },
+        opts = {},
     },
     {
         'numToStr/Comment.nvim',
