@@ -109,7 +109,7 @@ return {
     },
     {
         'numToStr/Comment.nvim',
-        event = 'InsertEnter',
+        event = 'BufEnter',
         config = function()
             require('Comment').setup()
         end
