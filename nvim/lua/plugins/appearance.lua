@@ -48,7 +48,7 @@ return {
         config = function()
             local notify = require('notify')
             notify.setup({
-                render = "compact",
+                render = "minimal",
             })
             vim.notify = notify
         end
