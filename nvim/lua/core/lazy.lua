@@ -12,10 +12,13 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
+local dev_opts = {}
+
+if vim.env.LAZY_NVIM_DEV_PATH then
+    dev_opts.path = vim.env.LAZY_NVIM_DEV_PATH
+end
 require("lazy").setup({
     spec = 'plugins',
-    dev = {
-        path = '~/Development',
-    },
+    dev = dev_opts,
 })
 
