@@ -39,6 +39,7 @@ return {
                     'intelephense', -- PHP
                     'lua_ls',       -- Lua
                     'phpactor',     -- PHP
+                    'yamlls',       -- YAML
                 },
             })
             local lsp_zero = require('lsp-zero').preset({})
