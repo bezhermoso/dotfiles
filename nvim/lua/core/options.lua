@@ -1,8 +1,4 @@
 
--- nvim-tree plugin highly recommends disabling netrw at the very start of init.
--- vim.g.loaded_netrw = 1
--- vim.g.loaded_netrwPlugin = 1
-
 -- Enable highlight groups
 vim.opt.termguicolors = true
 
