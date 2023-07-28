@@ -15,3 +15,5 @@ work-entrypoint.post.sh
 zsh/.zsh_sessions
 bin/fleet
 bin/idea
+nvim/lua/dev/*
+!nvim/lua/dev/cmp-atuin

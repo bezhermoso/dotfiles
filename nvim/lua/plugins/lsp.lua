@@ -29,6 +29,10 @@ return {
             { 'KadoBOT/cmp-plugins' },
             { 'dmitmel/cmp-cmdline-history' },
             { 'chrisgrieser/cmp-nerdfont' },
+            {
+                "bezhermoso/cmp-atuin",
+                dev = true,
+            }
         },
         config = function()
             -- Language Server Protocol (LSP) {{{
@@ -105,8 +109,10 @@ return {
             -- lsp-zero already sets up nvim-cmp for us, here we are simply
             -- setting more configuration e.g. adding sources.
             local cmp = require('cmp')
+            require('atuin').setup()
             cmp.setup({
                 sources = {
+                    { name = 'atuin', priority = 2000 },
                     { name = 'nvim_lsp',              priority = 1000 },
                     { name = 'luasnip',               priority = 750 },
                     { name = 'buffer',                priority = 500 },
