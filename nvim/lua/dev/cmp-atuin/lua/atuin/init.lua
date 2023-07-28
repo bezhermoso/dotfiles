@@ -23,13 +23,11 @@ end
 ---@param callback fun(response: lsp.CompletionResponse|nil)
 function source:complete(request, callback)
     local input = string.sub(request.context.cursor_before_line, request.offset)
-    --print('cmp-atuin: input: ' .. input)
     if not vim.startswith(input, '!') and not vim.startswith('`', input) then
         callback({})
         return
     end
-    --print(vim.inspect(request))
-    local handle = io.popen('atuin search "^' .. input .. '" --format="<<<{command}>>>"')
+    local handle = io.popen('atuin search "^' .. input .. '" --format="[[[\t{command}\t]]]"')
     if not handle then
         vim.notify('cmp-atuin: atuin search failed', vim.logs.levels.ERROR)
         callback({})
@@ -37,15 +35,51 @@ function source:complete(request, callback)
     end
     local items = {}
     local lines = handle:lines()
+    
+
+    local default_option = {
+        replace_trigger_chars = {"!"}
+    }
+
+    local trigger_char = request.completion_context.triggerCharacter
+    local opts = (request.option == nil and default_option or request.option)
+
+    local replace_trigger_char = false
+    for _, v in ipairs(opts.replace_trigger_chars) do
+        if v == trigger_char then
+            replace_trigger_char = true
+        end
+    end
+
+
     -- TODO: Support multi-line commands. They span multiple lines in the output.
     for line in lines do
-        if vim.startswith(line, '<<<') and vim.endswith(line, '>>>') then
-            local lpos = string.find(line, '<<<')
-            local rpos = string.find(line, '>>>')
-            local cmd = string.sub(line, lpos + 3, rpos - 1)
+        local lpos = string.find(line, '%[%[%[\t')
+        local rpos = string.find(line, '\t]%]%]$')
+        if lpos == 1 and rpos ~= nil then
+            local cmd = string.sub(line, lpos + 4, rpos - 1)
+
+            local textEdit = nil
+
+            if replace_trigger_char then
+                textEdit = {
+                    newText = cmd,
+                    range = {
+                        start = {
+                            line = request.context.cursor.row - 1,
+                            character = request.context.cursor.col - 2 - #input,
+                        },
+                        ['end'] = {
+                            line = request.context.cursor.row - 1,
+                            character = request.context.cursor.col - 2,
+                        }
+                    }
+                }
+            end
             table.insert(items, {
                 label = cmd,
                 filterText = cmd,
+                textEdit = textEdit,
             })
         end
         -- if current_cmd ~= "" and is_waiting_to_close and vim.startswith(line, '[[[') then
@@ -64,21 +98,6 @@ function source:complete(request, callback)
     })
     handle:close()
 end
-
----Resolve completion item (optional). This is called right before the completion is about to be displayed.
----Useful for setting the text shown in the documentation window (`completion_item.documentation`).
----@param completion_item lsp.CompletionItem
----@param callback fun(completion_item: lsp.CompletionItem|nil)
--- function source:resolve(completion_item, callback)
---   callback(completion_item)
--- end
-
----Executed after the item was selected.
----@param completion_item lsp.CompletionItem
----@param callback fun(completion_item: lsp.CompletionItem|nil)
--- function source:execute(completion_item, callback)
---   callback(completion_item)
--- end
 
 
 M.setup = function()

@@ -112,7 +112,6 @@ return {
             require('atuin').setup()
             cmp.setup({
                 sources = {
-                    { name = 'atuin', priority = 2000 },
                     { name = 'nvim_lsp',              priority = 1000 },
                     { name = 'luasnip',               priority = 750 },
                     { name = 'buffer',                priority = 500 },
@@ -123,12 +122,31 @@ return {
                     { name = 'zsh' },
                     { name = 'tmux' },
                     { name = 'emoji' },
-                    { name = 'plugins' },
                     { name = 'nerdfont' },
+                    { name = 'atuin' },
+                    { name = 'plugins' },
                 },
                 mapping = {
                     ['<CR>'] = cmp.mapping.confirm({ select = true }),
                 }
+            })
+
+            cmp.setup.cmdline({'/', '?'}, {
+                mapping = cmp.mapping.preset.cmdline(),
+                sources = {
+                    { name = 'buffer' }
+                }
+            })
+
+            cmp.setup.cmdline(':', {
+                mapping = cmp.mapping.preset.cmdline(),
+                sources = cmp.config.sources({
+                    { name = 'path' }
+                }, {
+                    { name = 'cmdline' }
+                },{
+                    { name = 'atuin', opts = { replace_trigger_chars = {}} }
+                })
             })
             -- }}}
         end
