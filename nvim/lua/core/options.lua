@@ -116,6 +116,7 @@ vim.g.python3_host_prog = '~/.pyenv/versions/neovim3/bin/python'
 -- to be machine-specific.
 local node_host_prog_path = os.getenv('NVIM_NODE_HOST_PROG_PATH')
 if node_host_prog_path ~= nil then
+    node_host_prog_path = vim.fn.expand(node_host_prog_path)
     vim.g.node_host_prog = node_host_prog_path .. '/node'
     vim.cmd("let $PATH= '" .. node_host_prog_path .. ":' . $PATH")
 end
