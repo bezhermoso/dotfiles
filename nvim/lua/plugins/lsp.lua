@@ -32,7 +32,8 @@ return {
             {
                 "bezhermoso/cmp-atuin",
                 dev = true,
-            }
+            },
+            { "petertriho/cmp-git" }
         },
         config = function()
             -- Language Server Protocol (LSP) {{{
@@ -140,13 +141,28 @@ return {
 
             cmp.setup.cmdline(':', {
                 mapping = cmp.mapping.preset.cmdline(),
-                sources = cmp.config.sources({
-                    { name = 'path' }
-                }, {
-                    { name = 'cmdline' }
-                },{
-                    { name = 'atuin', opts = { replace_trigger_chars = {}} }
+                sources = cmp.config.sources(
+                    {
+                        { name = 'path' }
+                    },
+                    {
+                        { name = 'cmdline' }
+                    },
+                    {
+                        { name = 'atuin', opts = { replace_trigger_chars = {}}
+                    }
                 })
+            })
+
+            cmp.setup.filetype('gitcommit', {
+                sources = cmp.config.sources(
+                    {
+                        { name = 'git '}
+                    },
+                    {
+                        { name = 'buffer' }
+                    }
+                )
             })
             -- }}}
         end
