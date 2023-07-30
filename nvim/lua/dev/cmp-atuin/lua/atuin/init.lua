@@ -1,21 +1,21 @@
-local M = {}  
+local M = {}
 local source = {}
 
 ---Return whether this source is available in the current context or not (optional).
 ---@return boolean
 function source:is_available()
-  return true
+    return true
 end
 
 ---Return the debug name of this source (optional).
 ---@return string
 function source:get_debug_name()
-  return 'cmp-atuin'
+    return 'cmp-atuin'
 end
 
 ---Return trigger characters for triggering completion (optional).
 function source:get_trigger_characters()
-  return { '!', '`' }
+    return { '!', '`' }
 end
 
 ---Invoke completion (required).
@@ -35,19 +35,22 @@ function source:complete(request, callback)
     end
     local items = {}
     local lines = handle:lines()
-    
+
 
     local default_option = {
-        replace_trigger_chars = {"!"}
+        replace_trigger_chars = { "!" }
     }
 
     local trigger_char = request.completion_context.triggerCharacter
     local opts = (request.option == nil and default_option or request.option)
 
     local replace_trigger_char = false
-    for _, v in ipairs(opts.replace_trigger_chars) do
-        if v == trigger_char then
-            replace_trigger_char = true
+    print(vim.inspect(opts))
+    if opts and opts.replace_trigger_chars then
+        for _, v in ipairs(opts.replace_trigger_chars) do
+            if v == trigger_char then
+                replace_trigger_char = true
+            end
         end
     end
 
@@ -98,7 +101,6 @@ function source:complete(request, callback)
     })
     handle:close()
 end
-
 
 M.setup = function()
     require('cmp').register_source('atuin', source)
