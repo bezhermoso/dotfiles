@@ -124,7 +124,6 @@ return {
                     { name = 'tmux' },
                     { name = 'emoji' },
                     { name = 'nerdfont' },
-                    { name = 'atuin' },
                     { name = 'plugins' },
                 },
                 mapping = {
@@ -149,7 +148,7 @@ return {
                         { name = 'cmdline' }
                     },
                     {
-                        { name = 'atuin', opts = { replace_trigger_chars = {}}
+                        { name = 'atuin', opts = { replace_trigger_chars = nil }
                     }
                 })
             })
@@ -161,6 +160,20 @@ return {
                     },
                     {
                         { name = 'buffer' }
+                    }
+                )
+            })
+
+            cmp.setup.filetype({'bash', 'zsh', 'markdown'}, {
+                sources = cmp.config.sources(
+                    {
+                        { name = 'git '}
+                    },
+                    {
+                        { name = 'buffer' }
+                    },
+                    {
+                        { name = 'atuin' },
                     }
                 )
             })
