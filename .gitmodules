@@ -1,6 +1,6 @@
 [submodule "zprezto"]
 	path = zsh/.zprezto
-	url = https://git@github.com/bezhermoso/prezto.git
+	url = ssh://git@github.com:bezhermoso/prezto.git
 	branch = master
 [submodule "base16-shell"]
 	path = base16-shell
