@@ -1,0 +1,70 @@
+; vi: set ft=gitconfig
+
+[core]
+	editor = 'nvim'
+	pager = diff-so-fancy | less --tabs=4 -R
+#	pager = delta --plus-color="#012800" --minus-color="#340001" --theme='base16'
+
+# Usg Neovim as mergetool: [[[
+[mergetool]
+	prompt = false
+	keepBackup = false
+
+[merge]
+	conflictstyle = diff3
+	tool = vimdiff
+
+[mergetool "vimdiff"]
+	cmd = nvim -d $BASE $LOCAL $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'
+
+[mergetool "fugitive"]
+	cmd = nvim -f -c \"Gvdiffsplit!\" \"$MERGED\"
+
+# ]]]
+
+[alias]
+	commits = commit -S
+	amend = commit --amend
+	amends = commit -S --amend
+	rebases = rebase -S
+	diffw = diff --word-diff
+	plog = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+	s = status -s
+	ss = status --long
+	wc = whatchanged
+	csfix = commit -S -m \"cs/lint fix\"
+
+[gpg]
+	program = gpg
+
+#[color "diff-highlight"]
+#	oldHighlight = red bold 52
+#	newNormal = green bold
+#	newHighlight = green bold 22
+#	oldNormal = red bold
+
+#[diff-so-fancy]
+#	changeHunkIndicators = true
+
+[status]
+    ;short = true
+	showStash = true
+	submoduleSummary = true
+
+[rebase]
+	autoStash = true
+
+[interactive]
+#	diffFilter = delta --color-only
+
+;[user]
+;	name = Bez Hermoso
+;	email = bezalelhermoso@gmail.com
+;	signingkey = 029DBA21BA363EF350C5E6F655BDEC097B885413
+
+[push]
+	default = current
+    autoSetupRemote = 1
+
+[color]
+	ui = auto
