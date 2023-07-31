@@ -77,3 +77,18 @@ ln -s ~/.dotfiles/bat ~/.config/bat
 ln -s ~/.dotfiles/atuin ~/.config/atuin
 atuin login
 ```
+
+## git
+
+Create a `~/.gitconfig` file & include files from `~/.dotfiles/git` e.g.
+
+```
+[include]
+    path = ~/.dotfiles/git/gitconfig.base
+    path = ~/.dotfiles/git/gitconfig.1password
+
+# REQUIRED. `user` is unset in dotfile includes.
+[user]
+	name = Bez Hermoso
+	email = ...
+```
