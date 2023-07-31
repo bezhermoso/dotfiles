@@ -1,5 +1,4 @@
-; vi: set ft=gitconfig
-
+# vi: ft=gitconfig
 [core]
 	editor = 'nvim'
 	pager = diff-so-fancy | less --tabs=4 -R
