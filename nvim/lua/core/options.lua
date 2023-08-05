@@ -14,7 +14,7 @@ vim.opt.expandtab = true
 
 -- Wrapping
 vim.opt.wrap = true
-vim.opt.textwidth = 80
+vim.opt.textwidth = 120
 -- Show vertical column one line to the right of textwidth:
 vim.opt.colorcolumn = '+1'
 -- vim.opt.formatoptions = "qrn1" -- Previous value. Testing out defualt
