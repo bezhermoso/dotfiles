@@ -110,7 +110,7 @@ return {
             -- lsp-zero already sets up nvim-cmp for us, here we are simply
             -- setting more configuration e.g. adding sources.
             local cmp = require('cmp')
-            require('atuin').setup()
+            -- require('atuin').setup()
             cmp.setup({
                 sources = {
                     { name = 'nvim_lsp',              priority = 1000 },
@@ -146,11 +146,11 @@ return {
                     },
                     {
                         { name = 'cmdline' }
-                    },
-                    {
-                        { name = 'atuin', opts = { replace_trigger_chars = nil }
                     }
-                })
+                    -- {
+                    --     { name = 'atuin', opts = { replace_trigger_chars = nil }}
+                    -- }
+                )
             })
 
             cmp.setup.filetype('gitcommit', {
@@ -171,10 +171,10 @@ return {
                     },
                     {
                         { name = 'buffer' }
-                    },
-                    {
-                        { name = 'atuin' },
                     }
+                    -- {
+                    --     { name = 'atuin' },
+                    -- }
                 )
             })
             -- }}}
