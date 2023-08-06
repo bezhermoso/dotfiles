@@ -37,37 +37,37 @@ return {
         },
         config = function(_, opts)
             local telescope = require('telescope')
-            telescope.setup(opts)
+            telescope.setup({
+                defaults = {
+                    layout_strategy = 'flex',
+                    mappings = {
+                        i = {
+                            ["<C-j>"] = "move_selection_next",
+                            ["<C-k>"] = "move_selection_previous",
+                            ["<C-p>"] = require('telescope.actions.layout').toggle_preview,
+                        }
+                    }
+                },
+                extensions = {
+                    -- https://github.com/nvim-telescope/telescope-fzf-native.nvim#telescope-setup-and-configuration
+                    fzf = {
+                        fuzzy = true,
+                        override_generic_sorter = true,
+                        override_file_sorter = true,
+                        case_mode = 'smart_case',
+                    },
+                    undo = {
+                        side_by_side = true,
+                        layout_strategy = 'vertical',
+                        layout_config = {
+                            preview_height = 0.8,
+                        },
+                    },
+                },
+            })
             telescope.load_extension('fzf')
             telescope.load_extension('ui-select')
             telescope.load_extension('undo')
         end,
-        opts = {
-            defaults = {
-                layout_strategy = 'flex',
-                mappings = {
-                    i = {
-                        ["<C-j>"] = "move_selection_next",
-                        ["<C-k>"] = "move_selection_previous",
-                    }
-                }
-            },
-            extensions = {
-                -- https://github.com/nvim-telescope/telescope-fzf-native.nvim#telescope-setup-and-configuration
-                fzf = {
-                    fuzzy = true,
-                    override_generic_sorter = true,
-                    override_file_sorter = true,
-                    case_mode = 'smart_case',
-                },
-                undo = {
-                    side_by_side = true,
-                    layout_strategy = 'vertical',
-                    layout_config = {
-                        preview_height = 0.8,
-                    },
-                },
-            },
-        },
     },
 }
