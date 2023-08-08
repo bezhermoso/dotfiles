@@ -1,0 +1,11 @@
+# yaml-language-server: $schema=https://json.schemastore.org/lazygit.json
+#
+gui:
+  nerdFontsVersion: '2'
+os:
+  open: 'open {{filename}}'
+keybinding:
+  universal:
+    quit: ''
+git:
+  mainBranches: ['master', 'main', 'live']
