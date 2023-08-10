@@ -73,6 +73,12 @@ return {
                 vim.keymap.set('n', '<leader>==', vim.lsp.buf.format, {
                     desc = 'LSP: Format',
                 })
+                local open_line_diagnostic = function ()
+                    vim.diagnostic.open_float(0, {scope = "line"})
+                end
+                vim.keymap.set('n', '<leader>e', open_line_diagnostic, {
+                    desc = 'LSP: Line Diagnostics'
+                })
             end)
             -- Make Lua language server understand Neovim API
             local lspconfig = require('lspconfig')
