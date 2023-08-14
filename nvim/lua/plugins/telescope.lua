@@ -23,7 +23,7 @@ return {
             { "<leader>fa",  ":lua require('telescope.builtin').find_files({ no_ignore = true })<CR>", desc = 'Telescope: Files (All)' },
             { "<leader>fb",  ":lua require('telescope.builtin').buffers()<CR>",         desc = 'Telescope: Buffers' },
             { "<leader>fc",  ":lua require('telescope.builtin').colorscheme()<CR>",     desc = 'Telescope: Colorschemes' },
-            { "<leader>ff",  ":lua require('telescope.builtin').find_files()<CR>",      desc = 'Telescope: Files' },
+            { "<leader>ff",  ":lua require('telescope.builtin').find_files({ hidden = true })<CR>",      desc = 'Telescope: Files' },
             { "<leader>fg",  ":lua require('telescope.builtin').live_grep()<CR>",       desc = 'Telescope: Live Grep' },
             { "<leader>fh",  ":lua require('telescope.builtin').help_tags()<CR>",       desc = 'Telescope: Help tags' },
             { "<leader>fm",  ":lua require('telescope.builtin').man_pages()<CR>",       desc = 'Telescope: man pages' },

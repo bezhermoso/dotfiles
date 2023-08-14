@@ -2,6 +2,12 @@ return {
     {
         "nvim-treesitter/nvim-treesitter",
         build = ":TSUpdate",
+        dependencies = {
+            {
+                'nvim-treesitter/nvim-treesitter-textobjects',
+                after = 'nvim-treesitter/nvim-treesitter',
+            }
+        },
         config = function()
             local configs = require("nvim-treesitter.configs")
             configs.setup({
@@ -73,5 +79,5 @@ return {
         'folke/todo-comments.nvim',
         dependencies = { 'nvim-lua/plenary.nvim' },
         opts = {},
-    }
+    },
 }
