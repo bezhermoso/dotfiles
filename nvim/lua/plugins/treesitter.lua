@@ -68,5 +68,10 @@ return {
     {
         'nvim-treesitter/nvim-treesitter-context',
         opts = {}
+    },
+    {
+        'folke/todo-comments.nvim',
+        dependencies = { 'nvim-lua/plenary.nvim' },
+        opts = {},
     }
 }
