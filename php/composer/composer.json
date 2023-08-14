@@ -2,6 +2,7 @@
     "require": {
         "php": "^8.2",
         "psy/psysh": "@stable",
-        "nikic/php-parser": "^1.2.1"
+        "nikic/php-parser": "^1.2.1",
+        "carbondate/carbon": "^1.33"
     }
 }
