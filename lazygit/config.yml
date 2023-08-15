@@ -6,6 +6,6 @@ os:
   open: 'open {{filename}}'
 keybinding:
   universal:
-    quit: ''
+    quit: 'Q'
 git:
   mainBranches: ['master', 'main', 'live']
