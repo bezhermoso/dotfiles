@@ -42,12 +42,7 @@ vim.opt.showtabline = 1
 
 -- Indicate characters that are otherwise invisible or indistinguishable from others.
 vim.opt.list = true
-vim.opt.listchars = {
-  -- Decorate tabs with this character so they can be distinguished from spaces:
-  tab = '▸ ',
-  -- Decorate trailing whitespaces with this character so they're visible:
-  trail = '∙',
-}
+vim.opt.listchars:append "trail:∙"
 
 -- Create horizontal splits to the bottom:
 vim.opt.splitbelow = true

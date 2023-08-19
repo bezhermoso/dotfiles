@@ -22,9 +22,9 @@
   "glow.nvim": { "branch": "main", "commit": "bbd0473d72a45094495ee5600b5577823543eefe" },
   "go.nvim": { "branch": "master", "commit": "c61f9371cdaaec40cccf0783ff968bee83df5bda" },
   "guihua.lua": { "branch": "master", "commit": "9a15128d92dfba57ada2857316073d1fa3d97c93" },
-  "lazy.nvim": { "branch": "main", "commit": "3ad55ae678876516156cca2f361c51f7952a924b" },
-  "lsp-zero.nvim": { "branch": "v2.x", "commit": "c70bd7362f728b568b4884bc82a8208d14ace537" },
-  "lualine.nvim": { "branch": "master", "commit": "05d78e9fd0cdfb4545974a5aa14b1be95a86e9c9" },
+  "lazy.nvim": { "branch": "main", "commit": "dac844ed617dda4f9ec85eb88e9629ad2add5e05" },
+  "lsp-zero.nvim": { "branch": "v2.x", "commit": "96974fe970c37bd3879ad8b6be4fe7ddfad75680" },
+  "lualine.nvim": { "branch": "master", "commit": "45e27ca739c7be6c49e5496d14fcf45a303c3a63" },
   "mason-lspconfig.nvim": { "branch": "main", "commit": "e86a4c84ff35240639643ffed56ee1c4d55f538e" },
   "mason.nvim": { "branch": "main", "commit": "3f6b544c75c01549f7a2a9e395e0f1cea42b25dd" },
   "nvim-autopairs": { "branch": "master", "commit": "ae5b41ce880a6d850055e262d6dfebd362bb276e" },
@@ -52,4 +52,3 @@
   "vim-gnupg": { "branch": "main", "commit": "f9b608f29003dfde6450931dc0f495a912973a88" },
   "vim-marked": { "branch": "master", "commit": "ae74ac624522f266ebbf228c810619d3599e6cff" },
   "which-key.nvim": { "branch": "main", "commit": "38b990f6eabf62014018b4aae70a97d7a6c2eb88" }
-}
