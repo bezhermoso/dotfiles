@@ -21,7 +21,8 @@ set go-=L
 set linespace=1
 set showmode
 set visualbell
-set foldmethod=manual
+set foldmethod=expr
+set foldexpr=nvim_treesitter#foldexpr()
 set foldnestmax=10
 set nofoldenable
 set foldlevel=1

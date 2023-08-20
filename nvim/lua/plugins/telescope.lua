@@ -68,6 +68,14 @@ return {
             telescope.load_extension('fzf')
             telescope.load_extension('ui-select')
             telescope.load_extension('undo')
+
+            vim.keymap.set('n', '<leader>/', function ()
+                require('telescope.builtin').current_buffer_fuzzy_find(
+                    require('telescope.themes').get_dropdown({
+                        previewer = false,
+                    })
+                )
+            end, { desc = "Find in current buffer..."})
         end,
     },
 }
