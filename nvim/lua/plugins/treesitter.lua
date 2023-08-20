@@ -68,6 +68,24 @@ return {
                     additional_vim_regex_highlighting = false,
                 },
                 indent = { enable = true },
+                incremental_selection = {
+                    enable = true,
+                    keymaps = {
+                        init_selection = '<leader>s',
+                        node_incremental = '<leader>s',
+                        scope_incremental = '<leader>s',
+                        node_decremental = '<leader>S',
+                    }
+                }
+            })
+            vim.opt.foldmethod = "expr"
+            vim.opt.foldenable = false
+            vim.cmd([[set foldexpr=nvim_tresitter#foldexpr()]])
+
+            -- Fix treesitter folding: https://github.com/nvim-telescope/telescope.nvim/issues/699#issuecomment-1572977083
+            vim.api.nvim_create_autocmd({ "BufEnter", "BufNew", "BufWinEnter" }, {
+                group = vim.api.nvim_create_augroup("ts_fold_workaround", { clear = true }),
+                command = "set foldexpr=nvim_treesitter#foldexpr()",
             })
         end
     },
