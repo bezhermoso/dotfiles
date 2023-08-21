@@ -33,7 +33,8 @@ return {
                 "bezhermoso/cmp-atuin",
                 dev = true,
             },
-            { "petertriho/cmp-git" }
+            { "petertriho/cmp-git" },
+            { "folke/neodev.nvim" }
         },
         config = function()
             -- Language Server Protocol (LSP) {{{
@@ -47,6 +48,7 @@ return {
                     'yamlls',       -- YAML
                 },
             })
+            require('neodev').setup({})
             local lsp_zero = require('lsp-zero').preset({})
             lsp_zero.on_attach(function(_, bufnr)
                 -- see :help lsp-zero-keybindings
@@ -204,5 +206,5 @@ return {
         tag = "legacy",
         event = "LspAttach",
         opts = {}
-    }
+    },
 }
