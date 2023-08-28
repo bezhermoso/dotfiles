@@ -30,6 +30,12 @@ return {
         "sindrets/diffview.nvim",
         enabled = vim.fn.executable('git') == 1,
         event = "VeryLazy",
-        opts ={}
+        opts = {},
+    },
+    {
+        "pwntester/octo.nvim",
+        enabled = vim.fn.executable('gh') == 1,
+        event = "VeryLazy",
+        opts = {},
     }
 }
