@@ -92,3 +92,9 @@ Create a `~/.gitconfig` file & include files from `~/.dotfiles/git` e.g.
 	name = Bez Hermoso
 	email = ...
 ```
+
+## gh
+
+```
+ln -s ~/.dotfiles/gh ~/.config/gh
+```

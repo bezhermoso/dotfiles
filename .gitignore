@@ -17,3 +17,4 @@ bin/fleet
 bin/idea
 nvim/lua/dev/*
 !nvim/lua/dev/cmp-atuin
+gh/hosts.yml
