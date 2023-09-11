@@ -19,7 +19,6 @@ local register_events_to_regain_focus = function()
     api.events.subscribe(Event.FolderRemoved, focus_tree)
 end
 
-
 return {
     'nvim-tree/nvim-tree.lua',
     keys = {
