@@ -62,7 +62,6 @@ return {
                     'rust',
                     'scheme',
                     'sql',
-                    'strace',
                     'svelte',
                     'swift',
                     'terraform',
