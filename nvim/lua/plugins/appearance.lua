@@ -17,7 +17,6 @@ return {
     {
         'RRethy/nvim-base16',
         priority = 1000,
-        dev = true,
         lazy = false,
         dependencies = {
             'rcarriga/nvim-notify',
