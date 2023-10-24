@@ -1,3 +1,8 @@
+local copilot_opts = {
+    suggestion = { enabled = false },
+    panel = { enabled = false },
+}
+
 return {
     {
         'VonHeikemen/lsp-zero.nvim',
@@ -34,7 +39,8 @@ return {
                 dev = true,
             },
             { "petertriho/cmp-git" },
-            { "folke/neodev.nvim" }
+            { "folke/neodev.nvim" },
+            { 'zbirenbaum/copilot-cmp' },
         },
         config = function()
             -- Language Server Protocol (LSP) {{{
@@ -75,8 +81,8 @@ return {
                 vim.keymap.set('n', '<leader>==', vim.lsp.buf.format, {
                     desc = 'LSP: Format',
                 })
-                local open_line_diagnostic = function ()
-                    vim.diagnostic.open_float(0, {scope = "line"})
+                local open_line_diagnostic = function()
+                    vim.diagnostic.open_float(0, { scope = "line" })
                 end
                 vim.keymap.set('n', '<leader>e', open_line_diagnostic, {
                     desc = 'LSP: Line Diagnostics'
@@ -118,9 +124,14 @@ return {
             -- lsp-zero already sets up nvim-cmp for us, here we are simply
             -- setting more configuration e.g. adding sources.
             local cmp = require('cmp')
+
+            require('copilot').setup(copilot_opts)
+            require('copilot_cmp').setup()
+
             -- require('atuin').setup()
             cmp.setup({
                 sources = {
+                    { name = 'copilot' },
                     { name = 'nvim_lsp',              priority = 1000 },
                     { name = 'luasnip',               priority = 750 },
                     { name = 'buffer',                priority = 500 },
@@ -134,12 +145,18 @@ return {
                     { name = 'nerdfont' },
                     { name = 'plugins' },
                 },
-                mapping = {
-                    ['<CR>'] = cmp.mapping.confirm({ select = true }),
-                }
+                -- mapping = {
+                --     ['<CR>'] = cmp.mapping.confirm({ select = true }),
+                -- }
+                mapping = cmp.mapping({
+                    ['<CR>'] = cmp.mapping.confirm({
+                        behavior = cmp.ConfirmBehavior.Replace,
+                        select = false,
+                    })
+                })
             })
 
-            cmp.setup.cmdline({'/', '?'}, {
+            cmp.setup.cmdline({ '/', '?' }, {
                 mapping = cmp.mapping.preset.cmdline(),
                 sources = {
                     { name = 'buffer' }
@@ -155,16 +172,16 @@ return {
                     {
                         { name = 'cmdline' }
                     }
-                    -- {
-                    --     { name = 'atuin', opts = { replace_trigger_chars = nil }}
-                    -- }
+                -- {
+                --     { name = 'atuin', opts = { replace_trigger_chars = nil }}
+                -- }
                 )
             })
 
             cmp.setup.filetype('gitcommit', {
                 sources = cmp.config.sources(
                     {
-                        { name = 'git '}
+                        { name = 'git ' }
                     },
                     {
                         { name = 'buffer' }
@@ -172,17 +189,17 @@ return {
                 )
             })
 
-            cmp.setup.filetype({'bash', 'zsh', 'markdown'}, {
+            cmp.setup.filetype({ 'bash', 'zsh', 'markdown' }, {
                 sources = cmp.config.sources(
                     {
-                        { name = 'git '}
+                        { name = 'git ' }
                     },
                     {
                         { name = 'buffer' }
                     }
-                    -- {
-                    --     { name = 'atuin' },
-                    -- }
+                -- {
+                --     { name = 'atuin' },
+                -- }
                 )
             })
             -- }}}
@@ -210,4 +227,18 @@ return {
         event = "LspAttach",
         opts = {}
     },
+    {
+        'zbirenbaum/copilot.lua',
+        cmd = 'Copilot',
+        event = 'InsertEnter',
+        config = function()
+            require('copilot').setup(copilot_opts)
+        end
+    },
+    {
+        'zbirenbaum/copilot-cmp',
+        dependencies = {
+            { 'zbirenbaum/copilot.lua' },
+        }
+    }
 }
