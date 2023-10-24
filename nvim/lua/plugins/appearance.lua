@@ -54,9 +54,18 @@ return {
     },
     {
         'lukas-reineke/indent-blankline.nvim',
+        main = 'ibl',
         opts = {
-            show_end_of_line = true,
-            show_current_context = true,
-        }
+            indent = {
+                --highlight = {'CursorColumn', 'Whitespace'},
+                -- char = '',
+                -- tab_char = '⇥',
+            },
+            whitespace = {
+                --highlight = {'CursorColumn', 'Whitespace'},
+                remove_blankline_trail = false,
+            },
+            scope = { enabled = false },
+        },
     },
 }

@@ -41,8 +41,9 @@ vim.opt.scrolloff = 8
 vim.opt.showtabline = 1
 
 -- Indicate characters that are otherwise invisible or indistinguishable from others.
-vim.opt.list = true
-vim.opt.listchars:append "trail:∙"
+-- vim.opt.list = true
+-- vim.opt.listchars:append "trail:∙"
+-- vim.opt.listchars:append "tab:█ "
 
 -- Create horizontal splits to the bottom:
 vim.opt.splitbelow = true

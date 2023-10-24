@@ -82,12 +82,12 @@ return {
                 indent = { enable = true },
                 incremental_selection = {
                     enable = true,
-                    keymaps = {
-                        init_selection = '<leader>s',
-                        node_incremental = '<leader>s',
-                        scope_incremental = '<leader>s',
-                        node_decremental = '<leader>S',
-                    }
+                    -- keymaps = {
+                    --     init_selection = '<leader>s',
+                    --     node_incremental = '<leader>s',
+                    --     scope_incremental = '<leader>s',
+                    --     node_decremental = '<leader>S',
+                    -- }
                 }
             })
             vim.opt.foldmethod = "expr"
