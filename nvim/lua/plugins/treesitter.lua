@@ -80,15 +80,15 @@ return {
                     additional_vim_regex_highlighting = false,
                 },
                 indent = { enable = true },
-                incremental_selection = {
-                    enable = true,
-                    -- keymaps = {
-                    --     init_selection = '<leader>s',
-                    --     node_incremental = '<leader>s',
-                    --     scope_incremental = '<leader>s',
-                    --     node_decremental = '<leader>S',
-                    -- }
-                }
+                -- incremental_selection = {
+                --     enable = true,
+                --     keymaps = {
+                --         init_selection = '<leader>s',
+                --         node_incremental = '<leader>s',
+                --         scope_incremental = '<leader>s',
+                --         node_decremental = '<leader>S',
+                --     }
+                -- }
             })
             vim.opt.foldmethod = "expr"
             vim.opt.foldenable = false
