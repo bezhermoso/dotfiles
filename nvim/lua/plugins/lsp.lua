@@ -125,13 +125,13 @@ return {
             -- setting more configuration e.g. adding sources.
             local cmp = require('cmp')
 
-            require('copilot').setup(copilot_opts)
-            require('copilot_cmp').setup()
+            -- require('copilot').setup(copilot_opts)
+            -- require('copilot_cmp').setup()
 
             -- require('atuin').setup()
             cmp.setup({
                 sources = {
-                    { name = 'copilot' },
+                    -- { name = 'copilot' },
                     { name = 'nvim_lsp',              priority = 1000 },
                     { name = 'luasnip',               priority = 750 },
                     { name = 'buffer',                priority = 500 },
@@ -227,18 +227,18 @@ return {
         event = "LspAttach",
         opts = {}
     },
-    {
-        'zbirenbaum/copilot.lua',
-        cmd = 'Copilot',
-        event = 'InsertEnter',
-        config = function()
-            require('copilot').setup(copilot_opts)
-        end
-    },
-    {
-        'zbirenbaum/copilot-cmp',
-        dependencies = {
-            { 'zbirenbaum/copilot.lua' },
-        }
-    }
+    -- {
+    --     'zbirenbaum/copilot.lua',
+    --     cmd = 'Copilot',
+    --     event = 'InsertEnter',
+    --     config = function()
+    --         require('copilot').setup(copilot_opts)
+    --     end
+    -- },
+    -- {
+    --     'zbirenbaum/copilot-cmp',
+    --     dependencies = {
+    --         { 'zbirenbaum/copilot.lua' },
+    --     }
+    -- }
 }
