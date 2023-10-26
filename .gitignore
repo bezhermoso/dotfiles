@@ -16,5 +16,6 @@ zsh/.zsh_sessions
 bin/fleet
 bin/idea
 nvim/lua/dev/*
+!nvim/lua/dev/openingh.nvim
 !nvim/lua/dev/cmp-atuin
 gh/hosts.yml

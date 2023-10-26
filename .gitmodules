@@ -8,3 +8,6 @@
 [submodule "base16-fzf"]
 	path = base16-fzf
 	url = git@github.com:tinted-theming/base16-fzf.git
+[submodule "openingh"]
+    path = nvim/lua/dev/openingh.nvim
+    url = git@github.com:bezhermoso/openingh.nvim.git
