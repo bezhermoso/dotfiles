@@ -13,7 +13,7 @@ return {
         opts = {}
     },
     {
-        "almo7aya/openingh.nvim",
+        "Almo7aya/openingh.nvim",
         enabled = vim.fn.executable('gh') == 1,
         lazy = false,
         dev = true,
