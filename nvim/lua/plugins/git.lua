@@ -16,7 +16,6 @@ return {
         "Almo7aya/openingh.nvim",
         enabled = vim.fn.executable('gh') == 1,
         lazy = false,
-        dev = true,
         config = function()
             require('openingh').setup()
             -- for repository page
