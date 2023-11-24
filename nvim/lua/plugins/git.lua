@@ -2,6 +2,10 @@ return {
     {
         "tpope/vim-fugitive",
         enabled = vim.fn.executable('git') == 1,
+        dependencies = {
+            "tpope/vim-rhubarb",
+        },
+        cmd = { "Git", "Gdiffsplit", "Gvdiffsplit", "G", "GBrowse" },
         keys = {
             { "<leader>G", vim.cmd.G, desc = "Git status" }
         },
