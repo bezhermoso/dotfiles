@@ -6,7 +6,7 @@ local copilot_opts = {
 return {
     {
         'VonHeikemen/lsp-zero.nvim',
-        branch = 'v2.x',
+        branch = 'v3.x',
         dependencies = {
             -- LSP Support
             { 'neovim/nvim-lspconfig' },
@@ -17,6 +17,12 @@ return {
                 end,
             },
             { 'williamboman/mason-lspconfig.nvim' },
+            -- Debugging
+            { 'mfussenegger/nvim-dap' },
+            { 'jay-babu/mason-nvim-dap.nvim' },
+            -- Debugging: Go
+            { 'leoluz/nvim-dap-go' },
+            { 'rcarriga/nvim-dap-ui' },
             -- Autocompletion
             { 'hrsh7th/nvim-cmp' },     -- Required
             { 'hrsh7th/cmp-nvim-lsp' }, -- Required
@@ -44,18 +50,7 @@ return {
         },
         config = function()
             -- Language Server Protocol (LSP) {{{
-            require('mason').setup()
-            require('mason-lspconfig').setup({
-                ensure_installed = {
-                    'gopls',        -- Go
-                    'intelephense', -- PHP
-                    'lua_ls',       -- Lua
-                    'phpactor',     -- PHP
-                    'yamlls',       -- YAML
-                },
-            })
-            require('neodev').setup({})
-            local lsp_zero = require('lsp-zero').preset({})
+            local lsp_zero = require('lsp-zero')
             lsp_zero.on_attach(function(_, bufnr)
                 -- see :help lsp-zero-keybindings
                 -- to learn the available actions
@@ -82,46 +77,54 @@ return {
                     desc = 'LSP: Format',
                 })
                 local open_line_diagnostic = function()
-                    vim.diagnostic.open_float(0, { scope = "line" })
+                    -- vim.diagnostic.open_float(0, { scope = "line" })
+                    vim.diagnostic.open_float({ scope = "line" })
                 end
                 vim.keymap.set('n', '<leader>e', open_line_diagnostic, {
                     desc = 'LSP: Line Diagnostics'
                 })
             end)
-            -- Make Lua language server understand Neovim API
-            local lspconfig = require('lspconfig')
-
-            -- Lua {{{
-            lspconfig.lua_ls.setup(lsp_zero.nvim_lua_ls())
-            -- }}}
-            --
-            -- YAML {{{
-            lspconfig.yamlls.setup({
-                schemas = {
-                    kubernetes = "*.yaml",
-                    ["http://json.schemastore.org/github-workflow"] = ".github/workflows/*",
-                    ["http://json.schemastore.org/github-action"] = ".github/action.{yml,yaml}",
-                    ["http://json.schemastore.org/ansible-stable-2.9"] = "roles/tasks/*.{yml,yaml}",
-                    ["http://json.schemastore.org/prettierrc"] = ".prettierrc.{yml,yaml}",
-                    ["http://json.schemastore.org/kustomization"] = "kustomization.{yml,yaml}",
-                    ["http://json.schemastore.org/ansible-playbook"] = "*play*.{yml,yaml}",
-                    ["http://json.schemastore.org/chart"] = "Chart.{yml,yaml}",
-                    ["https://json.schemastore.org/dependabot-v2"] = ".github/dependabot.{yml,yaml}",
-                    ["https://json.schemastore.org/gitlab-ci"] = "*gitlab-ci*.{yml,yaml}",
-                    ["https://raw.githubusercontent.com/OAI/OpenAPI-Specification/main/schemas/v3.1/schema.json"] =
-                    "*api*.{yml,yaml}",
-                    ["https://raw.githubusercontent.com/compose-spec/compose-spec/master/schema/compose-spec.json"] =
-                    "*docker-compose*.{yml,yaml}",
-                    ["https://raw.githubusercontent.com/argoproj/argo-workflows/master/api/jsonschema/schema.json"] =
-                    "*flow*.{yml,yaml}",
+            -- Configure Lua LSP to understand Neovim plugin structures, etc.
+            require('neodev').setup()
+            require('mason').setup()
+            require('mason-lspconfig').setup({
+                ensure_installed = {
+                    'gopls',        -- Go
+                    'intelephense', -- PHP
+                    'lua_ls',       -- Lua
+                    'phpactor',     -- PHP
+                    'yamlls',       -- YAML
                 },
+                handlers = {
+                    lsp_zero.default_setup,
+                    lua_ls = function()
+                        -- Make Lua language server understand Neovim API
+                        require('lspconfig').lua_ls.setup(lsp_zero.nvim_lua_ls())
+                    end,
+                    yamlls = function()
+                        require('lspconfig').yamlls.setup({
+                            schemas = {
+                                kubernetes = "*.yaml",
+                                ["http://json.schemastore.org/github-workflow"] = ".github/workflows/*",
+                                ["http://json.schemastore.org/github-action"] = ".github/action.{yml,yaml}",
+                                ["http://json.schemastore.org/ansible-stable-2.9"] = "roles/tasks/*.{yml,yaml}",
+                                ["http://json.schemastore.org/prettierrc"] = ".prettierrc.{yml,yaml}",
+                                ["http://json.schemastore.org/kustomization"] = "kustomization.{yml,yaml}",
+                                ["http://json.schemastore.org/ansible-playbook"] = "*play*.{yml,yaml}",
+                                ["http://json.schemastore.org/chart"] = "Chart.{yml,yaml}",
+                                ["https://json.schemastore.org/dependabot-v2"] = ".github/dependabot.{yml,yaml}",
+                                ["https://json.schemastore.org/gitlab-ci"] = "*gitlab-ci*.{yml,yaml}",
+                                ["https://raw.githubusercontent.com/OAI/OpenAPI-Specification/main/schemas/v3.1/schema.json"] =
+                                "*api*.{yml,yaml}",
+                                ["https://raw.githubusercontent.com/compose-spec/compose-spec/master/schema/compose-spec.json"] =
+                                "*docker-compose*.{yml,yaml}",
+                                ["https://raw.githubusercontent.com/argoproj/argo-workflows/master/api/jsonschema/schema.son"] =
+                                    "*flow*.{yml,yaml}",
+                            },
+                        })
+                    end
+                }
             })
-            -- }}}
-
-            lsp_zero.setup({
-                set_extra_mappings = true,
-            })
-            -- }}}
 
             -- COMPLETION {{{
             -- lsp-zero already sets up nvim-cmp for us, here we are simply
@@ -200,12 +203,61 @@ return {
                     {
                         { name = 'buffer' }
                     }
-                -- {
-                --     { name = 'atuin' },
-                -- }
+                    -- {
+                    --     { name = 'atuin' },
+                    -- }
                 )
             })
             -- }}}
+            --
+            -- DAP {{{
+            local dap = require('dap')
+            local dapui = require('dapui')
+            dapui.setup()
+            require('mason-nvim-dap').setup({
+                ensure_installed = {
+                    "delve",
+                    "bash-debug-adapter",
+                    "php-debug-adapter",
+                },
+                automatic_installation = true,
+            })
+            require('dap-go').setup()
+
+            vim.keymap.set('n', '<leader>dui', dapui.toggle, {
+                desc = 'DAP: Open DAP UI',
+            })
+            vim.keymap.set('n', '<leader>ds', dap.continue, {
+                desc = 'DAP: Start/Continue',
+            })
+            vim.keymap.set('n', '<leader>dS', dap.stop, {
+                desc = 'DAP: Stop',
+            })
+            vim.keymap.set('n', '<leader>dt', dap.toggle_breakpoint, {
+                desc = 'DAP: Toggle breakpoint',
+            })
+            vim.keymap.set('n', '<leader>di', dap.step_into, {
+                desc = 'DAP: Step into',
+            })
+            vim.keymap.set('n', '<leader>do', dap.step_over, {
+                desc = 'DAP: Step over',
+            })
+
+            dap.listeners.before.attach.dapui_config = function ()
+               dapui.open()
+            end
+            dap.listeners.before.launch.dapui_config = function ()
+               dapui.open()
+            end
+            dap.listeners.before.event_terminated.dapui_config = function ()
+               dapui.close()
+            end
+            dap.listeners.before.event_exited.dapui_config = function ()
+               dapui.close()
+            end
+            -- }}}
+
+
         end
     },
     {
