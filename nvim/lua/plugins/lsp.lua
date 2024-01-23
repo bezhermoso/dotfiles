@@ -20,9 +20,10 @@ return {
             -- Debugging
             { 'mfussenegger/nvim-dap' },
             { 'jay-babu/mason-nvim-dap.nvim' },
+            { 'rcarriga/nvim-dap-ui' },
+            { 'theHamsta/nvim-dap-virtual-text' },
             -- Debugging: Go
             { 'leoluz/nvim-dap-go' },
-            { 'rcarriga/nvim-dap-ui' },
             -- Autocompletion
             { 'hrsh7th/nvim-cmp' },     -- Required
             { 'hrsh7th/cmp-nvim-lsp' }, -- Required
@@ -213,6 +214,7 @@ return {
             -- DAP {{{
             local dap = require('dap')
             local dapui = require('dapui')
+            require('nvim-dap-virtual-text').setup()
             dapui.setup()
             require('mason-nvim-dap').setup({
                 ensure_installed = {
@@ -224,23 +226,26 @@ return {
             })
             require('dap-go').setup()
 
-            vim.keymap.set('n', '<leader>dui', dapui.toggle, {
+            vim.keymap.set('n', '<leader>dui', function() dapui.toggle() end, {
                 desc = 'DAP: Open DAP UI',
             })
-            vim.keymap.set('n', '<leader>ds', dap.continue, {
+            vim.keymap.set('n', '<leader>ds', function() require('dap').continue() end, {
                 desc = 'DAP: Start/Continue',
             })
-            vim.keymap.set('n', '<leader>dS', dap.stop, {
+            vim.keymap.set('n', '<leader>dS', function() require('dap').stop() end, {
                 desc = 'DAP: Stop',
             })
-            vim.keymap.set('n', '<leader>dt', dap.toggle_breakpoint, {
+            vim.keymap.set('n', '<leader>dt', function() require('dap').toggle_breakpoint() end, {
                 desc = 'DAP: Toggle breakpoint',
             })
-            vim.keymap.set('n', '<leader>di', dap.step_into, {
+            vim.keymap.set('n', '<leader>di', function() require('dap').step_into() end, {
                 desc = 'DAP: Step into',
             })
-            vim.keymap.set('n', '<leader>do', dap.step_over, {
+            vim.keymap.set('n', '<leader>dn', function() require('dap').step_over() end, {
                 desc = 'DAP: Step over',
+            })
+            vim.keymap.set('n', '<leader>do', function() require('dap').step_out() end, {
+                desc = 'DAP: Step out',
             })
 
             dap.listeners.before.attach.dapui_config = function ()
