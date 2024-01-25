@@ -214,7 +214,7 @@ return {
             -- DAP {{{
             local dap = require('dap')
             local dapui = require('dapui')
-            require('nvim-dap-virtual-text').setup()
+            require('nvim-dap-virtual-text').setup({})
             dapui.setup()
             require('mason-nvim-dap').setup({
                 ensure_installed = {
@@ -224,9 +224,36 @@ return {
                 },
                 automatic_installation = true,
             })
-            require('dap-go').setup()
 
-            vim.keymap.set('n', '<leader>dui', function() dapui.toggle() end, {
+            -- Open/close dapui automatically on DAP events
+            dap.listeners.before.attach.dapui_config = function ()
+               dapui.open()
+            end
+            dap.listeners.before.launch.dapui_config = function ()
+               dapui.open()
+            end
+            dap.listeners.before.event_terminated.dapui_config = function ()
+               dapui.close()
+            end
+            dap.listeners.before.event_exited.dapui_config = function ()
+               dapui.close()
+            end
+
+            require('dap-go').setup({
+                dap_configurations = {
+                    {
+                        type = "go",
+                        name = "Attach to remote debugger",
+                        mode = "remote",
+                        request = "attach",
+                    }
+                },
+                delve = {
+                    port = 5005,
+                }
+            })
+
+            vim.keymap.set('n', '<leader>dui', function() require('dapui').toggle() end, {
                 desc = 'DAP: Open DAP UI',
             })
             vim.keymap.set('n', '<leader>ds', function() require('dap').continue() end, {
@@ -247,20 +274,24 @@ return {
             vim.keymap.set('n', '<leader>do', function() require('dap').step_out() end, {
                 desc = 'DAP: Step out',
             })
-
-            dap.listeners.before.attach.dapui_config = function ()
-               dapui.open()
-            end
-            dap.listeners.before.launch.dapui_config = function ()
-               dapui.open()
-            end
-            dap.listeners.before.event_terminated.dapui_config = function ()
-               dapui.close()
-            end
-            dap.listeners.before.event_exited.dapui_config = function ()
-               dapui.close()
-            end
+            -- For Go debugging keymaps, see ../core/autocmds.lua
             -- }}}
+            vim.api.nvim_create_autocmd('FileType', {
+                callback = function (fopts)
+                    if not fopts.match == "go" then
+                        return nil
+                    end
+                    local dapgo = require('dap-go')
+                    vim.keymap.set('n', '<leader>dgt', dapgo.debug_test, {
+                        desc = 'DAP Go: Debug test',
+                        buffer = fopts.buf,
+                    })
+                    vim.keymap.set('n', '<leader>dgl', dapgo.debug_last_test, {
+                        desc = 'DAP Go: Debug last test',
+                        buffer = fopts.buf,
+                    })
+                end
+            })
 
 
         end
