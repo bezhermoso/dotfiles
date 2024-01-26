@@ -1,0 +1,23 @@
+live_config_reload = true
+
+[shell]
+program = "/bin/zsh"
+args = ["-l"]
+
+
+[window]
+padding = { x = 10, y = 10 }
+dynamic_padding = true
+decorations = "None"
+
+[scrolling]
+history = 100000
+
+[font]
+normal = { family = "SquareSansM Nerd Font" }
+bold = { family = "SquareSansM Nerd Font" }
+italic = { family = "SquareSansM Nerd Font" }
+bold_italic = { family = "SquareSansM Nerd Font" }
+size = 13
+offset = { x = 0, y = 5 }
+
