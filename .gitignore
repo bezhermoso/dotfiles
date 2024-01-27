@@ -18,4 +18,5 @@ bin/idea
 nvim/lua/dev/*
 !nvim/lua/dev/openingh.nvim
 !nvim/lua/dev/cmp-atuin
+!nvim/lua/dev/nvim-base16
 gh/hosts.yml
