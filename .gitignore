@@ -19,4 +19,5 @@ nvim/lua/dev/*
 !nvim/lua/dev/openingh.nvim
 !nvim/lua/dev/cmp-atuin
 !nvim/lua/dev/nvim-base16
+!nvim/lua/dev/base16-live-reload.nvim
 gh/hosts.yml

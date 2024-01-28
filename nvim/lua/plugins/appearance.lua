@@ -21,13 +21,15 @@ return {
         dev = true,
         dependencies = {
             { 'rcarriga/nvim-notify' },
+            {
+                "bezhermoso/base16-live-reload.nvim",
+                dev = true,
+            },
             { 'rktjmp/fwatch.nvim' },
         },
         config = function()
             local base16 = require('base16-colorscheme')
-            base16.setup(nil, {
-                reload_with_base16_shell = true,
-            })
+            base16.setup()
             local load_from_shell = function()
                 local res = base16.load_from_shell()
                 if res then
@@ -35,25 +37,10 @@ return {
                 end
             end
             load_from_shell()
-
-            -- local fwatch = require('fwatch')
-            -- local config_dir = vim.env.XDG_CONFIG_HOME
-            -- if config_dir == nil or config_dir == '' then
-            --     config_dir = '~/.config'
-            -- end
-            -- local theme_file = vim.fn.expand(config_dir .. "/tinted-theming/set_theme.lua")
-            --
-            -- fwatch.watch(theme_file, {
-            --     on_event = function()
-            --         vim.schedule(function()
-            --             load_from_shell()
-            --         end)
-            --     end
-            -- })
-
             vim.keymap.set('n', '<leader>bt', load_from_shell, {
                 desc = 'Base16: Load colorscheme from base16-shell',
             })
+            require("base16-live-reload").setup()
         end
     },
     {
