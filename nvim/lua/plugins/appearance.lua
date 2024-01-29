@@ -2,13 +2,26 @@ return {
     {
         'nvim-lualine/lualine.nvim',
         lazy = false,
-        opts = {
-            options = {
-                theme = 'base16',
-                section_separators = '',
-                component_separators = '',
-            },
+        dependencies = {
+            { "folke/todo-comments.nvim" },
+            { "bezhermoso/todos-lualine.nvim", dev = true }
+            
         },
+        config = function ()
+            -- TODO: Configure colors
+            -- FIXME: Hello
+            local todos_component = require("todos-lualine").component({})
+            require('lualine').setup({
+                options = {
+                    theme = 'base16',
+                    section_separators = '',
+                    component_separators = '',
+                },
+                sections = {
+                    lualine_y = {'progress', todos_component },
+                }
+            })
+        end,
     },
     {
         'nvim-tree/nvim-web-devicons',
