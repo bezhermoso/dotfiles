@@ -107,7 +107,19 @@ return {
     },
     {
         'folke/todo-comments.nvim',
-        dependencies = { 'nvim-lua/plenary.nvim' },
-        opts = {},
+        dependencies = {
+            { 'nvim-lua/plenary.nvim' },
+            { 'nvim-telescope/telescope.nvim' },
+            { 'folke/trouble.nvim' },
+        },
+        config = function ()
+            require("todo-comments").setup()
+            vim.keymap.set('n', '<leader>tt', '<cmd>TodoTelescope<cr>', {
+                desc = "Search for TODOs in the project",
+            })
+            vim.keymap.set('n', '<leader>te', '<cmd>TodoTrouble<cr>', {
+                desc = "Open TODOs in Trouble",
+            })
+        end
     },
 }
