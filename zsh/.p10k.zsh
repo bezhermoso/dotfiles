@@ -48,6 +48,7 @@
     status                  # exit code of the last command
     command_execution_time  # duration of the last command
     background_jobs         # presence of background jobs
+    git_primary_branch      # main vs master? sometimes you just can't tell...
     direnv                  # direnv status (https://direnv.net/)
     asdf                    # asdf version manager (https://github.com/asdf-vm/asdf)
     # virtualenv              # python virtual environment (https://docs.python.org/3/library/venv.html)
@@ -1603,6 +1604,15 @@
   function prompt_example() {
     p10k segment -f 2 -i '⭐' -t 'hello, %n'
   }
+
+  # Displays what the primary branch for the repository probably is: is it master or main?
+  function prompt_git_primary_branch() {
+    for branch in main master; do
+      git rev-parse --verify "$branch" &>/dev/null && p10k segment -f 13 -t "$branch" -i '' && return
+    done
+  }
+  # Show git primary branch only when the command you are typing invokes one of these tools:
+  typeset -g POWERLEVEL9K_GIT_PRIMARY_BRANCH_SHOW_ON_COMMAND='git|gh'
 
   # User-defined prompt segments may optionally provide an instant_prompt_* function. Its job
   # is to generate the prompt segment for display in instant prompt. See
