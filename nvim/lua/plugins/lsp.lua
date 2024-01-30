@@ -100,7 +100,11 @@ return {
                     lsp_zero.default_setup,
                     lua_ls = function()
                         -- Make Lua language server understand Neovim API
-                        require('lspconfig').lua_ls.setup(lsp_zero.nvim_lua_ls())
+                        require('lspconfig').lua_ls.setup(lsp_zero.nvim_lua_ls({
+                            settings = {
+                                cmd = {"lua-language-server", "--log-level=trace"},
+                            },
+                        }))
                     end,
                     yamlls = function()
                         require('lspconfig').yamlls.setup({
