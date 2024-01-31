@@ -13,6 +13,11 @@ return {
     {
         "lewis6991/gitsigns.nvim",
         enabled = vim.fn.executable('git') == 1,
+        keys = {
+            { "<leader>gb", ":Gitsigns blame_line<CR>", {
+                desc = "Git: Show blame on current line",
+            } },
+        },
         lazy = false,
         opts = {}
     },
