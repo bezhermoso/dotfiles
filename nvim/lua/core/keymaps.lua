@@ -1,9 +1,8 @@
-
 vim.keymap.set('n', '<leader><Space>', ':noh<CR>', {
     desc = 'Clear buffer search'
 })
 
-local open_plugin_github_repo = function ()
+local open_plugin_github_repo = function()
     local plugin = vim.fn.expand('<cWORD>')
     if plugin == nil then
         return
@@ -17,16 +16,69 @@ end
 vim.keymap.set('n', '<leader>gh', open_plugin_github_repo)
 
 
+-- Quickfix List [[
 vim.keymap.set('n', 'cn', ':cnext<CR>', {
+    noremap = true,
+    silent = true,
     desc = 'Next item in quickfix-list',
 })
 vim.keymap.set('n', 'cp', ':cprevious<CR>', {
+    noremap = true,
+    silent = true,
     desc = 'Next item in quickfix-list',
 })
 vim.keymap.set('n', 'cc', ':cclose<CR>', {
+    noremap = true,
+    silent = true,
     desc = 'Close quickfix-list',
 })
 vim.keymap.set('n', 'co', ':copen<CR>', {
+    noremap = true,
+    silent = true,
     desc = 'Open quickfix-list',
 })
+-- ]]
 
+-- Text manipulations [[
+vim.keymap.set("v", "<C-j>", ":m '>+1<CR>gv=gv", {
+    desc = "Move selection down",
+    noremap = true,
+    silent = true,
+})
+
+vim.keymap.set("v", "<C-k>", ":m '<-2<CR>gv=gv", {
+    desc = "Move selection up",
+    noremap = true,
+    silent = true,
+})
+
+vim.keymap.set("x", ">>", function()
+    vim.cmd('normal! >>')
+    vim.cmd('normal! gv')
+end, {
+    desc = "Indent",
+    noremap = true,
+    silent = true,
+})
+vim.keymap.set("x", "<<", function()
+    vim.cmd('normal! <<')
+    vim.cmd('normal! gv')
+end, {
+    desc = "Outdent",
+    noremap = true,
+    silent = true,
+})
+vim.keymap.set("x", "<leader>p", '"_dP', {
+    desc = "Paste & preserve default register",
+    noremap = true,
+    silent = true,
+})
+-- ]]
+
+-- Navigation [[
+vim.keymap.set('n', '<leader><Tab>', "<C-^>", {
+    desc = "Switch to previous buffer",
+    noremap = true,
+    silent = true,
+})
+-- ]]
