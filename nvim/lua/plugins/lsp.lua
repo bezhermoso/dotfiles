@@ -167,7 +167,8 @@ return {
                 })
             })
 
-            cmp.setup.cmdline({ '/', '?' }, {
+            -- Replaced by wilder.nvim. See ./dressing.lua
+            --[[ cmp.setup.cmdline({ '/', '?' }, {
                 mapping = cmp.mapping.preset.cmdline(),
                 sources = {
                     { name = 'buffer' }
@@ -187,7 +188,7 @@ return {
                 --     { name = 'atuin', opts = { replace_trigger_chars = nil }}
                 -- }
                 )
-            })
+            }) ]]
 
             cmp.setup.filetype('gitcommit', {
                 sources = cmp.config.sources(
