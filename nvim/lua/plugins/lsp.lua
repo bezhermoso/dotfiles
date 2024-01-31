@@ -264,7 +264,7 @@ return {
             vim.keymap.set('n', '<leader>ds', function() require('dap').continue() end, {
                 desc = 'DAP: Start/Continue',
             })
-            vim.keymap.set('n', '<leader>dS', function() require('dap').stop() end, {
+            vim.keymap.set('n', '<leader>dS', function() require('dap').close() end, {
                 desc = 'DAP: Stop',
             })
             vim.keymap.set('n', '<leader>dt', function() require('dap').toggle_breakpoint() end, {
