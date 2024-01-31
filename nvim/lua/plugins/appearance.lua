@@ -5,11 +5,9 @@ return {
         dependencies = {
             { "folke/todo-comments.nvim" },
             { "bezhermoso/todos-lualine.nvim", dev = true }
-            
         },
         config = function ()
             -- TODO: Configure colors
-            -- FIXME: Hello
             local todos_component = require("todos-lualine").component({})
             require('lualine').setup({
                 options = {
@@ -31,7 +29,6 @@ return {
         'RRethy/nvim-base16',
         priority = 1000,
         lazy = false,
-        dev = true,
         dependencies = {
             { 'rcarriga/nvim-notify' },
             {
