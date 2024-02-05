@@ -164,9 +164,16 @@ return {
                         behavior = cmp.ConfirmBehavior.Replace,
                         select = false,
                     })
-                })
+                }),
+                window = {
+                    completion = cmp.config.window.bordered({
+                        winhighlight = 'Normal:Normal,FloatBorder:FloatBorder,CursorLine:Visual,Search:None,CmpItemAbbr:Normal'
+                    }),
+                    documentation = cmp.config.window.bordered({
+                        winhighlight = 'Normal:Normal,FloatBorder:FloatBorder,CursorLine:Visual,Search:None,CmpItemAbbr:Normal'
+                    }),
+                },
             })
-
             -- Replaced by wilder.nvim. See ./dressing.lua
             --[[ cmp.setup.cmdline({ '/', '?' }, {
                 mapping = cmp.mapping.preset.cmdline(),
