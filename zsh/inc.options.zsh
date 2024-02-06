@@ -56,6 +56,8 @@ HELPDIR=$(command brew --prefix)/share/zsh/help
 fpath=(
   # Custom functions:
   $HOME/.dotfiles/zsh/functions
+  # Custom completions:
+  $HOME/.dotfiles/zsh/completions
   # Completions from Homebrew:
   /usr/local/share/zsh-completions
   # More custom functions:
