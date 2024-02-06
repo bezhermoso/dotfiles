@@ -1,3 +1,2 @@
-#compdef manpdf
+#compdef manpdf=man
 
-compdef manpdf=man
