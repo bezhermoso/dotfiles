@@ -6,8 +6,8 @@ zsh/.zsh_history
 zsh/.zcompdump*
 zsh/.zcompcache
 karabiner/log
-php/composer/*
-!php/composer/composer.*
+languages/php/composer/*
+!languages/php/composer/composer.*
 pgcli/history
 pgcli/log
 work-entrypoint.sh
