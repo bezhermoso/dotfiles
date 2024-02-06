@@ -82,3 +82,32 @@ vim.keymap.set('n', '<leader><Tab>', "<C-^>", {
     silent = true,
 })
 -- ]]
+
+
+-- Retroactively copy to system clipboard [[
+vim.keymap.set(
+    'n',
+    '<leader>y',
+    function()
+        vim.cmd([[ :let @+=@" ]])
+        vim.print("Copied default register contents to system clipboard")
+    end,
+    {
+        desc = "Copy default register to system clipboard",
+        noremap = true,
+        silent = true
+    })
+
+vim.keymap.set(
+    'n',
+    '<leader>p',
+    function()
+        vim.cmd([[ :let @"=@+ ]])
+        vim.print("Copied system clipboard contents to default register")
+    end,
+    {
+        desc = "Copy system clipboard to default register",
+        noremap = true,
+        silent = true
+    })
+--]]
