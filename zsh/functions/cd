@@ -1,0 +1,46 @@
+# vim: ft=zsh
+#
+function _cd() {
+  if (($# > 0 )); then
+    builtin cd "$@"
+  else
+    if (( $+commands[fzf] )); then
+      local _path=$(_parent_dirlist_fzf "$PWD")
+    else
+      local _path=$(_parent_dirlist_select "$PWD")
+    fi
+    [ -z $_path ] && return 129
+    cd $_path
+  fi
+}
+
+# Parent directory selection using `select`
+function _parent_dirlist_select() {
+    OCOLUMNS="$COLUMNS"
+    COLUMNS=1
+    select dir in $(_parent_dirlist $1)
+    do
+      echo $dir
+      return 0
+    done
+    COLUMNS="$OCOLUMNS"
+}
+
+function _parent_dirlist() {
+  local _dir="$1"
+  while [[ $_dir != '/' ]]; do
+    _dir=$(dirname $_dir)
+    echo $_dir
+  done
+}
+
+# Parent directory selection using `fzf`
+function _parent_dirlist_fzf() {
+    _parent_dirlist "$@" | fzf +s +m --preview 'ls -a {}'
+}
+
+_cd "$@"
+
+# Completion for interactive `cd`: only directories
+# Reference: https://zsh.sourceforge.io/Doc/Release/Completion-System.html#Completion-Functions
+compdef '_path_files -/' cd

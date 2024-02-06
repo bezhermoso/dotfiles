@@ -1,0 +1,6 @@
+# vim: ft=zsh
+function qapp() {
+  echo "'quit app \"$@\"'" | xargs osascript -e
+}
+
+_qapp "$@"

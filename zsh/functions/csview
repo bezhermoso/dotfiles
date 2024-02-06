@@ -1,0 +1,9 @@
+# vim: ft=zsh
+#
+function _csview() {
+  cat "$@" | column -s, -t | less -#5 -SN
+}
+
+_csview "$@"
+
+compdef _files csview
