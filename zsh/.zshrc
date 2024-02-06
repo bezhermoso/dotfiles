@@ -21,7 +21,7 @@ source "$HOME/.dotfiles/zsh/.zprezto/runcoms/zshrc"
 # autoload -U +X compinit && compinit
 
 # Load $WORK configuration that needs to load early
-work_config_entrypoint="${HOME}/.dotfiles/work-entrypoint.sh"
+work_config_entrypoint="${HOME}/.dotfiles/zsh/work-entrypoint.sh"
 [ -f "$work_config_entrypoint" ] && source "$work_config_entrypoint"
 
 
@@ -57,7 +57,7 @@ source_config "inc.git.zsh"
 source_config "inc.gpg.zsh"
 
 # Load $WORK configuration that needs to load after zprezto
-work_config_post_entrypoint="${HOME}/.dotfiles/work-entrypoint.post.sh"
+work_config_post_entrypoint="${HOME}/.dotfiles/zsh/work-entrypoint.post.sh"
 [ -f "$work_config_post_entrypoint" ] && source "$work_config_post_entrypoint"
 
 # Clean up the local variables & functions
