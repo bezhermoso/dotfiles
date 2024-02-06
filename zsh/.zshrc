@@ -1,28 +1,31 @@
 local current_dir="${funcstack[1]:a:h}"
 
-# I think this ensures completions can be loaded properly.
-autoload -U +X bashcompinit && bashcompinit
-autoload -U +X compinit && compinit
-
 function source_config() {
   local config_file="${1}"
   local source_path="${current_dir}/${config_file}"
   [ -f "${source_path}" ] && source "${source_path}" || 2>&1 echo "No such file: ${source_path}"
 }
 
+
 # ./inc.theme.zsh
 source_config "inc.theme.zsh"
 source_config "inc.prompt.zsh"
-source_config "inc.bat.zsh"
 
-# Load $WORK configuration that needs to load before zprezto
-work_config_entrypoint="${HOME}/.dotfiles/work-entrypoint.sh"
-[ -f "$work_config_entrypoint" ] && source "$work_config_entrypoint"
+# NOTE: This must be loaded before the zshrc from prezto. fpath should be final before loading prezto.
+source_config "inc.options.zsh"
 
 # Load the zshrc from prezto
 source "$HOME/.dotfiles/zsh/.zprezto/runcoms/zshrc"
+# .zprezto will load compinit. Otherwise, uncomment the following lines:
+# autoload -U +X bashcompinit && bashcompinit
+# autoload -U +X compinit && compinit
 
-source_config "inc.options.zsh"
+# Load $WORK configuration that needs to load early
+work_config_entrypoint="${HOME}/.dotfiles/work-entrypoint.sh"
+[ -f "$work_config_entrypoint" ] && source "$work_config_entrypoint"
+
+
+source_config "inc.bat.zsh"
 source_config "inc.autosuggest.zsh"
 source_config "inc.surround.zsh"
 source_config "inc.direnv.zsh"
