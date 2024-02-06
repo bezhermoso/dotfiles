@@ -1,0 +1,9 @@
+# vim: ft=zsh
+
+# Load man page as PDF in Preview
+# From: https://mjtsai.com/blog/2022/11/20/viewing-man-pages-on-ventura/
+function _manpdf() {
+  mandoc -T pdf "$(/usr/bin/man -w $@)" | open -fa Preview
+}
+
+_manpdf "$@"
