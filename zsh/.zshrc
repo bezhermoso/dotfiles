@@ -54,6 +54,7 @@ source_config "inc.neovim.zsh"
 source_config "inc.tmux.zsh"
 
 source_config "inc.git.zsh"
+source_config "inc.gpg.zsh"
 
 # Load $WORK configuration that needs to load after zprezto
 work_config_post_entrypoint="${HOME}/.dotfiles/work-entrypoint.post.sh"
