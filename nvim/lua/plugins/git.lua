@@ -14,9 +14,15 @@ return {
         "lewis6991/gitsigns.nvim",
         enabled = vim.fn.executable('git') == 1,
         keys = {
-            { "<leader>gb", ":Gitsigns blame_line<CR>", {
+            { "<leader>gB", ":Gitsigns blame_line<CR>", {
                 desc = "Git: Show blame on current line",
-            } },
+            }},
+            { "<leader>gb", ":Gitsigns toggle_current_line_blame<CR>", {
+                desc = "Git: Toggle inline blames",
+            }},
+            { "<leader>gp", ":Gitsigns preview_hunk<CR>", {
+                desc = "Git: Preview hunk",
+            }},
         },
         lazy = false,
         opts = {}
