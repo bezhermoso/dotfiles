@@ -3,7 +3,11 @@ local current_dir="${funcstack[1]:a:h}"
 function source_config() {
   local config_file="${1}"
   local source_path="${current_dir}/${config_file}"
-  [ -f "${source_path}" ] && source "${source_path}" || 2>&1 echo "No such file: ${source_path}"
+  if [[ -f "${source_path}" ]]; then
+      source "${source_path}"
+  else
+      echo "Cannot source ${source_path}: failed -f test."
+  fi
 }
 
 
