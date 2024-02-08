@@ -9,7 +9,7 @@ return {
         { "n", "zR", function() require('ufo').openAllFolds() end },
         { "n", "zM", function() require('ufo').closeAllFolds() end },
     },
-    setup = function()
+    config = function()
         vim.o.foldcolumn = "1"
         vim.o.foldlevel = 99
         vim.o.foldlevelstart = 99
