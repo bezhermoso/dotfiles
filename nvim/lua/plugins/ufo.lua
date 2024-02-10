@@ -1,3 +1,4 @@
+
 return {
     "https://github.com/kevinhwang91/nvim-ufo",
     lazy = false,
@@ -6,17 +7,19 @@ return {
         { "nvim-treesitter/nvim-treesitter" },
     },
     keys = {
-        { "n", "zR", function() require('ufo').openAllFolds() end },
-        { "n", "zM", function() require('ufo').closeAllFolds() end },
+        { "zR", function() require('ufo').openAllFolds() end },
+        { "zM", function() require('ufo').closeAllFolds() end },
     },
-    config = function()
+    init = function()
         vim.o.foldcolumn = "1"
         vim.o.foldlevel = 99
         vim.o.foldlevelstart = 99
         vim.o.foldenable = true
+    end,
+    config = function()
         require('ufo').setup({
-            provider_selector = function ()
-                return {'treesitter', 'indent'}
+            provider_selector = function (_, ftype, _)
+                return {'lsp', 'indent'}
             end
         })
     end,
