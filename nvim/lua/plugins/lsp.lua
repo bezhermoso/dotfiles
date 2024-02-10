@@ -85,6 +85,15 @@ return {
                     desc = 'LSP: Line Diagnostics'
                 })
             end)
+            local capabilities = vim.lsp.protocol.make_client_capabilities()
+            capabilities.textDocument.foldingRange = {
+                dynamicRegistration = false,
+                lineFoldingOnly = true,
+            }
+            lsp_zero.set_server_config({
+                capabilities = capabilities
+            })
+
             -- Configure Lua LSP to understand Neovim plugin structures, etc.
             require('neodev').setup()
             require('mason').setup()
