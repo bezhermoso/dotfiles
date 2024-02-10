@@ -99,11 +99,17 @@ return {
             require('mason').setup()
             require('mason-lspconfig').setup({
                 ensure_installed = {
-                    'gopls',        -- Go
-                    'intelephense', -- PHP
-                    'lua_ls',       -- Lua
-                    'phpactor',     -- PHP
-                    'yamlls',       -- YAML
+                    -- Go
+                    'gopls',
+                    -- PHP
+                    'intelephense',
+                    'phpactor',
+                    -- Lua
+                    'lua_ls',
+                    -- YAML
+                    'yamlls',
+                    -- Protobuf
+                    'bufls',
                 },
                 handlers = {
                     lsp_zero.default_setup,
