@@ -21,7 +21,7 @@ return {
         require("core.ufo").lazy_mapping(),
     },
     init = function()
-        vim.o.foldcolumn = "1"
+        vim.o.foldcolumn = "0" -- Hides the fold-column. Set to "1" to show 1-char width fold chars.
         vim.o.foldlevel = 99
         vim.o.foldlevelstart = 99
         vim.o.foldenable = true
