@@ -46,6 +46,7 @@ return {
                 dev = true,
             },
             { "petertriho/cmp-git" },
+            { "folke/neoconf.nvim" },
             { "folke/neodev.nvim" },
             { 'zbirenbaum/copilot-cmp' },
         },
@@ -94,6 +95,7 @@ return {
                 capabilities = capabilities
             })
 
+            require('neoconf').setup()
             -- Configure Lua LSP to understand Neovim plugin structures, etc.
             require('neodev').setup()
             require('mason').setup({
