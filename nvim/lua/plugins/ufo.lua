@@ -18,6 +18,7 @@ return {
     keys = {
         { "zR", function() require('ufo').openAllFolds() end },
         { "zM", function() require('ufo').closeAllFolds() end },
+        require("core.ufo").lazy_mapping(),
     },
     init = function()
         vim.o.foldcolumn = "1"

@@ -72,9 +72,7 @@ return {
                 vim.keymap.set('n', 'gr', require('telescope.builtin').lsp_references, {
                     desc = 'LSP: Show usages'
                 })
-                vim.keymap.set('n', 'K', vim.lsp.buf.hover, {
-                    desc = 'LSP: Show tooltip'
-                })
+                require("core.ufo").lsp_on_attach_mapping()
                 vim.keymap.set('n', '<leader>==', vim.lsp.buf.format, {
                     desc = 'LSP: Format',
                 })
