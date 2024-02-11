@@ -10,7 +10,7 @@ local treesitter_based_folding_filetypes = {
 }
 return {
     "https://github.com/kevinhwang91/nvim-ufo",
-    lazy = false,
+    event = "BufRead",
     dependencies = {
         { "https://github.com/kevinhwang91/promise-async" },
         { "nvim-treesitter/nvim-treesitter" },
@@ -27,6 +27,7 @@ return {
     end,
     config = function()
         require('ufo').setup({
+            close_fold_kinds = {"comment", "imports"},
             provider_selector = function (_, ftype, _)
                 if vim.tbl_contains(treesitter_based_folding_filetypes, ftype) then
                     return {'treesitter', 'indent'}
