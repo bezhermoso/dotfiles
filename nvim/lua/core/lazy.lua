@@ -20,5 +20,8 @@ end
 require("lazy").setup({
     spec = 'plugins',
     dev = dev_opts,
+    ui = {
+      border = "rounded",
+    }
 })
 

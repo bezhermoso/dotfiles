@@ -96,7 +96,11 @@ return {
 
             -- Configure Lua LSP to understand Neovim plugin structures, etc.
             require('neodev').setup()
-            require('mason').setup()
+            require('mason').setup({
+                ui = {
+                    border = "rounded",
+                },
+            })
             require('mason-lspconfig').setup({
                 ensure_installed = {
                     -- Go
