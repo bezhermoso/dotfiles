@@ -19,7 +19,12 @@ source_config "inc.prompt.zsh"
 source_config "inc.options.zsh"
 
 # Load the zshrc from prezto
-source "$HOME/.dotfiles/zsh/.zprezto/runcoms/zshrc"
+local zprezto_zshrc="$ZDOTDIR/.zprezto/runcoms/zshrc"
+if [[ -f "${zprezto_zshrc}" ]]; then
+  source "${zprezto_zshrc}"
+else
+  echo "Cannot source ${zprezto_zshrc}. Did you install zprezto?"
+fi
 # .zprezto will load compinit. Otherwise, uncomment the following lines:
 # autoload -U +X bashcompinit && bashcompinit
 # autoload -U +X compinit && compinit
