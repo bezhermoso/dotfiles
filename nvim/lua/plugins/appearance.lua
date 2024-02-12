@@ -84,4 +84,8 @@ return {
             scope = { enabled = false },
         },
     },
+    {
+        'https://github.com/folke/zen-mode.nvim',
+        opts = {}
+    }
 }
