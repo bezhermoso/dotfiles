@@ -9,11 +9,14 @@
 	path = base16-fzf
 	url = git@github.com:tinted-theming/base16-fzf.git
 [submodule "openingh"]
-    path = nvim/lua/dev/openingh.nvim
+    path = .config/nvim/lua/dev/openingh.nvim
     url = git@github.com:bezhermoso/openingh.nvim.git
-[submodule "nvim/lua/dev/todos-lualine.nvim"]
-	path = nvim/lua/dev/todos-lualine.nvim
+[submodule ".config/nvim/lua/dev/todos-lualine.nvim"]
+	path = .config/nvim/lua/dev/todos-lualine.nvim
 	url = git@github.com:bezhermoso/todos-lualine.nvim.git
-[submodule "nvim/lua/dev/base16-live-reload.nvim"]
-	path = nvim/lua/dev/base16-live-reload.nvim
-	url = git@github.com:bezhermoso/base16-live-reload.nvim.git
+[submodule ".config/nvim/lua/dev/base16-live-reload.nvim"]
+	path = .config/nvim/lua/dev/base16-live-reload.nvim
+	url = git@github.com:bezhermoso/base16-live-reload.nvim
+[submodule "todos-lualine.nvim"]
+	path = .config/nvim/lua/dev/todos-lualine.nvim
+	url = git@github.com:bezhermoso/todos-lualine.nvim
