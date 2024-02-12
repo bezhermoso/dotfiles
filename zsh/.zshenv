@@ -2,7 +2,7 @@
 export ZDOTDIR="$HOME/.dotfiles/zsh"
 
 # Source zprezto's env
-local zprezto_zshenv="$HOME/.dotfiles/zsh/.zprezto/runcoms/zshenv"
+local zprezto_zshenv="$ZDOTDIR/.zprezto/runcoms/zshenv"
 if [[ -f "$zprezto_zshenv" ]]; then
     source "$zprezto_zshenv"
 else

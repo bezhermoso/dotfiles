@@ -84,7 +84,7 @@ export TERMINFO_DIRS="$TERMINFO_DIRS:$HOME/.local/share/terminfo"
 # Added by OrbStack: command-line tools and integration
 source ~/.orbstack/shell/init.zsh 2>/dev/null || :
 
-local zprezto_zprofile="$HOME/.dotfiles/zsh/.zprezto/runcoms/zprofile"
+local zprezto_zprofile="$ZDOTDIR/.zprezto/runcoms/zprofile"
 
 if [[ -f "$zprezto_zprofile" ]]; then
   source "$zprezto_zprofile"
