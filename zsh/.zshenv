@@ -6,5 +6,5 @@ local zprezto_zshenv="$HOME/.dotfiles/zsh/.zprezto/runcoms/zshenv"
 if [[ -f "$zprezto_zshenv" ]]; then
     source "$zprezto_zshenv"
 else
-    >&2 echo "Unable to source $zprezto_zshenv: Did you clone zprezto?"
+    >&2 echo "Unable to source $zprezto_zshenv: Did you install zprezto?"
 fi

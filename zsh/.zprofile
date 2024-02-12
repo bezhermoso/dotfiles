@@ -89,6 +89,6 @@ local zprezto_zprofile="$HOME/.dotfiles/zsh/.zprezto/runcoms/zprofile"
 if [[ -f "$zprezto_zprofile" ]]; then
   source "$zprezto_zprofile"
 else
-  >&2 echo "Unable to source $zprezto_zprofile. Did you clone zprezto?"
+  >&2 echo "Unable to source $zprezto_zprofile. Did you install zprezto?"
 fi
 
