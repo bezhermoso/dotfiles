@@ -1,6 +1,8 @@
 # https://github.com/sharkdp/bat
 
-export BAT_CONFIG_PATH=$HOME/.dotfiles/bat/config
+# Stow will create a symlink to the config file in the .config directory, so this is not needed:
+#export BAT_CONFIG_PATH=$HOME/.dotfiles/.config/bat/config
+
 if (( $+commands[bat] )); then
   alias cat="bat --paging=never"
 fi
