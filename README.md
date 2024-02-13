@@ -8,73 +8,39 @@
 
 Clone under `$HOME/.dotfiles` with `--recursive` flag
 
-
 ## Homebrew
 
-
-```bash
+```sh
 # Install Homebrew
 /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 ```
 
-Use [Homebrew Bundle](https://github.com/Homebrew/homebrew-bundle) to install dependencies:
+## Stow
 
-```bash
-brew tap Homebrew/bundle
-brew bundle --file=homebrew/Brewfile
+I use Stow to put configuration directories/files to where they need to be for tools to work:
+
+```sh
+# Install Stow
+brew install stow
+
+# Now, use Stow to put config dirs/files in place:
+cd $HOME/.dotfiles
+stow .
 ```
 
-## zsh
+## tpm
 
-```bash
-ln -s ~/.dotfiles/zsh/.zshenv ~/.zshenv
-```
+Install `tpm`:
 
-
-## neovim
-
-```bash
-ln -s ~/.dotfiles/vim ~/.config/nvim
-
-# lazy.nvim will bootstrap itself and install dependencies.
-nvim
-
-# Run :Mason to configure LSPs
-```
-
-## tmux
-
-Requires Tmux 2.1+
-
-```bash
-
-ln -s ~/.dotfiles/tmux/tmux.conf ~/.tmux.conf
-
-# Install `tpm`:
+```sh
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 ```
 
 Start a new `tmux` session and invoke `C-s M-I` to install the plugins.
 
-#### tmux 2.* on Ubuntu
-```bash
-sudo apt-get update
-sudo apt-get install -y python-software-properties software-properties-common
-sudo add-apt-repository -y ppa:pi-rho/dev
-sudo apt-get update
-sudo apt-get install -y tmux=2.0-1~ppa1~t
-```
-
-## bat
-
-```
-ln -s ~/.dotfiles/bat ~/.config/bat
-```
-
 ## atuin
 
-```
-ln -s ~/.dotfiles/atuin ~/.config/atuin
+```sh
 atuin login
 ```
 
@@ -82,7 +48,7 @@ atuin login
 
 Create a `~/.gitconfig` file & include files from `~/.dotfiles/git` e.g.
 
-```
+```gitconfig
 [include]
     path = ~/.dotfiles/git/gitconfig.base
     path = ~/.dotfiles/git/gitconfig.1password
@@ -93,8 +59,3 @@ Create a `~/.gitconfig` file & include files from `~/.dotfiles/git` e.g.
 	email = ...
 ```
 
-## gh
-
-```
-ln -s ~/.dotfiles/gh ~/.config/gh
-```
