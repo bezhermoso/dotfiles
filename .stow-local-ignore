@@ -1,5 +1,5 @@
 \.git.*
-\.DS_Ignore
+\.DS_Store
 Makefile
 preview.png
 README.md
