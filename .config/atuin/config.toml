@@ -6,6 +6,8 @@
 ## where to store your encryption key, default is your system data directory
 # key_path = "~/.key"
 
+keymap_mode = "vim-normal"
+
 ## where to store your auth session token, default is your system data directory
 # session_path = "~/.key"
 
@@ -82,3 +84,5 @@ show_preview = true
 # cwd_filter = [
 #   "^/very/secret/area"
 # ]
+# [sync]
+# records = true
