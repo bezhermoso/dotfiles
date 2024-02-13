@@ -22,3 +22,6 @@ nvim/lua/dev/*
 !nvim/lua/dev/base16-live-reload.nvim
 !nvim/lua/dev/todos-lualine.nvim
 gh/hosts.yml
+
+# TPM (Tmux Plugin Manager) plugins
+.config/tmux/plugins/*
