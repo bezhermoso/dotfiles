@@ -17,7 +17,7 @@ Clone under `$HOME/.dotfiles` with `--recursive` flag
 
 ## Stow
 
-I use Stow to put configuration directories/files to where they need to be for tools to work:
+I use [Stow](https://www.gnu.org/software/stow/) to put configuration directories/files where they need to be for tools to work:
 
 ```sh
 # Install Stow
@@ -41,6 +41,7 @@ Start a new `tmux` session and invoke `C-s M-I` to install the plugins.
 ## atuin
 
 ```sh
+brew install atuin
 atuin login
 ```
 
