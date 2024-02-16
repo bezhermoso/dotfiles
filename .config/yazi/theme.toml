@@ -309,6 +309,9 @@ rules = [
 	{ name = "Public/"     , text = "" },
 	{ name = "Videos/"     , text = "" },
 
+	# Encrypted files
+	{ name = "*.gpg", text = "󰈉" },
+
 	# Default
 	{ name = "*" , text = "" },
 	{ name = "*/", text = "" },
