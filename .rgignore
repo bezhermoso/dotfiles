@@ -1,0 +1,4 @@
+# Ignore .git directory. ripgrep searches it for some reason if .rgignore exists 🤷
+.git
+# Don't ignore .config contents
+!.config
