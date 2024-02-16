@@ -154,6 +154,7 @@ return {
             -- lsp-zero already sets up nvim-cmp for us, here we are simply
             -- setting more configuration e.g. adding sources.
             local cmp = require('cmp')
+            local cmp_mappings = require("plugins.cmp.mappings")
 
             -- require('copilot').setup(copilot_opts)
             -- require('copilot_cmp').setup()
@@ -182,7 +183,11 @@ return {
                     ['<CR>'] = cmp.mapping.confirm({
                         behavior = cmp.ConfirmBehavior.Replace,
                         select = false,
-                    })
+                    }),
+                    ['<C-j>'] = cmp_mappings.next_cmp_item,
+                    ['<C-k>'] = cmp_mappings.prev_cmp_item,
+                    ['<Tab>'] = cmp_mappings.next_cmp_item,
+                    ['<S-Tab>'] = cmp_mappings.prev_cmp_item,
                 }),
                 window = {
                     completion = cmp.config.window.bordered({
@@ -215,31 +220,6 @@ return {
                 -- }
                 )
             }) ]]
-
-            cmp.setup.filetype('gitcommit', {
-                sources = cmp.config.sources(
-                    {
-                        { name = 'git ' }
-                    },
-                    {
-                        { name = 'buffer' }
-                    }
-                )
-            })
-
-            cmp.setup.filetype({ 'bash', 'zsh', 'markdown' }, {
-                sources = cmp.config.sources(
-                    {
-                        { name = 'git ' }
-                    },
-                    {
-                        { name = 'buffer' }
-                    }
-                    -- {
-                    --     { name = 'atuin' },
-                    -- }
-                )
-            })
             -- }}}
             --
             -- DAP {{{
