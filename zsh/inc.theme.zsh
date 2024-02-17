@@ -1,6 +1,6 @@
 # Coerce 256-bit terminal colorspace
 #export TERM='xterm-256color'
-export TERMINFO_DIRS=$TERMINFO_DIRS:$HOME/.local/share/terminfo
+export TERMINFO_DIRS=$TERMINFO_DIRS:$HOME/.local/share/terminfo:$HOME/.dotfiles/terminfo
 
 ## Setup terminal colors first. I use base16-shell
 #

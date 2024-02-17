@@ -1,3 +1,5 @@
+SHELL = /bin/zsh
+
 npm-inventory:
 	bash languages/nodejs/inventory.sh | tee languages/nodejs/install-npm-globals.sh
 
@@ -10,3 +12,12 @@ gem-inventory:
 .ONESHELL:
 brewfile:
 	@bash -c 'cd homebrew; rm Brewfile; brew bundle dump'
+
+tmux-terminfo:
+	# See https://gpanders.com/blog/the-definitive-guide-to-using-tmux-256color-on-macos/
+	# This script automates the whole process:
+	brew install ncurses
+	$$(brew --prefix ncurses)/bin/infocmp -x tmux-256color | \
+		sed -E 's/pairs#(0x10000|65536)/pairs#32767/' | \
+		tic -x -o ~/.dotfiles/terminfo -
+
