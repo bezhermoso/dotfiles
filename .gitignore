@@ -23,5 +23,8 @@ nvim/lua/dev/*
 !nvim/lua/dev/todos-lualine.nvim
 gh/hosts.yml
 
-# TPM (Tmux Plugin Manager) plugins
+# Ignore tpm (Tmux Plugin Manager) plugins
 .config/tmux/plugins/*
+
+# Do not ignore tpm itself
+!.config/tmux/plugins/tpm
