@@ -1,3 +1,7 @@
+if (( ! $+commands[brew] )); then
+  return 0
+fi
+
 declare -a GOOGLE_CLOUD_SDK_TO_SOURCE
 GOOGLE_CLOUD_SDK_TO_SOURCE=(
   "$(brew --prefix)/share/google-cloud-sdk/path.zsh.inc"
