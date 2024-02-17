@@ -7,4 +7,6 @@ pip-inventory:
 gem-inventory:
 	bash languages/ruby/inventory.sh | tee languages/ruby/install-gem-globals.sh
 
-
+.ONESHELL:
+brewfile:
+	@bash -c 'cd homebrew; rm Brewfile; brew bundle dump'
