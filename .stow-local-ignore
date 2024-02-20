@@ -1,6 +1,9 @@
 \.git.*
 \.DS_Store
-\.stowrc
+
+^\.rgignore
+^\.stowrc
+
 ^/Makefile
 ^/preview.png
 ^/README.md
@@ -21,3 +24,4 @@
 ^/vim
 ^/workflows
 ^/zsh
+^/terminfo
