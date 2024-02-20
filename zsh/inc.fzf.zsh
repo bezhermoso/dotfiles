@@ -22,3 +22,8 @@ function _load_fzf() {
 }
 
 _load_fzf; unset _load_fzf
+
+# FZF binds the fzf-cd-widget to Alt-C, but doesn't work in iTerm2 w/o further setup. Bind it to Ctrl-Y for now.
+zle     -N            fzf-cd-widget
+bindkey -M vicmd '^Y' fzf-cd-widget
+bindkey -M viins '^Y' fzf-cd-widget
