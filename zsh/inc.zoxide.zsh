@@ -17,7 +17,7 @@ function _popd-widget {
   zle push-line
   popd 2>/dev/null
   if [[ "$?" -gt 0 ]]; then
-      echo "\ndirstack is empty!"
+      echo -n "\ndirstack is empty!"
   fi
   zle accept-line
 }
