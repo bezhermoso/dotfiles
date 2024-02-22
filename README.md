@@ -72,8 +72,8 @@ Create a `~/.gitconfig` file & include relevant files from `~/.dotfiles/git` e.g
 
 ```gitconfig
 [include]
-    path = ~/.dotfiles/git/gitconfig.base
-    path = ~/.dotfiles/git/gitconfig.1password
+    path = ~/.dotfiles/git/base.gitconfig
+    path = ~/.dotfiles/git/1password.gitconfig
 
 # REQUIRED. None of the config files in dotfiles contain author information. Configure this on a per-machine basis.
 [user]

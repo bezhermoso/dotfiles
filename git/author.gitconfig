@@ -1,0 +1,4 @@
+# vi: ft=gitconfig
+
+[author]
+	email = "bezalelhermoso@gmail.com"

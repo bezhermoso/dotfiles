@@ -1,5 +1,4 @@
-# vi: set syntax=gitconfig :
-
+# vi: ft=gitconfig
 [user]
 	email = bezalel@squareup.com
 	signingkey = E1A44332C871D925F331CCFAB91F85FC69D5EF83
