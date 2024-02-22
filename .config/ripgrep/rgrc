@@ -1,0 +1,3 @@
+--colors=match:fg:black
+--colors=match:style:nobold
+--colors=match:bg:yellow

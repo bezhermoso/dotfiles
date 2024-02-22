@@ -49,6 +49,9 @@ source_config "inc.aliases.zsh"
 
 # NOTE: The following needs to be included in the right order:
 
+source_config "inc.grep.zsh"
+source_config "inc.ripgrep.zsh"
+
 # Loads history-related settings
 source_config "inc.history.zsh"
 # Initializes FZF & loads FZF-related settings, which may read history-related settings.
@@ -65,8 +68,6 @@ source_config "inc.tmux.zsh"
 source_config "inc.git.zsh"
 source_config "inc.gpg.zsh"
 source_config "inc.zoxide.zsh"
-source_config "inc.grep.zsh"
-
 # Load $WORK configuration that needs to load after zprezto
 work_config_post_entrypoint="${HOME}/.dotfiles/zsh/work-entrypoint.post.sh"
 [ -f "$work_config_post_entrypoint" ] && source "$work_config_post_entrypoint"
