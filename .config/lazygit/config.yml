@@ -9,3 +9,9 @@ keybinding:
     quit: 'Q'
 git:
   mainBranches: ['master', 'main', 'live']
+customCommands:
+  - key: '<c-t>'
+    context: global
+    description: 'Open Lazygit in new tmux window'
+    command: '[[ -n $TMUX ]] && tmux new-window -c $(tmux display-message -p "#{pane_current_path}") lazygit && tmux display-popup -C'
+
