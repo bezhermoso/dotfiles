@@ -161,13 +161,12 @@ return {
 
             -- require('atuin').setup()
             cmp.setup({
-                sources = {
+                sources = cmp.config.sources({
                     -- { name = 'copilot' },
-                    { name = 'nvim_lsp',              priority = 1000 },
-                    { name = 'luasnip',               priority = 750 },
-                    { name = 'buffer',                priority = 500 },
-                    { name = 'path',                  priority = 250 },
-                    { name = 'nvm_lsp_signature_help' },
+                    { name = 'nvim_lsp' },
+                    { name = 'luasnip' },
+                    { name = 'path' },
+                    { name = 'nvim_lsp_signature_help' },
                     { name = 'calc' },
                     { name = 'spell' },
                     { name = 'zsh' },
@@ -175,7 +174,9 @@ return {
                     { name = 'emoji' },
                     { name = 'nerdfont' },
                     { name = 'plugins' },
-                },
+                }, {
+                    { name = 'buffer' },
+                }),
                 -- mapping = {
                 --     ['<CR>'] = cmp.mapping.confirm({ select = true }),
                 -- }
