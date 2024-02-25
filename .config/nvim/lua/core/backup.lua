@@ -18,3 +18,5 @@ vim.opt.backupdir:append(".")
 -- Persist undo-files:
 vim.opt.backup = true
 -- Persist in undopath
+
+vim.opt.updatecount = 10

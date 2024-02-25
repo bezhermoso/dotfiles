@@ -1,4 +1,3 @@
-
 -- Enable highlight groups
 vim.opt.termguicolors = true
 
@@ -83,6 +82,8 @@ vim.opt.autoread = true
 vim.opt.hlsearch = true
 -- Incremental search
 vim.opt.incsearch = true
+-- Match mixed case matches
+vim.opt.ignorecase = true
 -- Only perform case-sensitive case when search text is mixed-case:
 vim.opt.smartcase = true
 vim.opt.magic = true
@@ -119,3 +120,10 @@ end
 --
 
 -- }}}
+-- TEST: Supposed to make neovim feel faster in some circumstances. [[[
+vim.opt.ttyfast = true
+vim.opt.lazyredraw = true
+-- ]]]
+
+-- Preview the result of substitute commands live on the buffer & on a temporarily split
+vim.opt.inccommand = "split"

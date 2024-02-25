@@ -1,10 +1,7 @@
 
 "set clipboard=unnamed
 set pastetoggle=<F2>
-set autoread
 
-set showtabline=1
-set tabstop=2 shiftwidth=2 softtabstop=2 expandtab
 set hlsearch incsearch ignorecase smartcase
 set showmatch
 set wildmode=list:longest
