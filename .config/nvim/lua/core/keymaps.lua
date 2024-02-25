@@ -1,5 +1,8 @@
-vim.keymap.set('n', '<leader><Space>', ':noh<CR>', {
-    desc = 'Clear buffer search'
+local mapkey = vim.keymap.set
+
+mapkey('n', '<leader><Space>', ':noh<CR>', {
+    desc = 'Clear buffer search',
+    silent = true,
 })
 
 local open_plugin_github_repo = function()
@@ -13,46 +16,58 @@ local open_plugin_github_repo = function()
     vim.cmd(cmd)
 end
 
-vim.keymap.set('n', '<leader>gh', open_plugin_github_repo)
+mapkey('n', '<leader>gh', open_plugin_github_repo)
 
 
 -- Quickfix List [[
-vim.keymap.set('n', 'cn', ':cnext<CR>', {
+mapkey('n', 'cn', ':cnext<CR>', {
     noremap = true,
     silent = true,
     desc = 'Next item in quickfix-list',
 })
-vim.keymap.set('n', 'cp', ':cprevious<CR>', {
+mapkey('n', 'cp', ':cprevious<CR>', {
     noremap = true,
     silent = true,
     desc = 'Next item in quickfix-list',
 })
-vim.keymap.set('n', 'cc', ':cclose<CR>', {
+mapkey('n', 'cc', ':cclose<CR>', {
     noremap = true,
     silent = true,
     desc = 'Close quickfix-list',
 })
-vim.keymap.set('n', 'co', ':copen<CR>', {
+mapkey('n', 'co', ':copen<CR>', {
     noremap = true,
     silent = true,
     desc = 'Open quickfix-list',
 })
 -- ]]
 
--- Text manipulations [[
-vim.keymap.set("v", "<C-j>", ":m '>+1<CR>gv=gv", {
+mapkey("v", "<C-j>", ":m '>+1<CR>gv=gv", {
     desc = "Move selection down",
     noremap = true,
     silent = true,
 })
 
-vim.keymap.set("v", "<C-k>", ":m '<-2<CR>gv=gv", {
+mapkey("v", "<C-k>", ":m '<-2<CR>gv=gv", {
     desc = "Move selection up",
     noremap = true,
     silent = true,
 })
 
-vim.keymap.set("x", ">>", function()
+mapkey("n", "<up>", ":m -2", {
+    desc = "Move current line up",
+    noremap = true,
+    silent = true,
+})
+
+mapkey("n", "<down>", ":m +1", {
+    desc = "Move current line up",
+    noremap = true,
+    silent = true,
+})
+
+-- Indent/outdent while preserving visual selection [[
+mapkey("x", ">>", function()
     vim.cmd('normal! >>')
     vim.cmd('normal! gv')
 end, {
@@ -60,7 +75,7 @@ end, {
     noremap = true,
     silent = true,
 })
-vim.keymap.set("x", "<<", function()
+mapkey("x", "<<", function()
     vim.cmd('normal! <<')
     vim.cmd('normal! gv')
 end, {
@@ -68,24 +83,30 @@ end, {
     noremap = true,
     silent = true,
 })
-vim.keymap.set("x", "<leader>p", '"_dP', {
-    desc = "Paste & preserve default register",
-    noremap = true,
-    silent = true,
-})
 -- ]]
 
 -- Navigation [[
-vim.keymap.set('n', '<leader><Tab>', "<C-^>", {
+mapkey('n', '<leader><Tab>', "<C-^>", {
     desc = "Switch to previous buffer",
     noremap = true,
     silent = true,
 })
 -- ]]
 
+-- Registers [[[
+mapkey("x", "<leader>P", '"_dP', {
+    desc = "Paste & preserve default register",
+    noremap = true,
+    silent = true,
+})
+
+-- Blackhole:
+mapkey({ "n", "v" }, "<BS>", "\"_d")
+mapkey({ "n", "v" }, "<BS><BS>", "\"_dd")
+-- ]]]
 
 -- Retroactively copy to system clipboard [[
-vim.keymap.set(
+mapkey(
     'n',
     '<leader>y',
     function()
@@ -98,7 +119,7 @@ vim.keymap.set(
         silent = true
     })
 
-vim.keymap.set(
+mapkey(
     'n',
     '<leader>p',
     function()
@@ -111,3 +132,21 @@ vim.keymap.set(
         silent = true
     })
 --]]
+
+-- Keep search results centered [[[
+mapkey('n', 'n', 'nzz', { silent = true, noremap = true })
+mapkey('n', 'N', 'Nzz', { silent = true, noremap = true })
+mapkey('n', '*', '*zz', { silent = true, noremap = true })
+mapkey('n', 'g*', 'g*zz', { silent = true, noremap = true })
+mapkey('n', '#', '#zz', { silent = true, noremap = true })
+mapkey('n', 'g#', 'g#zz', { silent = true, noremap = true })
+-- ]]]
+
+-- Tame vim's regex [[[
+mapkey({ 'n', 'v' }, '/', '/\\v', { noremap = true })
+mapkey({ 'n', 'v' }, '?', '?\\v', { noremap = true })
+-- ]]]
+-- Folding [[[
+mapkey('i', '<Tab><Tab>', 'za', { noremap = true })
+mapkey('i', '<S-Tab><S-Tab>', 'zA', { noremap = true })
+-- ]]]
