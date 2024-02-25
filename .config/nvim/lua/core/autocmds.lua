@@ -7,3 +7,18 @@ vim.api.nvim_create_autocmd('BufEnter', {
     vim.opt_local.filetype = "gotexttmpl.yaml"
   end
 })
+
+-- Hide cursorline when buffer is not in focus [[[
+vim.api.nvim_create_autocmd({'VimEnter', 'WinEnter', 'BufWinEnter'}, { callback = function ()
+      vim.opt_local.cursorline = true
+    end,
+  }
+)
+
+vim.api.nvim_create_autocmd({'WinLeave'}, {
+    callback = function ()
+      vim.opt_local.cursorline = false
+    end,
+  }
+)
+-- ]]]

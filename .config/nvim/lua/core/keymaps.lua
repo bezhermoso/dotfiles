@@ -150,3 +150,9 @@ mapkey({ 'n', 'v' }, '?', '?\\v', { noremap = true })
 mapkey('i', '<Tab><Tab>', 'za', { noremap = true })
 mapkey('i', '<S-Tab><S-Tab>', 'zA', { noremap = true })
 -- ]]]
+-- Open terminal split below buffer [[[
+mapkey( 'n', '<C-o>', ':below 15sp term://$SHELL')
+-- ]]]
+-- Enter normal mode in terminal buffers [[[
+mapkey('t', '<C-\\><C-\\>', '<C-\\><C-n>')
+-- ]]]
