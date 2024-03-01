@@ -84,6 +84,9 @@
 [branch]
 	autosetupmerge = true
 
+[commit]
+	verbose = true
+
 # Helps to ensure that ~/.dotfiles commits are contributed w/ personal info
 [includeIf "gitdir:~/.dotfiles/**"]
 	path = ~/.dotfiles/git/author.gitconfig
