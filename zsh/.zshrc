@@ -68,6 +68,7 @@ source_config "inc.tmux.zsh"
 source_config "inc.git.zsh"
 source_config "inc.gpg.zsh"
 source_config "inc.zoxide.zsh"
+source_config "inc.yazi.zsh"
 # Load $WORK configuration that needs to load after zprezto
 work_config_post_entrypoint="${HOME}/.dotfiles/zsh/work-entrypoint.post.sh"
 [ -f "$work_config_post_entrypoint" ] && source "$work_config_post_entrypoint"
