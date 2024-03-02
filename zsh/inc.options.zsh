@@ -58,10 +58,11 @@ fpath=(
   $HOME/.dotfiles/zsh/functions
   # Custom completions:
   $HOME/.dotfiles/zsh/completions
-  # Completions from Homebrew:
-  /usr/local/share/zsh-completions
   # More custom functions:
   $HOME/.local/share/zsh/functions
+  # Completions from Homebrew:
+  /usr/local/share/zsh-completions
+  /opt/homebrew/share/zsh/site-functions
   # Existing fpaths:
   $fpath
 )
