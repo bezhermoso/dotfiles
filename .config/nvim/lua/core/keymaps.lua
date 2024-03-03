@@ -4,6 +4,10 @@ mapkey('n', '<leader><Space>', ':noh<CR>', {
     desc = 'Clear buffer search',
     silent = true,
 })
+mapkey('n', '<Esc>', ':noh<CR>', {
+    desc = 'Clear buffer search',
+    silent = true,
+})
 
 local open_plugin_github_repo = function()
     local plugin = vim.fn.expand('<cWORD>')
