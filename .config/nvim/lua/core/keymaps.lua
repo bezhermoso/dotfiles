@@ -147,8 +147,8 @@ mapkey({ 'n', 'v' }, '/', '/\\v', { noremap = true })
 mapkey({ 'n', 'v' }, '?', '?\\v', { noremap = true })
 -- ]]]
 -- Folding [[[
-mapkey('i', '<Tab><Tab>', 'za', { noremap = true })
-mapkey('i', '<S-Tab><S-Tab>', 'zA', { noremap = true })
+mapkey('n', '<Tab><Tab>', 'za', { noremap = true })
+mapkey('n', '<S-Tab><S-Tab>', 'zA', { noremap = true })
 -- ]]]
 -- Open terminal split below buffer [[[
 mapkey( 'n', '<C-0>', ':below 15sp term://$SHELL')
