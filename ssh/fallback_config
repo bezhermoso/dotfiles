@@ -1,0 +1,6 @@
+# vim: set ft=sshconfig
+
+Match exec "[[ -n $SSH_CONNECTION ]]" Host *
+    IdentityAgent SSH_AUTH_SOCK
+    IdentitiesOnly yes
+    IdentityFile ~/.ssh/id_rsa_fallback
