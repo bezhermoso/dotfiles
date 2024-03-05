@@ -11,7 +11,9 @@ alias lg='lazygit'
 # 2.) We set the various env vars to certain values
 # 3.) Alias git to add the --config-env options.
 if [[ -n "$SSH_CONNECTION" ]]; then
-  export GIT_CONFIG_GPG_FORMAT="openpgp"
-  export GIT_CONFIG_USER_SIGNINGKEY="55BDEC097B885413"
-  alias git="git --config-env=user.signingkey=GIT_CONFIG_USER_SIGNINGKEY --config-env=gpg.format=GIT_CONFIG_GPG_FORMAT"
+    export GIT_CONFIG_COUNT=2
+    export GIT_CONFIG_KEY_0="gpg.format"
+    export GIT_CONFIG_VALUE_0="openpgp"
+    export GIT_CONFIG_KEY_1="user.signingkey"
+    export GIT_CONFIG_VALUE_1="55BDEC097B885413"
 fi
