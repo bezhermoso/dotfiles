@@ -1,5 +1,6 @@
 local current_dir="${funcstack[1]:a:h}"
 
+# This function is here just so the includes are "gf"able in Neovim
 function source_config() {
   local config_file="${1}"
   local source_path="${current_dir}/${config_file}"
@@ -72,6 +73,11 @@ source_config "inc.yazi.zsh"
 # Load $WORK configuration that needs to load after zprezto
 work_config_post_entrypoint="${HOME}/.dotfiles/zsh/work-entrypoint.post.sh"
 [ -f "$work_config_post_entrypoint" ] && source "$work_config_post_entrypoint"
+
+# Secure ShellFish integration:
+if [[ -f "$HOME/.shellfishrc" ]]; then
+  source "$HOME/.shellfishrc"
+fi
 
 # Clean up the local variables & functions
 unset current_dir
