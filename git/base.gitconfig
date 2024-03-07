@@ -52,8 +52,9 @@
 	diffFilter = delta --color-only
 
 [push]
-	default = current
-	autoSetupRemote = 1
+    default = current
+    autoSetupRemote = 1
+    useForceIfIncludes = true
 
 [color]
 	ui = auto
@@ -87,6 +88,9 @@
 
 [commit]
 	verbose = true
+
+[checkout]
+    defaultRemote = origin
 
 [pager]
     status = true
