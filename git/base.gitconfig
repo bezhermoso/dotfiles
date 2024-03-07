@@ -41,7 +41,8 @@
 [status]
 	showStash = true
 	submoduleSummary = true
-    ;short = true
+    short = true
+    branch = true
 
 [rebase]
 	autoStash = true
@@ -86,6 +87,9 @@
 
 [commit]
 	verbose = true
+
+[pager]
+    status = true
 
 # Helps to ensure that ~/.dotfiles commits are contributed w/ personal info
 [includeIf "gitdir:~/.dotfiles/**"]
