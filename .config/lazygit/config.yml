@@ -2,6 +2,9 @@
 #
 gui:
   nerdFontsVersion: '3'
+  theme:
+    selectedLineBgColor:
+      - reverse
 os:
   open: 'open {{filename}}'
 keybinding:
