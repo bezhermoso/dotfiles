@@ -125,7 +125,7 @@ return {
             telescope.load_extension('ui-select')
             telescope.load_extension('undo')
             telescope.load_extension('file_browser')
-            telescope.load_extension('yank_history')
+            --telescope.load_extension('yank_history')
 
             vim.keymap.set('n', '<leader>/', function()
                 require('telescope.builtin').current_buffer_fuzzy_find(
