@@ -63,7 +63,7 @@ return {
                 vim.keymap.set('n', '<leader>mv', vim.lsp.buf.rename, {
                     desc = 'LSP: Rename',
                 })
-                vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, {
+                vim.keymap.set({'n', 'v'}, '<leader>ca', vim.lsp.buf.code_action, {
                     desc = 'LSP: Code Actions...',
                 })
                 vim.keymap.set('n', 'gd', vim.lsp.buf.definition, {
