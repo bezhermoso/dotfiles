@@ -49,6 +49,9 @@ return {
             { "folke/neoconf.nvim" },
             { "folke/neodev.nvim" },
             { 'zbirenbaum/copilot-cmp' },
+            -- Yank-ring
+            { 'gbprod/yanky.nvim' },
+            { 'chrisgrieser/cmp_yanky' },
         },
         config = function()
             -- Language Server Protocol (LSP) {{{
@@ -167,6 +170,7 @@ return {
                     { name = 'luasnip' },
                     { name = 'path' },
                     { name = 'nvim_lsp_signature_help' },
+                    { name = 'cmp_yanky' },
                     { name = 'calc' },
                     { name = 'spell' },
                     { name = 'zsh' },

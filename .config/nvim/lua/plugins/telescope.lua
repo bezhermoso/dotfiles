@@ -13,6 +13,7 @@ return {
             'nvim-telescope/telescope-ui-select.nvim',
             'debugloop/telescope-undo.nvim',
             'nvim-telescope/telescope-file-browser.nvim',
+            'gbprod/yanky.nvim',
         },
         keys = {
             { "<leader>*",   ":lua require('telescope.builtin').grep_string()<CR>",     desc = 'Telescope: Grep string...', mode = { 'v', 'n' } },
@@ -36,6 +37,7 @@ return {
             { "<leader>ft",  ":lua require('telescope').extensions.file_browser.file_browser()<CR>",         desc = 'Telescope: File tree' },
             { "<leader>fu",  ":lua require('telescope').extensions.undo.undo()<CR>",    desc = 'Telescope: Undo' },
             { "<leader>fy",  ":lua require('telescope.builtin').registers()<CR>",       desc = 'Telescope: Registers' },
+            { "<leader>fY",  ":Telescope yank_history<CR>",       desc = 'Telescope: Yank history' },
         },
         config = function(_, opts)
             local telescope = require('telescope')
@@ -123,6 +125,7 @@ return {
             telescope.load_extension('ui-select')
             telescope.load_extension('undo')
             telescope.load_extension('file_browser')
+            telescope.load_extension('yank_history')
 
             vim.keymap.set('n', '<leader>/', function ()
                 require('telescope.builtin').current_buffer_fuzzy_find(
