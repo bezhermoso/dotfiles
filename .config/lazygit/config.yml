@@ -9,6 +9,9 @@ keybinding:
     quit: 'Q'
 git:
   mainBranches: ['master', 'main', 'live']
+  paging:
+    colorArg: always
+    pager: delta --paging=never
 customCommands:
   - key: '<c-t>'
     context: global
