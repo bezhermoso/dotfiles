@@ -8,6 +8,7 @@ return {
         opts = {
             backends = { "lsp", "treesitter", "markdown", "asciidoc", "man" },
             layout = {
+                max_width = { 40, 0.33 },
                 min_width = 20,
             },
             autojump = true,
