@@ -12,9 +12,28 @@ return {
                 min_width = 20,
             },
             autojump = true,
+            filter_kind = {
+                "Class",
+                "Constructor",
+                "Enum",
+                "EnumMember",
+                "Function",
+                "Interface",
+                "Module",
+                "Method",
+                "Struct",
+                "NamedType",
+                "Namespace",
+                "PointerType",
+                "Property",
+                "ErrorType",
+                "FunctionPointerType",
+                "Constant",
+                "Package",
+            },
         },
         keys = {
-            {"<leader>ss", "<cmd>AerialToggle!<CR>", desc = "Aerial: Toggle [(s)how (s)tructure]"},
+            { "<leader>ss", "<cmd>AerialToggle!<CR>", desc = "Aerial: Toggle [(s)how (s)tructure]" },
         }
     }
 }
