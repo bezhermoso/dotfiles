@@ -22,3 +22,15 @@ terminfo:
 		sed -E 's/pairs#(0x10000|65536)/pairs#32767/' | \
 		tic -x -o terminfo -
 
+.PHONY: ssh_fallback
+ssh_fallback: ~/.ssh/id_rsa_fallback
+
+# Reads fallback SSH key from 1Password vault and drop it in ~/.ssh/id_rsa_fallback
+~/.ssh/id_rsa_fallback:
+	op item get lgukbustpzevs7g5osdyqeyqf4 \
+		--format json \
+		--fields 'label=private key' \
+		--reveal \
+		| jq -r '.ssh_formats.openssh.value' \
+		| sed 's#\r##' > ~/.ssh/id_rsa_fallback
+	chmod 0700 ~/.ssh/id_rsa_fallback
