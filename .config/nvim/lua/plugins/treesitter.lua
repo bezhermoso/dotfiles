@@ -6,7 +6,10 @@ return {
             {
                 'nvim-treesitter/nvim-treesitter-textobjects',
                 after = 'nvim-treesitter/nvim-treesitter',
-            }
+            },
+            {
+                'nvim-treesitter/playground',
+            },
         },
         config = function()
             local configs = require("nvim-treesitter.configs")
