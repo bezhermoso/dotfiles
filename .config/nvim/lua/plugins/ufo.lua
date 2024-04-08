@@ -28,7 +28,9 @@ return {
     end,
     config = function()
         require('ufo').setup({
-            close_fold_kinds = {"comment", "imports"},
+            close_fold_kinds_for_ft = {
+                php = {"comment", "imports"},
+            },
             provider_selector = function (_, ftype, _)
                 if vim.tbl_contains(treesitter_based_folding_filetypes, ftype) then
                     return {'treesitter', 'indent'}
