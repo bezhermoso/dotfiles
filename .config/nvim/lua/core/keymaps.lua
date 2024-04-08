@@ -95,6 +95,17 @@ mapkey('n', '<leader><Tab>', "<C-^>", {
     noremap = true,
     silent = true,
 })
+mapkey('n', 'bx', ":bd<CR>", {
+    desc = "Unload buffer",
+    noremap = true,
+    silent = true,
+})
+mapkey('n', 'bX', ":bw!<CR>", {
+    desc = "Force-unload buffer",
+
+    noremap = true,
+    silent = true,
+})
 -- ]]
 
 -- Registers [[[
