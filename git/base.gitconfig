@@ -26,14 +26,11 @@
 [alias]
 	commits = commit -S
 	amend = commit --amend
-	amends = commit -S --amend
-	rebases = rebase -S
 	diffw = diff --word-diff
 	plog = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
 	s = status -s
 	ss = status --long
 	wc = whatchanged
-	cs = commit -S -m 'cs/lint fix'
 
 [gpg]
 	program = gpg
