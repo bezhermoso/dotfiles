@@ -7,6 +7,7 @@ gui:
       - reverse
 os:
   open: 'open {{filename}}'
+  editPreset: "nvim"
 keybinding:
   universal:
     quit: 'Q'
