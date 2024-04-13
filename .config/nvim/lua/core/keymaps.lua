@@ -162,8 +162,9 @@ mapkey({ 'n', 'v' }, '/', '/\\v', { noremap = true })
 mapkey({ 'n', 'v' }, '?', '?\\v', { noremap = true })
 -- ]]]
 -- Folding [[[
-mapkey('n', '<Tab><Tab>', 'za', { noremap = true })
-mapkey('n', '<S-Tab><S-Tab>', 'zA', { noremap = true })
+-- FIX: <Tab> and <C-i> are synonymous: these keymaps conflict with jumplist navigation. Find more apropos keymap.
+-- mapkey('n', '<Tab><Tab>', 'za', { noremap = true })
+-- mapkey('n', '<S-Tab><S-Tab>', 'zA', { noremap = true })
 -- ]]]
 -- Open terminal split below buffer [[[
 mapkey( 'n', '<C-w>`', ':below 15sp term://$SHELL<CR>')
