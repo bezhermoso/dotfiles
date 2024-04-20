@@ -43,7 +43,8 @@ alias ls="ls -GF"
 
 # Hundredth-of-second for another key to be pressed when reading bound multi-character sequences.
 # Helps when ESC is pressed while in zsh vim mode.
-KEYTIMEOUT=1
+# NOTE: 2024-04-20: Increased to 200 to allow multi-character sequences in insert mode
+KEYTIMEOUT=200
 
 # less options
 export LESS=" -R"
