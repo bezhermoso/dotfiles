@@ -21,7 +21,17 @@ M.next_cmp_item = cmp.mapping(function(fallback)
     elseif luasnip.expand_or_jumpable() then
         luasnip.expand_or_jump()
     elseif has_words_before() then
-        cmp.complete()
+        local copilot_accept = vim.fn["copilot#Accept"]
+        if copilot_accept ~= nil then
+            local k = copilot_accept("lua require('cmp').complete()")
+            if k then
+                vim.fn.feedkeys(k, "i")
+            else
+                cmp.complete()
+            end
+        else
+            cmp.complete()
+        end
     else
         fallback()
     end
