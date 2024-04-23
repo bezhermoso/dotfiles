@@ -172,3 +172,15 @@ mapkey( 'n', '<C-w>`', ':below 15sp term://$SHELL<CR>')
 -- Enter normal mode in terminal buffers [[[
 mapkey('t', '<C-\\><C-\\>', '<C-\\><C-n>')
 -- ]]]
+--
+--
+--
+mapkey('v', '<leader>tr', function ()
+    vim.cmd([[silent :'<,'>w !tmux load-buffer -]])
+    vim.cmd([[silent :! ~/.config/tmux/runner.zsh ]])
+end, { noremap = true, silent = true })
+mapkey('n', '<leader>tr', function ()
+    vim.cmd([[silent :.w !tmux load-buffer -]])
+    vim.cmd([[silent :! ~/.config/tmux/runner.zsh ]])
+end, { noremap = true, silent = true })
+
