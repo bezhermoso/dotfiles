@@ -67,6 +67,7 @@
 	line-numbers = true
 	syntax-theme = "ansi"
 	hyperlinks = true
+	tabs = 4
 	;side-by-side = true
 
 [rerere]
