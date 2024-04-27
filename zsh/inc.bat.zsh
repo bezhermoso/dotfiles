@@ -4,7 +4,7 @@
 #export BAT_CONFIG_PATH=$HOME/.dotfiles/.config/bat/config
 
 if (( $+commands[bat] )); then
-  alias cat="bat --paging=never"
+  alias cat="bat --paging=auto"
 fi
 
 if (( $+commands[batman] )); then
