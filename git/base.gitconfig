@@ -10,7 +10,7 @@
 	keepBackup = false
 
 [merge]
-	conflictstyle = diff3
+	conflictstyle = zdiff3
 	tool = nvimdiff3
 
 [mergetool "nvimdiff3"]
@@ -78,10 +78,14 @@
 
 [log]
 	mailmap = true
+    date = iso
 
 [diff]
+    # Read this about the qualities of available algorithms: https://luppeng.wordpress.com/2020/10/10/when-to-use-each-of-the-git-diff-algorithms/
+    algorithm = histogram
 	renames = true
 	indentHeuristic = on
+    colorMoved = true
 
 [branch]
 	autosetupmerge = true
@@ -94,6 +98,12 @@
 
 [pager]
 	status = true
+
+[help]
+    autocorrect = prompt
+
+[url "git@github.com:"]
+	insteadOf = "https://github.com/"
 
 # Helps to ensure that ~/.dotfiles commits are contributed w/ personal info
 [includeIf "gitdir:~/.dotfiles/**"]
