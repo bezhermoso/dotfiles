@@ -39,8 +39,8 @@ return {
             api.config.mappings.default_on_attach(bufnr)
 
             -- custom mappings
-            vim.keymap.set('n', '<C-f>', treeutils.launch_find_files, keymap_opts('Find files'))
-            vim.keymap.set('n', '<C-g>', treeutils.launch_live_grep, keymap_opts('Live grep'))
+            vim.keymap.set('n', 'ff', treeutils.launch_find_files, keymap_opts('Find files'))
+            vim.keymap.set('n', 'fg', treeutils.launch_live_grep, keymap_opts('Live grep'))
         end
         require('nvim-tree').setup({
             on_attach = my_on_attach,
