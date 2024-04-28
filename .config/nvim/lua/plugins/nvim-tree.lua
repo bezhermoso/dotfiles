@@ -79,6 +79,9 @@ return {
             update_focused_file = {
                 enable = true,
                 update_root = true,
+            },
+            live_filter = {
+                always_show_folders = false,
             }
         })
 
