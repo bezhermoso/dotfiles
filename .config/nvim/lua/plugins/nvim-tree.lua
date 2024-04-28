@@ -24,6 +24,7 @@ return {
     keys = {
         { '<leader>n', ':NvimTreeFocus<CR>' }
     },
+    enabled = false,
     config = function()
         local my_on_attach = function (bufnr)
             -- See https://github.com/nvim-tree/nvim-tree.lua?tab=readme-ov-file#custom-mappings
@@ -33,6 +34,7 @@ return {
             local function keymap_opts(desc)
                 return { desc = "nvim-tree: " .. desc, buffer = bufnr, noremap = true, silent = true, nowait = true }
             end
+
 
             -- default mappings
             api.config.mappings.default_on_attach(bufnr)
