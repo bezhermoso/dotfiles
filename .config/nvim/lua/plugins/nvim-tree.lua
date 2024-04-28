@@ -25,7 +25,25 @@ return {
         { '<leader>n', ':NvimTreeFindFileToggle<CR>' }
     },
     config = function()
+        local my_on_attach = function (bufnr)
+            -- See https://github.com/nvim-tree/nvim-tree.lua?tab=readme-ov-file#custom-mappings
+            local api = require("nvim-tree.api")
+            local treeutils = require("plugins.nvim-tree.treeutils")
+
+
+            local function keymap_opts(desc)
+                return { desc = "nvim-tree: " .. desc, buffer = bufnr, noremap = true, silent = true, nowait = true }
+            end
+
+            -- default mappings
+            api.config.mappings.default_on_attach(bufnr)
+
+            -- custom mappings
+            vim.keymap.set('n', '<C-f>', treeutils.launch_find_files, keymap_opts('Find files'))
+            vim.keymap.set('n', '<C-g>', treeutils.launch_live_grep, keymap_opts('Live grep'))
+        end
         require('nvim-tree').setup({
+            on_attach = my_on_attach,
             hijack_netrw = true,
             disable_netrw = false,
             hijack_directories = {
