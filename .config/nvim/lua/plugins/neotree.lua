@@ -1,24 +1,24 @@
 -- https://github.com/nvim-neo-tree/neo-tree.nvim/wiki/Recipes#find-with-telescope
 local function telescope_opts(state, path)
-  return {
-    cwd = path,
-    search_dirs = { path },
-    attach_mappings = function (prompt_bufnr, map)
-      local actions = require("telescope.actions")
-      actions.select_default:replace(function()
-        actions.close(prompt_bufnr)
-        local action_state = require("telescope.actions.state")
-        local selection = action_state.get_selected_entry()
-        local filename = selection.filename
-        if (filename == nil) then
-          filename = selection[1]
+    return {
+        cwd = path,
+        search_dirs = { path },
+        attach_mappings = function(prompt_bufnr, map)
+            local actions = require("telescope.actions")
+            actions.select_default:replace(function()
+                actions.close(prompt_bufnr)
+                local action_state = require("telescope.actions.state")
+                local selection = action_state.get_selected_entry()
+                local filename = selection.filename
+                if (filename == nil) then
+                    filename = selection[1]
+                end
+                -- any way to open the file without triggering auto-close event of neo-tree?
+                require("neo-tree.sources.filesystem").navigate(state, state.path, filename, function() end)
+            end)
+            return true
         end
-        -- any way to open the file without triggering auto-close event of neo-tree?
-        require("neo-tree.sources.filesystem").navigate(state, state.path, filename, function() end)
-      end)
-      return true
-    end
-  }
+    }
 end
 
 return {
@@ -38,7 +38,6 @@ return {
             require("neo-tree").setup({
                 close_if_last_window = true,
                 popup_border_style = "rounded",
-                enable_normal_mode_for_inputs = true,
                 window = {
                     position = "float",
                     mappings = {
@@ -97,6 +96,17 @@ return {
                         enabled = true,
                     },
                 },
+                event_handlers = {
+                    {
+                        -- Start in Normal mode within Neotree popups
+                        event = "neo_tree_popup_input_ready",
+                        ---@param args { bufnr: integer, winid: integer }
+                        handler = function(args)
+                            vim.cmd("stopinsert")
+                            vim.keymap.set("i", "<esc>", vim.cmd.stopinsert, { noremap = true, buffer = args.bufnr })
+                        end,
+                    }
+                }
             })
         end
     }
