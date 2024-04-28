@@ -30,7 +30,6 @@ return {
             local api = require("nvim-tree.api")
             local treeutils = require("plugins.nvim-tree.treeutils")
 
-
             local function keymap_opts(desc)
                 return { desc = "nvim-tree: " .. desc, buffer = bufnr, noremap = true, silent = true, nowait = true }
             end
@@ -38,9 +37,21 @@ return {
             -- default mappings
             api.config.mappings.default_on_attach(bufnr)
 
-            -- custom mappings
+            -- Focus on existing file buffer if already opened
+            vim.keymap.set('n', '<CR>', api.node.open.tab_drop, keymap_opts('Open/Tab drop'))
+
+            -- Telescope mappings [[[
             vim.keymap.set('n', 'ff', treeutils.launch_find_files, keymap_opts('Find files'))
             vim.keymap.set('n', 'fg', treeutils.launch_live_grep, keymap_opts('Live grep'))
+            -- ]]]
+            -- Other mappings [[[
+
+            -- Taken from https://github.com/nvim-tree/nvim-tree.lua/wiki/Recipes#change-root-to-global-current-working-directory
+            vim.keymap.set('n', 'gc', function ()
+                local global_cwd = vim.fn.getcwd(-1, -1)
+                api.tree.change_root(global_cwd)
+            end, keymap_opts('Change root to global CWD'))
+            -- ]]]
         end
         require('nvim-tree').setup({
             on_attach = my_on_attach,
