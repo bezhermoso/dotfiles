@@ -22,7 +22,7 @@ end
 return {
     'nvim-tree/nvim-tree.lua',
     keys = {
-        { '<leader>n', ':NvimTreeFindFileToggle<CR>' }
+        { '<leader>n', ':NvimTreeFocus<CR>' }
     },
     config = function()
         local my_on_attach = function (bufnr)
