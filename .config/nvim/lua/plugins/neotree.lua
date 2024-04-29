@@ -67,7 +67,7 @@ return {
                         ["tg"] = {
                             "telescope_grep",
                             desc = "Grep in node with Telescope",
-                        }
+                        },
                     },
                 },
                 commands = {
