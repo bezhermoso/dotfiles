@@ -87,5 +87,16 @@ return {
     {
         'https://github.com/folke/zen-mode.nvim',
         opts = {}
+    },
+    {
+        "https://github.com/3rd/image.nvim",
+        dependencies = {
+            {"luarocks.nvim"},
+        },
+        config = function()
+            require("image").setup({
+                backend = "ueberzug",
+            })
+        end
     }
 }
