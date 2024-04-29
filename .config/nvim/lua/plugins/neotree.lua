@@ -32,7 +32,8 @@ return {
             "3rd/image.nvim", -- Optional image support in preview window: See `# Preview Mode` for more information
         },
         keys = {
-            { '<leader>n', ':Neotree reveal<CR>' }
+            { "<leader>n", ":Neotree reveal<CR>" },
+            { "\\", ":Neotree reveal<CR>" }
         },
         config = function()
             require("neo-tree").setup({
@@ -43,16 +44,16 @@ return {
                     mappings = {
                         ["<CR>"] = "open_drop",
                         -- https://github.com/nvim-neo-tree/neo-tree.nvim/wiki/Recipes#switch-between-filesystem-buffers-and-git_status [[[
-                        ["e"] = {
-                            function() vim.api.nvim_exec2("Neotree focus filesystem float", {}) end,
+                        ["vf"] = {
+                            function() vim.api.nvim_exec2("Neotree focus filesystem", {}) end,
                             desc = "show filesystem",
                         },
-                        ["b"] = {
-                            function() vim.api.nvim_exec2("Neotree focus buffers float", {}) end,
+                        ["vb"] = {
+                            function() vim.api.nvim_exec2("Neotree focus buffers", {}) end,
                             desc = "show buffers",
                         },
-                        ["g"] = {
-                            function() vim.api.nvim_exec2("Neotree focus git_status float", {}) end,
+                        ["vg"] = {
+                            function() vim.api.nvim_exec2("Neotree focus git_status", {}) end,
                             desc = "show git status",
                         },
                         -- ]]]
@@ -67,6 +68,14 @@ return {
                         ["tg"] = {
                             "telescope_grep",
                             desc = "Grep in node with Telescope",
+                        },
+                        ["<leader>n"] = {
+                            "cycle_views",
+                            desc = "Cycle: Files, Git, Buffers",
+                        },
+                        ["\\"] = {
+                            "cycle_views",
+                            desc = "Cycle: Files, Git, Buffers",
                         },
                     },
                 },
@@ -87,6 +96,20 @@ return {
                         local path = node:get_id()
                         require('telescope.builtin').live_grep(telescope_opts(state, path))
                     end,
+                    cycle_views = function (state)
+                        local chain = {
+                            filesystem = "git_status",
+                            git_status = "buffers",
+                            buffers = "filesystem",
+                        }
+
+                        local cycle_to =  chain[state.name]
+                        if cycle_to == nil then
+                            cycle_to = "filesystem"
+                        end
+
+                        vim.api.nvim_exec2("Neotree focus " .. cycle_to, {})
+                    end
                 },
                 filesystem = {
                     filtered_items = {
@@ -105,8 +128,8 @@ return {
                             vim.cmd("stopinsert")
                             vim.keymap.set("i", "<esc>", vim.cmd.stopinsert, { noremap = true, buffer = args.bufnr })
                         end,
-                    }
-                }
+                    },
+                },
             })
         end
     }
