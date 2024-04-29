@@ -49,8 +49,12 @@ KEYTIMEOUT=200
 # less options
 export LESS=" -R"
 
-# Add Homebrew's help directory to HELPDIR
-HELPDIR=$(command brew --prefix)/share/zsh/help
+if (( $+commands[brew])); then
+  # Add Homebrew's help directory to HELPDIR
+  HELPDIR=$(command brew --prefix)/share/zsh/help
+  # Load dynamic frameworks installed via Homebrew
+  DYLD_LIBRARY_PATH="$(brew --prefix)/lib:$DYLD_LIBRARY_PATH"
+fi
 
 
 # Add more lookup directories to the fpath
