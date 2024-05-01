@@ -39,6 +39,10 @@ return {
             require("neo-tree").setup({
                 close_if_last_window = true,
                 popup_border_style = "rounded",
+                source_selector = {
+                    winbar = true,
+                    show_scrolled_off_parent_node = true,
+                },
                 window = {
                     position = "float",
                     mappings = {
