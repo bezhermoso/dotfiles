@@ -98,5 +98,20 @@ return {
                 backend = "ueberzug",
             })
         end
+    },
+    {
+        'goolord/alpha-nvim',
+        requires = { 'nvim-tree/nvim-web-devicons' },
+        config = function()
+            local alpha = require('alpha')
+            local handle = io.popen('fortune -s')
+            local theta = require('alpha.themes.theta')
+            if handle ~= nil then
+                local fortune = handle:read("*a")
+                handle:close()
+                theta.header.val = fortune
+            end
+            alpha.setup(theta.config)
+        end
     }
 }
