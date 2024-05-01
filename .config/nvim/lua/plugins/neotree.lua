@@ -69,14 +69,6 @@ return {
                             "telescope_grep",
                             desc = "Grep in node with Telescope",
                         },
-                        ["<leader>n"] = {
-                            "cycle_views",
-                            desc = "Cycle: Files, Git, Buffers",
-                        },
-                        ["\\"] = {
-                            "cycle_views",
-                            desc = "Cycle: Files, Git, Buffers",
-                        },
                     },
                 },
                 commands = {
@@ -96,20 +88,6 @@ return {
                         local path = node:get_id()
                         require('telescope.builtin').live_grep(telescope_opts(state, path))
                     end,
-                    cycle_views = function (state)
-                        local chain = {
-                            filesystem = "git_status",
-                            git_status = "buffers",
-                            buffers = "filesystem",
-                        }
-
-                        local cycle_to =  chain[state.name]
-                        if cycle_to == nil then
-                            cycle_to = "filesystem"
-                        end
-
-                        vim.api.nvim_exec2("Neotree focus " .. cycle_to, {})
-                    end
                 },
                 filesystem = {
                     filtered_items = {
