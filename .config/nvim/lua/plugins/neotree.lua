@@ -96,6 +96,9 @@ return {
                 filesystem = {
                     filtered_items = {
                         visible = true,
+                        never_show = {
+                            ".git"
+                        },
                     },
                     follow_current_file = {
                         enabled = true,
