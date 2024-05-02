@@ -78,14 +78,14 @@
 
 [log]
 	mailmap = true
-    date = iso
+	date = iso
 
 [diff]
     # Read this about the qualities of available algorithms: https://luppeng.wordpress.com/2020/10/10/when-to-use-each-of-the-git-diff-algorithms/
-    algorithm = histogram
+	algorithm = histogram
 	renames = true
 	indentHeuristic = on
-    colorMoved = true
+	colorMoved = true
 
 [branch]
 	autosetupmerge = true
@@ -100,7 +100,7 @@
 	status = true
 
 [help]
-    autocorrect = prompt
+	autocorrect = prompt
 
 [url "git@github.com:"]
 	insteadOf = "https://github.com/"
