@@ -8,6 +8,9 @@ gui:
   theme:
     selectedLineBgColor:
       - reverse
+  # Spinner config will be respected by a future LazyGit release
+  # spinner:
+  #   frames: ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'] 
 os:
   open: 'open {{filename}}'
   editPreset: "nvim"
