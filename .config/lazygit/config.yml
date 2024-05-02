@@ -3,6 +3,8 @@
 # Configuration Reference: https://github.com/jesseduffield/lazygit/blob/v0.41.0/docs/Config.md
 gui:
   nerdFontsVersion: '3'
+  expandFocusedSidePanel: true
+  showBottomLine: false
   theme:
     selectedLineBgColor:
       - reverse
@@ -22,4 +24,5 @@ customCommands:
     context: global
     description: 'Open Lazygit in new tmux window'
     command: '[[ -n $TMUX ]] && tmux new-window -c $(tmux display-message -p "#{pane_current_path}") lazygit && tmux display-popup -C'
+promptToReturnFromSubprocess: false
 
