@@ -65,11 +65,11 @@ return {
                             "run_command",
                             desc = "Run command on node..."
                         },
-                        ["tf"] = {
+                        ["<leader>ff"] = {
                             "telescope_find",
                             desc = "Find in node with Telescope",
                         },
-                        ["tg"] = {
+                        ["<leader>fg"] = {
                             "telescope_grep",
                             desc = "Grep in node with Telescope",
                         },
