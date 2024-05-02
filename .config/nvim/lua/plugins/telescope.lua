@@ -38,6 +38,14 @@ return {
             { "<leader>fu",  ":lua require('telescope').extensions.undo.undo()<CR>",                   desc = 'Telescope: Undo' },
             { "<leader>fy",  ":lua require('telescope.builtin').registers()<CR>",                      desc = 'Telescope: Registers' },
             { "<leader>fY",  ":Telescope yank_history<CR>",                                            desc = 'Telescope: Yank history' },
+            { "<leader>/",
+                function ()
+                require('telescope.builtin').current_buffer_fuzzy_find(
+                    require('telescope.themes').get_dropdown({
+                        previewer = false,
+                    })
+                )
+                end, desc = 'Telescope: Find in current buffer...' },
         },
         config = function(_, opts)
             local telescope = require('telescope')
@@ -126,14 +134,6 @@ return {
             telescope.load_extension('undo')
             telescope.load_extension('file_browser')
             --telescope.load_extension('yank_history')
-
-            vim.keymap.set('n', '<leader>/', function()
-                require('telescope.builtin').current_buffer_fuzzy_find(
-                    require('telescope.themes').get_dropdown({
-                        previewer = false,
-                    })
-                )
-            end, { desc = "Find in current buffer..." })
         end,
     },
 }
