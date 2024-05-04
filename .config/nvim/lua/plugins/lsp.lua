@@ -199,6 +199,9 @@ return {
                     ['<C-k>'] = cmp_mappings.prev_cmp_item,
                     ['<Tab>'] = cmp_mappings.next_cmp_item,
                     ['<S-Tab>'] = cmp_mappings.prev_cmp_item,
+                    ['<M-;>'] = cmp.mapping(function (callback)
+                       vim.api.nvim_feedkeys(vim.fn['copilot#Accept'](vim.api.nvim_replace_termcodes('<Tab>', true, true, true)), 'n', true)
+                    end),
                 }),
                 window = {
                     completion = cmp.config.window.bordered({
