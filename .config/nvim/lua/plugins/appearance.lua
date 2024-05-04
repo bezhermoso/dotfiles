@@ -4,7 +4,8 @@ return {
         lazy = false,
         dependencies = {
             { "folke/todo-comments.nvim" },
-            { "bezhermoso/todos-lualine.nvim", dev = true }
+            { "bezhermoso/todos-lualine.nvim", dev = true },
+            { "stevearc/aerial.nvim" }
         },
         config = function ()
             -- TODO: Configure colors
@@ -16,7 +17,8 @@ return {
                     component_separators = '',
                 },
                 sections = {
-                    lualine_y = {'progress', todos_component },
+                    lualine_b = { 'branch', 'diff', 'diagnostics', todos_component },
+                    lualine_c = { 'filename', 'aerial' }
                 }
             })
         end,
