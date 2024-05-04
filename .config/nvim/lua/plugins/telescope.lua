@@ -41,14 +41,17 @@ return {
             { "<leader>fy",  ":lua require('telescope.builtin').registers()<CR>",                      desc = 'Telescope: Registers' },
             { "<leader>fY",  ":Telescope yank_history<CR>",                                            desc = 'Telescope: Yank history' },
             { "<leader>sS",  ":lua require('telescope').extensions.aerial.aerial()<CR>",               desc = 'Telescope: Aerial symbols' },
-            { "<leader>/",
-                function ()
-                require('telescope.builtin').current_buffer_fuzzy_find(
-                    require('telescope.themes').get_dropdown({
-                        previewer = false,
-                    })
-                )
-                end, desc = 'Telescope: Find in current buffer...' },
+            {
+                "<leader>/",
+                function()
+                    require('telescope.builtin').current_buffer_fuzzy_find(
+                        require('telescope.themes').get_dropdown({
+                            previewer = false,
+                        })
+                    )
+                end,
+                desc = 'Telescope: Find in current buffer...'
+            },
         },
         config = function(_, opts)
             local telescope = require('telescope')
