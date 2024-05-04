@@ -33,15 +33,39 @@ return {
         },
         keys = {
             { "<leader>n", ":Neotree reveal<CR>", desc = "Neo-tree: reveal", silent = true },
-            { "\\", ":Neotree reveal<CR>", desc = "Neo-tree: reveal", silent = true }
+            { "\\",        ":Neotree reveal<CR>", desc = "Neo-tree: reveal", silent = true }
         },
         config = function()
             require("neo-tree").setup({
                 close_if_last_window = true,
                 popup_border_style = "rounded",
+                sources = {
+                    "filesystem",
+                    "buffers",
+                    "git_status",
+                    "document_symbols",
+                },
                 source_selector = {
                     winbar = true,
                     show_scrolled_off_parent_node = true,
+                    sources = { -- table
+                        {
+                            source = "filesystem",
+                            display_name = " 󰉓 Files ",
+                        },
+                        {
+                            source = "buffers",
+                            display_name = " 󰈚 Buffers ",
+                        },
+                        {
+                            source = "git_status",
+                            display_name = " 󰊢 Git ",
+                        },
+                        {
+                            source = "document_symbols",
+                            display_name = "  Symbols ",
+                        },
+                    },
                 },
                 window = {
                     position = "float",
