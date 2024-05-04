@@ -14,6 +14,7 @@ return {
             'debugloop/telescope-undo.nvim',
             'nvim-telescope/telescope-file-browser.nvim',
             'gbprod/yanky.nvim',
+            'stevearc/aerial.nvim',
         },
         keys = {
             { "<leader>*",   ":lua require('telescope.builtin').grep_string()<CR>",                    desc = 'Telescope: Grep string...',       mode = { 'v', 'n' } },
@@ -30,6 +31,7 @@ return {
             { "<leader>fh",  ":lua require('telescope.builtin').help_tags()<CR>",                      desc = 'Telescope: Help tags' },
             { "<leader>fm",  ":lua require('telescope.builtin').man_pages()<CR>",                      desc = 'Telescope: man pages' },
             { "<leader>fo",  ":lua require('telescope.builtin').lsp_workspace_symbols()<CR>",          desc = 'Telescope: LSP Symbols' },
+            { "<leader>fi",  ":lua require('telescope.builtin').lsp_document_symbols()<CR>",           desc = 'Telescope: LSP Document Symbols' },
             { "<leader>fp",  ":lua require('telescope.builtin').builtin()<CR>",                        desc = 'Telescope: Built-in' },
             { "<leader>fq",  ":lua require('telescope.builtin').quickfix()<CR>",                       desc = 'Telescope: Quickfix' },
             { "<leader>fr",  ":lua require('telescope.builtin').oldfiles()<CR>",                       desc = 'Telescope: MRU' },
@@ -38,6 +40,7 @@ return {
             { "<leader>fu",  ":lua require('telescope').extensions.undo.undo()<CR>",                   desc = 'Telescope: Undo' },
             { "<leader>fy",  ":lua require('telescope.builtin').registers()<CR>",                      desc = 'Telescope: Registers' },
             { "<leader>fY",  ":Telescope yank_history<CR>",                                            desc = 'Telescope: Yank history' },
+            { "<leader>sS",  ":lua require('telescope').extensions.aerial.aerial()<CR>",               desc = 'Telescope: Aerial symbols' },
             { "<leader>/",
                 function ()
                 require('telescope.builtin').current_buffer_fuzzy_find(
@@ -133,6 +136,7 @@ return {
             telescope.load_extension('ui-select')
             telescope.load_extension('undo')
             telescope.load_extension('file_browser')
+            telescope.load_extension('aerial')
             --telescope.load_extension('yank_history')
         end,
     },
