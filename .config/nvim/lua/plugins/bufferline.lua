@@ -8,8 +8,10 @@ return {
         keys = {
             {"]b", ":BufferLineCycleNext<CR>", { desc = "Go to next buffer", mode = {'v', 'n'} }},
             {"bn", ":BufferLineCycleNext<CR>", { desc = "Go to next buffer", mode = {'v', 'n'} }},
+            {"b.", ":BufferLineCycleNext<CR>", { desc = "Go to next buffer", mode = {'v', 'n'} }},
             {"[b", ":BufferLineCyclePrev<CR>", { desc = "Go to previous buffer", mode = {'v', 'n'} }},
             {"bp", ":BufferLineCyclePrev<CR>", { desc = "Go to previous buffer", mode = {'v', 'n'} }},
+            {"b,", ":BufferLineCyclePrev<CR>", { desc = "Go to previous buffer", mode = {'v', 'n'} }},
         },
         config = function ()
             local bufferline = require("bufferline")
