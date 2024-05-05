@@ -84,6 +84,10 @@ return {
                             function() vim.api.nvim_exec2("Neotree focus git_status", {}) end,
                             desc = "show git status",
                         },
+                        ["vd"] = {
+                            function() vim.api.nvim_exec2("Neotree focus document_symbols", {}) end,
+                            desc = "show document symbols",
+                        },
                         -- ]]]
                         ["i"] = {
                             "run_command",
