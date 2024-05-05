@@ -69,6 +69,17 @@ return {
                 },
                 window = {
                     position = "float",
+                    popup = {
+                        -- Position floating window to the left, as-if its a side-drawer going over buffers
+                        -- Change to 50% to center it.
+                        position = "0%",
+                        border = "shadow",
+                        size = {
+                            height = "100%",
+                            width = "40%",
+                        },
+                    },
+
                     mappings = {
                         ["<CR>"] = "open_drop",
                         -- https://github.com/nvim-neo-tree/neo-tree.nvim/wiki/Recipes#switch-between-filesystem-buffers-and-git_status [[[
