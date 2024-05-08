@@ -115,5 +115,27 @@ return {
             end
             alpha.setup(theta.config)
         end
+    },
+    {
+        'https://github.com/chentoast/marks.nvim',
+        config = function()
+            require('marks').setup({
+                default_mappings = true,
+                builtin_marks = { ".", "<", ">", "^" },
+                cyclic = true,
+                force_write_shada = false,
+                bookmark_0 = {
+                    sign = '⚑',
+                    hl = 'Todo',
+                },
+                -- mappings = {
+                --     toggle = 'm',
+                --     cycle = 'M',
+                --     delete = 'd',
+                --     next = ']',
+                --     prev = '[',
+                -- },
+            })
+        end
     }
 }
