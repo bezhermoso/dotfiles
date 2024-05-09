@@ -40,7 +40,7 @@ I use [Stow](https://www.gnu.org/software/stow/) to put configuration directorie
 
 ```sh
 cd ~/.dotfiles
-stow .
+/opt/homebrew/bin/stow .
 ```
 
 It is recommended to close & re-open your terminal to pick up the just-installed Zsh configurations.
