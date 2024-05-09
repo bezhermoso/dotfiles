@@ -45,6 +45,14 @@ return {
                     "git_status",
                     "document_symbols",
                 },
+                 -- when opening files, do not use windows containing these filetypes or buftypes
+                open_files_do_not_replace_types = {
+                    "terminal", "Trouble", "qf", "edgy",
+                    "aerial",
+                    "spectre_panel",
+                    "NeogitStatus", "NeogitLogView", "NeogitDiff", "NeogitCommitMessage",
+                    "DiffviewFiles",
+                },
                 source_selector = {
                     winbar = true,
                     show_scrolled_off_parent_node = true,
