@@ -9,7 +9,7 @@ return {
         },
         config = function ()
             -- TODO: Configure colors
-            local todos_component = require("todos-lualine").component({})
+            -- local todos_component = require("todos-lualine").component({})
             require('lualine').setup({
                 options = {
                     theme = 'base16',
@@ -17,7 +17,7 @@ return {
                     component_separators = '',
                 },
                 sections = {
-                    lualine_b = { 'branch', 'diff', 'diagnostics', todos_component },
+                    -- lualine_b = { 'branch', 'diff', 'diagnostics', todos_component },
                     lualine_c = { 'filename', 'aerial' }
                 }
             })
