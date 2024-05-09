@@ -15,7 +15,7 @@ BASE16_SHELL_PATH="$HOME/.dotfiles/base16-shell"
     source "$BASE16_SHELL_PATH/profile_helper.sh"
 
 export BASE16_FLAVOR=${BASE16_FLAVOR:-"gruvbox-dark-hard"}
-[ -z $BASE16_THEME ] && eval "base16_{$BASE16_FLAVOR}"
+[ -z $BASE16_THEME ] && eval "base16_${BASE16_FLAVOR}"
 
 source $HOME/.dotfiles/zsh/colorscheme.zsh
 
