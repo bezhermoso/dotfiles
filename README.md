@@ -25,13 +25,13 @@ As of 2024-02-17, this is how:
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 ```
 
-### Install dependencies
+### Install core dependencies
 
 Dependencies installable via Homebrew are captured in `./homebrew/Brewfile`:
 
 ```sh
-cd ~/.dotfiles/homebrew
-brew bundle install
+cd ~/.dotfiles/homebrew/_core
+/opt/homebrew/bin/brew bundle install
 ```
 
 ## Step 3: Configure tools
