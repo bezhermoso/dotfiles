@@ -94,7 +94,8 @@ return {
                             ["<C-k>"] = "move_selection_previous",
                             ["<C-p>"] = require('telescope.actions.layout').toggle_preview,
                         }
-                    }
+                    },
+                    preview = false,
                 },
                 pickers = {
                     live_grep = {
@@ -105,7 +106,8 @@ return {
                             n = {
                                 ["<C-f>"] = ts_select_dir_for_grep,
                             },
-                        }
+                        },
+                        preview = true,
                     }
                 },
                 extensions = {
