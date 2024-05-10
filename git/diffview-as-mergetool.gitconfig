@@ -1,0 +1,6 @@
+# vi: ft=gitconfig
+
+# Open in diffview.nvim when running git mergetool
+# NOTE: This simply overrides the `git mergetool` command itself, not make nvim a proper mergetool program.
+[alias]
+	mergetool = "!nvim -c DiffviewOpen"
