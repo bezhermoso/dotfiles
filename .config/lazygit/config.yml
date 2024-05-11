@@ -21,7 +21,7 @@ git:
   mainBranches: ['main', 'master', 'live']
   paging:
     colorArg: always
-    pager: delta --paging=never
+    pager: delta --paging=never --detect-dark-light=never
 customCommands:
   - key: '<c-t>'
     context: global
