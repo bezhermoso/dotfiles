@@ -114,12 +114,12 @@ return {
                 ["block-03.local"] = true
             }
 
-            if vim.fn.executable('ascii-image-converter') and block_hostnames[vim.fn.hostname()] then
+            if vim.fn.executable('neowofetch') and block_hostnames[vim.fn.hostname()] then
                 theta.header.type = "group"
                 theta.header.val = {
                     {
                         type = "terminal",
-                        command = "cat | ascii-image-converter ~/.dotfiles/block-logo.png --color -W 30",
+                        command = "neowofetch --ascii ~/.dotfiles/block-logo-ascii.txt --gap 10 --disable de wm packages kernel uptime resolution cols",
                         width = 75,
                         height = 17,
                         opts = {
