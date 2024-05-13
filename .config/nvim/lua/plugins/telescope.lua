@@ -158,6 +158,7 @@ return {
             easypick.setup({
                 pickers = {
                     {
+                        -- https://github.com/goolord/alpha-nvim/issues/38#issuecomment-1927845594
                         name = "git_recently_changed",
                         command = "{ git diff --name-only && git log --pretty=format: --name-only HEAD~5..HEAD; } | awk 'NF' | sort | uniq",
                         previewer = easypick.previewers.branch_diff {
