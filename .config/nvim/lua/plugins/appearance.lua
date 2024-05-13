@@ -119,7 +119,7 @@ return {
                 theta.header.val = {
                     {
                         type = "terminal",
-                        command = "neowofetch --ascii ~/.dotfiles/block-logo-ascii.txt --gap 10 --disable de wm packages kernel uptime resolution cols",
+                        command = "neowofetch --ascii ~/.dotfiles/ascii/block-logo-ascii.txt --gap 10 --disable de wm packages kernel uptime resolution cols",
                         width = 75,
                         height = 17,
                         opts = {
