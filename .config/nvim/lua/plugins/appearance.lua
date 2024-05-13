@@ -1,3 +1,8 @@
+local block_hostnames = {
+    ["balerion.local"] = true,
+    ["block-03.local"] = true
+}
+
 return {
     {
         'nvim-lualine/lualine.nvim',
@@ -79,6 +84,19 @@ return {
                 -- char = '',
                 -- tab_char = '⇥',
             },
+            exclude = {
+                filetypes = {
+                    "lspinfo",
+                    "packer",
+                    "checkhealth",
+                    "help",
+                    "man",
+                    "gitcommit",
+                    "TelescopePrompt",
+                    "TelescopeResults",
+                    "dashboard",
+                },
+            },
             whitespace = {
                 --highlight = {'CursorColumn', 'Whitespace'},
                 remove_blankline_trail = false,
@@ -102,17 +120,64 @@ return {
         end
     },
     {
+        'nvimdev/dashboard-nvim',
+        event = 'VimEnter',
+        config = function()
+            require('dashboard').setup({
+                theme = 'hyper',
+                shortcut_type = "number",
+                preview = (function ()
+                    if not vim.fn.executable('ascii-image-converter') then
+                        return {}
+                    end
+                    if not block_hostnames[vim.fn.hostname()] then
+                        return {}
+                    end
+                    return {
+                        command = "ascii-image-converter --color -W 30",
+                        file_path = "~/.dotfiles/block-logo.png",
+                        file_width = 30,
+                        file_height = 17,
+                    }
+                end)(),
+                config = {
+                    shortcut = {
+                        { desc = '󰊳 Update', group = '@property', action = 'Lazy update', key = 'u' },
+                        {
+                            icon = ' ',
+                            icon_hl = '@variable',
+                            desc = 'Files',
+                            group = 'Label',
+                            action = 'Telescope find_files',
+                            key = 'f',
+                        },
+                        {
+                            desc = ' Recent files',
+                            group = 'DiagnosticHint',
+                            action = function ()
+                                require('telescope.builtin').oldfiles({
+                                    cwd = vim.fn.getcwd(),
+                                    only_cwd = true,
+                                })
+                            end,
+                            key = 'r',
+                        },
+                    },
+                    mru = { cwd_only = true },
+                    footer = {},
+                },
+            })
+        end,
+        dependencies = { {'nvim-tree/nvim-web-devicons'}}
+    },
+    {
         'goolord/alpha-nvim',
+        enabled = false,
         requires = { 'nvim-tree/nvim-web-devicons' },
         config = function()
             local alpha = require('alpha')
             require('alpha.term')
             local theta = require('alpha.themes.theta')
-
-            local block_hostnames = {
-                ["balerion.local"] = true,
-                ["block-03.local"] = true
-            }
 
             if vim.fn.executable('ascii-image-converter') and block_hostnames[vim.fn.hostname()] then
                 theta.header.type = "group"
