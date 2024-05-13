@@ -15,6 +15,10 @@ export FZF_CTRL_R_OPTS='--preview=""'
 # Use rg to back Ctrl+T fzf interactive file search. Don't --follow, broken symlinks are OK.
 export FZF_CTRL_T_COMMAND='rg --files --no-ignore-vcs --hidden --glob "!.git/*"'
 
+if (( ! $+commands[fzf] )); then
+  return 0
+fi
+
 eval "$(fzf --zsh)"
 
 # FZF binds the fzf-cd-widget to Alt-C, but doesn't work in iTerm2 w/o further setup. Bind it to Ctrl-Y for now.
