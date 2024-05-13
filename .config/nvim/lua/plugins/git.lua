@@ -70,7 +70,7 @@ return {
             "ibhagwan/fzf-lua",              -- optional
         },
         keys = {
-            { "<leader>G", function() require('neogit').open({ kind = "floating" }) end, desc = "Neogit: Git status (floating)" },
+            { "<leader>G", function() require('neogit').open({ kind = "tab" }) end, desc = "Neogit: Git status (new tab)" },
             { "<leader>gs", function() require('neogit').open({ kind = "split" }) end, desc = "Neogit: Git status (split)" }
         },
         config = {
