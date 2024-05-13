@@ -152,7 +152,6 @@ return {
     },
     {
         'https://github.com/chentoast/marks.nvim',
-        enabled = false,
         config = function()
             require('marks').setup({
                 default_mappings = true,
