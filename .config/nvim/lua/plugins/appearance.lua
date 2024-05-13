@@ -123,7 +123,7 @@ return {
                     {
                         type = "terminal",
                         -- command = "neowofetch --ascii ~/.dotfiles/ascii/block-logo-ascii.txt --gap 6 --disable de wm packages kernel uptime resolution cols term_font --colors 11 8 8 8 8 7",
-                        command = "paste ~/.dotfiles/ascii/block-logo-ascii.txt =(echo; echo; fortune -s | fold -w 40 -s | boxes -d java-cmt -p l2 | sed 's/^/\x1b[90m/')",
+                        command = "paste ~/.dotfiles/ascii/block-logo-ascii.txt =(echo; echo; echo; echo; fortune -s | fold -w 40 -s | boxes -d java-cmt -p l2 | sed 's/^/\x1b[33m/')",
                         width = 80,
                         height = 17,
                         opts = {
