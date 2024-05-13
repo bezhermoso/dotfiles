@@ -106,12 +106,38 @@ return {
         requires = { 'nvim-tree/nvim-web-devicons' },
         config = function()
             local alpha = require('alpha')
-            local handle = io.popen('fortune -s')
+            local _ = require('alpha.term')
             local theta = require('alpha.themes.theta')
-            if handle ~= nil then
-                local fortune = handle:read("*a")
-                handle:close()
-                theta.header.val = fortune
+
+            local block_hostnames = {
+                ["balerion.local"] = true,
+                ["block-03.local"] = true
+            }
+
+            if block_hostnames[vim.fn.hostname()] then
+                theta.header.type = "terminal"
+                theta.header.command = "cat ~/.dotfiles/block-ascii"
+                theta.header.width = 100
+                theta.header.height = 18
+                theta.header.val = {}
+                theta.header.opts = { position = "center" }
+            else
+            theta.header.val = {
+                [[⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣠⣤⣶⣶⣶⣶⣄⠀⢠⣄⡀⠀⠀⠀⠀]],
+                [[⠀⠀⠀⠀⠀⠀⠀⠀⢀⣠⣾⣿⣿⡿⠛⢻⣿⣿⣿⠀⢀⣿⣿⣦⡀⠀⠀]],
+                [[⠀⠀⠀⠀⠀⠀⣠⣴⣿⣿⣿⠋⠉⠁⠀⣸⣿⣿⡏⠀⢸⣿⣿⣿⣷⡄⠀]],
+                [[⠀⠀⠀⠀⢀⣾⣿⣿⠋⠁⠉⠀⣰
+                [[⠀⠀⠀⣴⣿⣿⠟⠛⠀⠀⣿⣿⣿⡿⠛⠉⠀⠀⢠⣾⣿⣿⣿⣿⣿⣿⡇]],
+                [[⠀⢀⣾⣿⣿⠿⠀⠀⣶⣾⣿⡿⠋⠀⠀⠀⠀⣰⣿⣿⡟⠉⢻⣿⣿⣿⠇]],
+                [[⠀⣾⣿⡏⠀⢀⣀⣴⣿⡿⠋⠀⠀⠀⠀⣠⣾⣿⣿⠋⠁⠀⢀⣿⣿⡟⠀]],
+                [[⢸⣿⣿⣧⣀⣼⣿⣿⡟⠁⠀⠀⠀⣠⣾⣿⣿⠛⠛⠀⠀⣾⣿⣿⡟⠀⠀]],
+                [[⠸⣿⣿⣿⣿⣿⡿⠏⠀⠀⢀⣠⣾⣿⡿⠿⠿⠀⢠⣤⣾⣿⣿⠟⠀⠀⠀]],
+                [[⠀⠈⠉⠉⠁⠀⢀⣀⣤⣾⣿⣿⠿⠿⠃⠀⣀⣠⣾⣿⣿⡿⠃⠀⠀⠀⠀]],
+                [[⠀⠳⣶⣶⣶⣿⣿⣿⣿⣿⣿⣏⠀⢀⣀⣠⣿⣿⣿⡿⠋⠀⠀⠀⠀⠀⠀]],
+                [[⠀⠀⠙⢿⣿⣿⣿⣿⣿⣿⣿⣿⣶⣾⣿⣿⣿⠟⠁⠀⠀⠀⠀⠀⠀⠀⠀]],
+                [[⠀⠀⠀⠀⠙⠻⢿⣿⣿⣿⣿⣿⣿⠿⠛⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀]],
+                [[⠀⠀⠀⠀⠀⠀⠀⠈⠉⠉⠉⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀]],
+            }
             end
             alpha.setup(theta.config)
         end
