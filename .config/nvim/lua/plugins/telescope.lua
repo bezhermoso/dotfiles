@@ -25,7 +25,7 @@ return {
             { "<leader>fQ",  ":lua require('telescope.builtin').quickfixhistory()<CR>",                desc = 'Telescope: Quickfix (History)' },
             { "<leader>fa",  ":lua require('telescope.builtin').find_files({ no_ignore = true })<CR>", desc = 'Telescope: Files (All)' },
             { "<leader>fb",  ":lua require('telescope.builtin').buffers()<CR>",                        desc = 'Telescope: Buffers' },
-            { "<leader>fc",  ":lua require('telescope.builtin').colorscheme()<CR>",                    desc = 'Telescope: Colorschemes' },
+            { "<leader>fC",  ":lua require('telescope.builtin').colorscheme()<CR>",                    desc = 'Telescope: Colorschemes' },
             { "<leader>ff",  ":lua require('telescope.builtin').find_files({ hidden = true })<CR>",    desc = 'Telescope: Files' },
             { "<leader>fg",  ":lua require('telescope.builtin').live_grep()<CR>",                      desc = 'Telescope: Live Grep' },
             { "<leader>fh",  ":lua require('telescope.builtin').help_tags()<CR>",                      desc = 'Telescope: Help tags' },
@@ -145,4 +145,27 @@ return {
             --telescope.load_extension('yank_history')
         end,
     },
+    {
+        'axkirillov/easypick.nvim',
+        dependencies = {
+            'nvim-telescope/telescope.nvim',
+        },
+        keys = {
+            {"<leader>fc", "<cmd>Easypick git_recently_changed<CR>", desc = "Easypick: Git recently changed files"},
+        },
+        config = function ()
+            local easypick = require("easypick")
+            easypick.setup({
+                pickers = {
+                    {
+                        name = "git_recently_changed",
+                        command = "{ git diff --name-only && git log --pretty=format: --name-only HEAD~5..HEAD; } | awk 'NF' | sort | uniq",
+                        previewer = easypick.previewers.branch_diff {
+                            base_branch = "HEAD~5",
+                        },
+                    }
+                }
+            })
+        end
+    }
 }
