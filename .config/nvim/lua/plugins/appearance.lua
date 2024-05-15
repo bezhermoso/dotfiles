@@ -23,8 +23,8 @@ return {
                 },
                 sections = {
                     -- lualine_b = { 'branch', 'diff', 'diagnostics', todos_component },
-                    lualine_c = { 'filename', 'aerial' }
-                }
+                    lualine_c = { 'filename', 'aerial' },
+                },
             })
         end,
     },
@@ -114,8 +114,9 @@ return {
             require('alpha.term')
             local theta = require('alpha.themes.theta')
 
-            if vim.fn.executable("fortune")
-                and vim.fn.executable("boxes")
+            if vim.fn.executable("fortune") == 1
+                and vim.fn.executable("boxes") == 1
+                and vim.fn.executable("lolcrab") == 1
                 and block_hostnames[vim.fn.hostname()]
             then
                 theta.header.type = "group"
@@ -123,15 +124,15 @@ return {
                     {
                         type = "terminal",
                         -- command = "neowofetch --ascii ~/.dotfiles/ascii/block-logo-ascii.txt --gap 6 --disable de wm packages kernel uptime resolution cols term_font --colors 11 8 8 8 8 7",
-                        command = "paste ~/.dotfiles/ascii/block-logo-ascii.txt =(echo; echo; echo; echo; fortune -s | fold -w 40 -s | boxes -d java-cmt -p l2 | sed 's/^/\x1b[33m/')",
-                        width = 80,
+                        command = "paste ~/.dotfiles/ascii/block-logo-ascii.txt =(echo; echo; echo; echo; fortune -s dune dune-messiah | fold -w 50 -s | boxes -d java-cmt -p l2 | lolcrab --custom '\\#FFB89C' '\\#FF9261' '\\#FF4F00' '\\#8FF8EC' '\\#2ED7C8' '\\#13BBAF')",
+                        width = 100,
                         height = 17,
                         opts = {
                             position = "center",
                             redraw = true,
                             window_config = {},
-                        }
-                    }
+                        },
+                    },
                 }
             else
             theta.header.val = {
