@@ -167,6 +167,7 @@ return {
                     sign = '⚑',
                     hl = 'Todo',
                 },
+                excluded_filetypes = { 'help', 'dashboard', 'dressing', 'DressingSelect', 'neo-tree' },
                 -- mappings = {
                 --     toggle = 'm',
                 --     cycle = 'M',
