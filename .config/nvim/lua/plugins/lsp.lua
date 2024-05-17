@@ -331,13 +331,6 @@ return {
         opts = {},
     },
     {
-        'numToStr/Comment.nvim',
-        event = 'BufEnter',
-        config = function()
-            require('Comment').setup()
-        end
-    },
-    {
         "j-hui/fidget.nvim",
         tag = "legacy",
         event = "LspAttach",
