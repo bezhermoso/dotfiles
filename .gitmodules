@@ -21,3 +21,7 @@
 [submodule "zsh/.zprezto"]
 	path = zsh/.zprezto
 	url = git@github.com:bezhermoso/prezto.git
+[submodule "alpha-nvim"]
+	path = .config/nvim/lua/dev/alpha-nvim
+	url = git@github.com:bezhermoso/alpha-nvim
+	branch = redraw-terminal-elements
