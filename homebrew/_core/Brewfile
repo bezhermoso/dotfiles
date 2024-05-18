@@ -4,6 +4,7 @@ cask "font-jetbrains-mono-nerd-font"
 
 brew "atuin"
 brew "bat"
+brew "boxes"
 brew "btop"
 brew "curl"
 brew "duf"
