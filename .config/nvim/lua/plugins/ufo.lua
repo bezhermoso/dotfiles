@@ -16,9 +16,9 @@ return {
         { "nvim-treesitter/nvim-treesitter" },
     },
     keys = {
-        { "zR", function() require('ufo').openAllFolds() end },
-        { "zM", function() require('ufo').closeAllFolds() end },
-        require("core.ufo").lazy_mapping(),
+        { "zR", function() require('ufo').openAllFolds() end, desc = "Folds: open all" },
+        { "zM", function() require('ufo').closeAllFolds() end, desc = "Folds: close all" },
+        { "K",  function() require("core.ufo").peek_or_lsp_hover() end, desc = "LSP/Folding: LSP lookup or preview folded range" },
     },
     init = function()
         vim.o.foldcolumn = "0" -- Hides the fold-column. Set to "1" to show 1-char width fold chars.

@@ -76,7 +76,11 @@ return {
                 vim.keymap.set('n', 'gr', require('telescope.builtin').lsp_references, {
                     desc = 'LSP: Show usages'
                 })
-                require("core.ufo").lsp_on_attach_mapping()
+
+                vim.keymap.set('n', 'K', require("core.ufo").peek_or_lsp_hover, {
+                    desc = 'LSP/Folding: LSP lookup or preview folded range',
+                })
+
                 vim.keymap.set('n', '<leader>==', vim.lsp.buf.format, {
                     desc = 'LSP: Format',
                 })
@@ -199,7 +203,7 @@ return {
                     ['<C-k>'] = cmp_mappings.prev_cmp_item,
                     ['<Tab>'] = cmp_mappings.next_cmp_item,
                     ['<S-Tab>'] = cmp_mappings.prev_cmp_item,
-                    ['<M-;>'] = cmp.mapping(function (callback)
+                    ['<M-;>'] = cmp.mapping(function (_)
                        vim.api.nvim_feedkeys(vim.fn['copilot#Accept'](vim.api.nvim_replace_termcodes('<Tab>', true, true, true)), 'n', true)
                     end),
                 }),
@@ -358,14 +362,15 @@ return {
             require("lsp-file-operations").setup()
         end
     },
-    -- {
-    --     'zbirenbaum/copilot.lua',
-    --     cmd = 'Copilot',
-    --     event = 'InsertEnter',
-    --     config = function()
-    --         require('copilot').setup(copilot_opts)
-    --     end
-    -- },
+    {
+        'zbirenbaum/copilot.lua',
+        enabled = false,
+        cmd = 'Copilot',
+        event = 'InsertEnter',
+        config = function()
+            require('copilot').setup(copilot_opts)
+        end
+    },
     -- {
     --     'zbirenbaum/copilot-cmp',
     --     dependencies = {
