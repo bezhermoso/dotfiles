@@ -34,3 +34,7 @@ ssh_fallback: ~/.ssh/id_rsa_fallback
 		| jq -r '.ssh_formats.openssh.value' \
 		| sed 's#\r##' > ~/.ssh/id_rsa_fallback
 	chmod 0700 ~/.ssh/id_rsa_fallback
+
+image-2-ascii-converter:
+	go install github.com/TheZoraiz/ascii-image-converter@latest
+
