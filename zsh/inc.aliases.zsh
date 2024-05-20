@@ -27,4 +27,8 @@ alias reinit-markers='/System/Library/Frameworks/CoreServices.framework/Versions
 # Pretend you're a h4x0r
 alias hacksh='$SHELL | tr -u eauiobBgGsSlL 34U1088995577'
 
+# mnemonic: (r)oot of (p)roject
+alias rp="jump-to-project-root"
+# mnemonic: (j)ump to (r)oot of project
+alias jr="jump-to-project-root"
 
