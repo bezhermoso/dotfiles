@@ -46,18 +46,38 @@ return {
         },
         config = function()
             local base16 = require('base16-colorscheme')
-            base16.setup()
-            local load_from_shell = function()
-                local res = base16.load_from_shell()
-                if res then
-                    vim.notify('Loaded base16 scheme from base16-shell: ' .. res, vim.log.levels.DEBUG)
-                end
+            local base16_live_reload = require("base16-live-reload")
+
+            local set_line_number_hls = function ()
+                local colors = base16.colors
+                base16.highlight.CursorLineNr = {
+                    guifg = colors.base0A,
+                    ctermfg = colors.cterm0A,
+                    fg = colors.base0A,
+                    gui = "bold"
+                }
+                base16.highlight.LineNr = {
+                    guifg = colors.base02,
+                    ctermfg = colors.cterm02,
+                    fg = colors.base02,
+                }
             end
-            load_from_shell()
-            vim.keymap.set('n', '<leader>bt', load_from_shell, {
+
+            base16.setup()
+            base16_live_reload.setup()
+            -- set_line_number_hls()
+
+            vim.api.nvim_create_autocmd("User", {
+                pattern = "Base16ReloadPost",
+                callback = function()
+                    set_line_number_hls()
+                end,
+            })
+
+            vim.keymap.set('n', '<leader>bt', base16_live_reload.reload, {
                 desc = 'Base16: Load colorscheme from base16-shell',
             })
-            require("base16-live-reload").setup()
+
         end
     },
     {
@@ -175,7 +195,7 @@ return {
         config = function()
             require('marks').setup({
                 default_mappings = true,
-                builtin_marks = { ".", "<", ">", "^" },
+                builtin_marks = {},
                 cyclic = true,
                 force_write_shada = false,
                 bookmark_0 = {
@@ -190,6 +210,15 @@ return {
                 --     next = ']',
                 --     prev = '[',
                 -- },
+            })
+        end
+    },
+    {
+        -- https://github.com/luukvbaal/statuscol.nvim
+        "luukvbaal/statuscol.nvim",
+        config = function ()
+            require("statuscol").setup({
+                relculright = true,
             })
         end
     }
