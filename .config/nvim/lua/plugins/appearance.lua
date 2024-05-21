@@ -50,17 +50,8 @@ return {
 
             local set_line_number_hls = function ()
                 local colors = base16.colors
-                base16.highlight.CursorLineNr = {
-                    guifg = colors.base0A,
-                    ctermfg = colors.cterm0A,
-                    fg = colors.base0A,
-                    gui = "bold"
-                }
-                base16.highlight.LineNr = {
-                    guifg = colors.base02,
-                    ctermfg = colors.cterm02,
-                    fg = colors.base02,
-                }
+                base16.highlight.CursorLineNr = { guifg = colors.base0A, ctermfg = colors.cterm0A, fg = colors.base0A, gui = "bold" }
+                base16.highlight.LineNr = { guifg = colors.base02, ctermfg = colors.cterm02, fg = colors.base02 }
             end
 
             base16.setup()
