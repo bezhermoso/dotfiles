@@ -50,6 +50,10 @@ return {
         "sindrets/diffview.nvim",
         enabled = git_installed,
         event = "VeryLazy",
+        keys = {
+            { "<leader>do", ":DiffviewOpen<CR>", desc = "Diff: Open" },
+            { "<leader>dc", ":DiffviewClose<CR>", desc = "Diff: Close" },
+        },
         opts = {},
     },
     {
