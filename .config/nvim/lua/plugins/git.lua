@@ -66,11 +66,9 @@ return {
         "https://github.com/NeogitOrg/neogit",
         enabled = git_installed,
         dependencies = {
-            "nvim-lua/plenary.nvim",  -- required
-            "sindrets/diffview.nvim", -- optional - Diff integration
-
-            -- Only one of these is needed, not both.
-            "nvim-telescope/telescope.nvim", -- optional
+            "nvim-lua/plenary.nvim",
+            "sindrets/diffview.nvim", -- Diff integration
+            "nvim-telescope/telescope.nvim", -- Will be used for pickers
         },
         keys = {
             { "<leader>G", function() require('neogit').open({ kind = "tab" }) end, desc = "Neogit: Git status (new tab)" },
@@ -78,14 +76,11 @@ return {
         },
         config = {
             graph_style = "unicode",
-            console_timeout = 10000,
+            console_timeout = 10000, -- ms before the console is opened; increasing this because Git can be slow in monorepos
             -- Use fzf sorter
             telescope_sorter = function()
                 return require("telescope").extensions.fzf.native_fzf_sorter()
             end,
-            -- integrations = {
-            --     telescope = true,
-            -- },
         },
     },
 }
