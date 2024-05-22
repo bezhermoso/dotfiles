@@ -6,6 +6,7 @@ package.path = package.path .. ";" .. vim.fn.expand("$HOME") .. "/.luarocks/shar
 
 return {
     {
+        -- https://github.com/vhyrro/luarocks.nvim
         "vhyrro/luarocks.nvim",
         priority = 1001, -- Load as early as possible
         opts = {

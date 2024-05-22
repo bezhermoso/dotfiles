@@ -5,6 +5,7 @@ local block_hostnames = {
 
 return {
     {
+        -- https://github.com/nvim-lualine/lualine.nvim
         'nvim-lualine/lualine.nvim',
         lazy = false,
         dependencies = {
@@ -29,10 +30,12 @@ return {
         end,
     },
     {
+        -- https://github.com/nvim-tree/nvim-web-devicons
         'nvim-tree/nvim-web-devicons',
         lazy = true,
     },
     {
+        -- https://github.com/RRethy/nvim-base16
         'RRethy/nvim-base16',
         priority = 1000,
         lazy = false,
@@ -72,6 +75,7 @@ return {
         end
     },
     {
+        -- https://github.com/rcarriga/nvim-notify
         'rcarriga/nvim-notify',
         lazy = false,
         priority = 1000,
@@ -87,6 +91,7 @@ return {
         end
     },
     {
+        -- https://github.com/lukas-reineke/indent-blankline.nvim
         'lukas-reineke/indent-blankline.nvim',
         main = 'ibl',
         opts = {
@@ -107,7 +112,8 @@ return {
         opts = {}
     },
     {
-        "https://github.com/3rd/image.nvim",
+        -- https://github.com/3rd/image.nvim
+        "3rd/image.nvim",
         dependencies = {
             {"luarocks.nvim"},
         },
@@ -118,6 +124,7 @@ return {
         end
     },
     {
+        -- https://github.com/goolord/alpha-nvim
         'goolord/alpha-nvim',
         dev = true,
         requires = { 'nvim-tree/nvim-web-devicons' },
@@ -132,7 +139,8 @@ return {
         end
     },
     {
-        'https://github.com/chentoast/marks.nvim',
+        -- https://github.com/chentoast/marks.nvim
+        'chentoast/marks.nvim',
         config = function()
             require('marks').setup({
                 default_mappings = true,

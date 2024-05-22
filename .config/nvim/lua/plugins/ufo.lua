@@ -9,7 +9,8 @@ local treesitter_based_folding_filetypes = {
     "python",
 }
 return {
-    "https://github.com/kevinhwang91/nvim-ufo",
+    -- https://github.com/kevinhwang91/nvim-ufo
+    "kevinhwang91/nvim-ufo",
     event = "BufRead",
     dependencies = {
         { "https://github.com/kevinhwang91/promise-async" },
@@ -27,15 +28,15 @@ return {
         vim.o.foldenable = true
     end,
     config = function()
-        require('ufo').setup({
+        require("ufo").setup({
             close_fold_kinds_for_ft = {
                 php = {"comment", "imports"},
             },
             provider_selector = function (_, ftype, _)
                 if vim.tbl_contains(treesitter_based_folding_filetypes, ftype) then
-                    return {'treesitter', 'indent'}
+                    return {"treesitter", "indent"}
                 end
-                return {'lsp', 'indent'}
+                return {"lsp", "indent"}
             end
         })
     end,

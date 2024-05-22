@@ -1,6 +1,7 @@
 return {
     {
-        'echasnovski/mini.splitjoin',
+        -- https://github.com/echasnovski/mini.splitjoin
+        "echasnovski/mini.splitjoin",
         enabled = false,
         version = '*',
         config = function()
@@ -12,7 +13,8 @@ return {
         end,
     },
     {
-        'Wansmer/treesj',
+        -- https://github.com/Wansmer/treesj
+        "Wansmer/treesj",
         keys = {
             {"<leader>j", function() require("treesj").toggle() end, desc = "Toggle split/join"},
         },

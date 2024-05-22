@@ -1,5 +1,6 @@
 return {
     {
+        -- https://github.com/github/copilot.vim
         'github/copilot.vim',
         cmd = 'Copilot',
         lazy = false,

@@ -2,6 +2,7 @@ local git_installed = vim.fn.executable('git') == 1
 local gh_installed = vim.fn.executable('gh') == 1
 return {
     {
+        -- https://github.com/tpope/vim-fugitive
         "tpope/vim-fugitive",
         enabled = git_installed,
         dependencies = {
@@ -13,6 +14,7 @@ return {
         -- },
     },
     {
+        -- https://github.com/lewis6991/gitsigns.nvim
         "lewis6991/gitsigns.nvim",
         enabled = git_installed,
         keys = {
@@ -30,6 +32,7 @@ return {
         opts = {}
     },
     {
+        -- https://github.com/Almo7aya/openingh.nvim
         "Almo7aya/openingh.nvim",
         enabled = gh_installed,
         lazy = false,
@@ -47,6 +50,7 @@ return {
         end
     },
     {
+        -- https://github.com/sindrets/diffview.nvim
         "sindrets/diffview.nvim",
         enabled = git_installed,
         event = "VeryLazy",
@@ -57,13 +61,15 @@ return {
         opts = {},
     },
     {
+        -- https://github.com/pwntester/octo.nvim
         "pwntester/octo.nvim",
         enabled = gh_installed,
         event = "VeryLazy",
         opts = {},
     },
     {
-        "https://github.com/NeogitOrg/neogit",
+        -- https://github.com/NeogitOrg/neogit
+        "NeogitOrg/neogit",
         enabled = git_installed,
         dependencies = {
             "nvim-lua/plenary.nvim",

@@ -5,7 +5,8 @@ local copilot_opts = {
 
 return {
     {
-        'VonHeikemen/lsp-zero.nvim',
+        -- https://github.com/VonHeikemen/lsp-zero.nvim
+        "VonHeikemen/lsp-zero.nvim",
         branch = 'v3.x',
         dependencies = {
             -- LSP Support
@@ -335,12 +336,14 @@ return {
         opts = {},
     },
     {
+        -- https://github.com/j-hui/fidget.nvim
         "j-hui/fidget.nvim",
         tag = "legacy",
         event = "LspAttach",
         opts = {}
     },
     {
+        -- https://github.com/L3MON4D3/LuaSnip
         "L3MON4D3/LuaSnip",
         dependencies = { "rafamadriz/friendly-snippets" },
         -- follow latest release.
@@ -353,7 +356,8 @@ return {
         end
     },
     {
-        "https://github.com/antosha417/nvim-lsp-file-operations",
+        -- https://github.com/antosha417/nvim-lsp-file-operations
+        "antosha417/nvim-lsp-file-operations",
         dependencies = {
             "nvim-lua/plenary.nvim",
             "nvim-neo-tree/neo-tree.nvim",
@@ -363,7 +367,8 @@ return {
         end
     },
     {
-        'zbirenbaum/copilot.lua',
+        -- https://github.com/zbirenbaum/copilot.lua
+        "zbirenbaum/copilot.lua",
         enabled = false,
         cmd = 'Copilot',
         event = 'InsertEnter',

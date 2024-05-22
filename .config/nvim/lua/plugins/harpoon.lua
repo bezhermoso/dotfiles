@@ -1,5 +1,6 @@
 return {
-    "https://github.com/ThePrimeagen/harpoon",
+    -- https://github.com/ThePrimeagen/harpoon
+    "ThePrimeagen/harpoon",
     lazy = true,
     keys = {
         { "<leader>ho", function() require('harpoon.ui').toggle_quick_menu() end, desc = "Harpoon: Open menu..", mode = { "n", "v" } },

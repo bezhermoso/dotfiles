@@ -3,18 +3,20 @@ return {
     --     'nvim-lua/plenary.nvim'
     -- },
     {
-        'nvim-telescope/telescope-fzf-native.nvim',
-        build = 'make'
+        -- https://github.com/nvim-telescope/telescope-fzf-native.nvim
+        "nvim-telescope/telescope-fzf-native.nvim",
+        build = "make"
     },
     {
-        'nvim-telescope/telescope.nvim',
+        -- https://github.com/nvim-telescope/telescope.nvim
+        "nvim-telescope/telescope.nvim",
         dependencies = {
-            'nvim-lua/plenary.nvim',
-            'nvim-telescope/telescope-ui-select.nvim',
-            'debugloop/telescope-undo.nvim',
-            'nvim-telescope/telescope-file-browser.nvim',
-            'gbprod/yanky.nvim',
-            'stevearc/aerial.nvim',
+            "nvim-lua/plenary.nvim",
+            "nvim-telescope/telescope-ui-select.nvim",
+            "debugloop/telescope-undo.nvim",
+            "nvim-telescope/telescope-file-browser.nvim",
+            "gbprod/yanky.nvim",
+            "stevearc/aerial.nvim",
         },
         keys = {
             { "<leader>*",   ":lua require('telescope.builtin').grep_string()<CR>",                    desc = 'Telescope: Grep string...',       mode = { 'v', 'n' } },
@@ -158,9 +160,10 @@ return {
         end,
     },
     {
-        'axkirillov/easypick.nvim',
+        -- https://github.com/axkirillov/easypick.nvim
+        "axkirillov/easypick.nvim",
         dependencies = {
-            'nvim-telescope/telescope.nvim',
+            "nvim-telescope/telescope.nvim",
         },
         keys = {
             {"<leader>fc", "<cmd>Easypick git_recently_changed<CR>", desc = "Easypick: Git recently changed files"},

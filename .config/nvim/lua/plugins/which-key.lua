@@ -1,6 +1,7 @@
 return {
-    'folke/which-key.nvim',
-    event = 'VeryLazy',
+    -- https://github.com/folke/which-key.nvim
+    "folke/which-key.nvim",
+    event = "VeryLazy",
     lazy = false,
     init = function()
         vim.opt.timeout = true

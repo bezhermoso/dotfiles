@@ -1,5 +1,6 @@
 return {
     {
+        -- https://github.com/stevearc/dressing.nvim
         'stevearc/dressing.nvim',
         opts = {
             select = {
@@ -17,6 +18,7 @@ return {
         },
     },
     {
+        -- https://github.com/gelguy/wilder.nvim
         "gelguy/wilder.nvim",
         keys = { ":", "/", "?" },
         config = function()

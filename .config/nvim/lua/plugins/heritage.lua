@@ -1,4 +1,5 @@
 return {
+    -- https://github.com/jessarcher/vim-heritage
     "jessarcher/vim-heritage",
     keys = {
         -- Replaces the built-in gf mapping with a version that can handle non-existent files.

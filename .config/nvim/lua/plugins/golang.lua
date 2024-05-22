@@ -1,5 +1,6 @@
 return {
     {
+        -- https://github.com/ray-x/go.nvim
         "ray-x/go.nvim",
         dependencies = { -- optional packages
             "ray-x/guihua.lua",

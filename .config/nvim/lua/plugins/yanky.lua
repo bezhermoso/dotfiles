@@ -1,6 +1,7 @@
 return {
     {
-        "https://github.com/gbprod/yanky.nvim",
+        -- https://github.com/gbprod/yanky.nvim
+        "gbprod/yanky.nvim",
         lazy = false,
         config = function()
             local yanky_utils = require("yanky.utils")

@@ -1,4 +1,5 @@
 return {
+    -- https://github.com/mbbill/undotree
     "mbbill/undotree",
     keys = {
         {"<leader>U", vim.cmd.UndotreeToggle, desc = "UndoTree: Toggle"},

@@ -1,10 +1,11 @@
 return {
     {
-        'akinsho/toggleterm.nvim',
+        -- https://github.com/akinsho/toggleterm.nvim
+        "akinsho/toggleterm.nvim",
         version = "*",
         config = function ()
-            require('toggleterm').setup()
-            local Terminal = require('toggleterm.terminal').Terminal
+            require("toggleterm").setup()
+            local Terminal = require("toggleterm.terminal").Terminal
             local lazygit = Terminal:new({
                 cmd = "lazygit",
                 hidden = true,
