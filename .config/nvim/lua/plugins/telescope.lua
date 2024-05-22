@@ -95,7 +95,9 @@ return {
                             ["<C-p>"] = require('telescope.actions.layout').toggle_preview,
                         }
                     },
-                    preview = false,
+                    preview = {
+                        hide_on_startup = true,
+                    },
                 },
                 pickers = {
                     live_grep = {
@@ -107,7 +109,9 @@ return {
                                 ["<C-f>"] = ts_select_dir_for_grep,
                             },
                         },
-                        preview = true,
+                        preview = {
+                            hide_on_startup = false,
+                        },
                     }
                 },
                 extensions = {
