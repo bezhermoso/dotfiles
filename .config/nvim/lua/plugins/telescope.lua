@@ -93,6 +93,7 @@ return {
                             ["<C-j>"] = "move_selection_next",
                             ["<C-k>"] = "move_selection_previous",
                             ["<C-p>"] = require('telescope.actions.layout').toggle_preview,
+                            ["<C-b>"] = require('telescope.actions.layout').cycle_layout_next,
                         }
                     },
                     preview = {
