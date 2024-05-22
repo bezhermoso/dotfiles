@@ -124,61 +124,11 @@ return {
         config = function()
             local alpha = require('alpha')
             require('alpha.term')
-            local theta = require('alpha.themes.theta')
-
-            if vim.fn.executable("fortune") == 1
-                and vim.fn.executable("boxes") == 1
-                and vim.fn.executable("lolcrab") == 1
-                and block_hostnames[vim.fn.hostname()]
-            then
-                theta.header.type = "group"
-                theta.header.val = {
-                    {
-                        type = "terminal",
-                        command = "paste ~/.dotfiles/ascii/block-logo-ascii.txt =(echo; echo; echo; echo; fortune -s dune dune-messiah | fold -w 50 -s | boxes -d java-cmt -p l2 | lolcrab --custom '\\#FFB89C' '\\#FF9261' '\\#FF4F00' '\\#8FF8EC' '\\#2ED7C8' '\\#13BBAF')",
-                        width = 100,
-                        height = 17,
-                        opts = {
-                            position = "center",
-                            redraw = true,
-                            window_config = {},
-                        },
-                    },
-                }
+            if block_hostnames[vim.fn.hostname()] then
+                alpha.setup(require('plugins.alpha.block').alpha_config())
             else
-                theta.header.type = "group"
-                theta.header.val = {
-                    {
-                        type = "terminal",
-                        -- command = "neowofetch --ascii ~/.dotfiles/ascii/block-logo-ascii.txt --gap 6 --disable de wm packages kernel uptime resolution cols term_font --colors 11 8 8 8 8 7",
-                        command = "paste ~/.dotfiles/ascii/one-ring.txt",
-                        width = 50,
-                        height = 18,
-                        opts = {
-                            position = "center",
-                            redraw = true,
-                            window_config = {},
-                        },
-                    },
-                }
-                -- theta.header.val = {
-                --     [[⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣠⣤⣶⣶⣶⣶⣄⠀⢠⣄⡀⠀⠀⠀⠀]],
-                --     [[⠀⠀⠀⠀⠀⠀⠀⠀⢀⣠⣾⣿⣿⡿⠛⢻⣿⣿⣿⠀⢀⣿⣿⣦⡀⠀⠀]],
-                --     [[⠀⠀⠀⠀⠀⠀⣠⣴⣿⣿⣿⠋⠉⠁⠀⣸⣿⣿⡏⠀⢸⣿⣿⣿⣷⡄⠀]],
-                --     [[⠀⠀⠀⠀⢀⣾⣿⣿⠋⠁⠉⠀⣰⣶⣾⣿⡿⠟⠀⢠⣿⣿⣿⣿⣿⣿⡄]],
-                --     [[⠀⠀⠀⣴⣿⣿⠟⠛⠀⠀⣿⣿⣿⡿⠛⠉⠀⠀⢠⣾⣿⣿⣿⣿⣿⣿⡇]],
-                --     [[⠀⢀⣾⣿⣿⠿⠀⠀⣶⣾⣿⡿⠋⠀⠀⠀⠀⣰⣿⣿⡟⠉⢻⣿⣿⣿⠇]],
-                --     [[⠀⣾⣿⡏⠀⢀⣀⣴⣿⡿⠋⠀⠀⠀⠀⣠⣾⣿⣿⠋⠁⠀⢀⣿⣿⡟⠀]],
-                --     [[⢸⣿⣿⣧⣀⣼⣿⣿⡟⠁⠀⠀⠀⣠⣾⣿⣿⠛⠛⠀⠀⣾⣿⣿⡟⠀⠀]],
-                --     [[⠸⣿⣿⣿⣿⣿⡿⠏⠀⠀⢀⣠⣾⣿⡿⠿⠿⠀⢠⣤⣾⣿⣿⠟⠀⠀⠀]],
-                --     [[⠀⠈⠉⠉⠁⠀⢀⣀⣤⣾⣿⣿⠿⠿⠃⠀⣀⣠⣾⣿⣿⡿⠃⠀⠀⠀⠀]],
-                --     [[⠀⠳⣶⣶⣶⣿⣿⣿⣿⣿⣿⣏⠀⢀⣀⣠⣿⣿⣿⡿⠋⠀⠀⠀⠀⠀⠀]],
-                --     [[⠀⠀⠙⢿⣿⣿⣿⣿⣿⣿⣿⣿⣶⣾⣿⣿⣿⠟⠁⠀⠀⠀⠀⠀⠀⠀⠀]],
-                --     [[⠀⠀⠀⠀⠙⠻⢿⣿⣿⣿⣿⣿⣿⠿⠛⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀]],
-                --     [[⠀⠀⠀⠀⠀⠀⠀⠈⠉⠉⠉⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀]],
-                -- }
+                alpha.setup(require('plugins.alpha.tolkien').alpha_config())
             end
-            alpha.setup(theta.config)
         end
     },
     {
