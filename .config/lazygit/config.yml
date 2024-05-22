@@ -1,6 +1,6 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/jesseduffield/lazygit/v0.41.0/schema/config.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/jesseduffield/lazygit/v0.42.0/schema/config.json
 #
-# Configuration Reference: https://github.com/jesseduffield/lazygit/blob/v0.41.0/docs/Config.md
+# Configuration Reference: https://github.com/jesseduffield/lazygit/blob/v0.42.0/docs/Config.md
 gui:
   nerdFontsVersion: '3'
   expandFocusedSidePanel: true
@@ -9,8 +9,8 @@ gui:
     selectedLineBgColor:
       - reverse
   # Spinner config will be respected by a future LazyGit release
-  # spinner:
-  #   frames: ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'] 
+  spinner:
+    frames: ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'] 
 os:
   open: 'open {{filename}}'
   editPreset: "nvim"
