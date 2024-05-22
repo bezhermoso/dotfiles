@@ -99,6 +99,13 @@ return {
                     preview = {
                         hide_on_startup = true,
                     },
+                    cycle_layout_list = {
+                        'horizontal',
+                        'vertical',
+                        'center',
+                        'bottom_pane',
+                        'cursor',
+                    },
                 },
                 pickers = {
                     live_grep = {
