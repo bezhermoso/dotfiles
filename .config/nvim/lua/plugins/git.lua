@@ -71,7 +71,6 @@ return {
 
             -- Only one of these is needed, not both.
             "nvim-telescope/telescope.nvim", -- optional
-            "ibhagwan/fzf-lua",              -- optional
         },
         keys = {
             { "<leader>G", function() require('neogit').open({ kind = "tab" }) end, desc = "Neogit: Git status (new tab)" },
@@ -79,10 +78,14 @@ return {
         },
         config = {
             graph_style = "unicode",
+            console_timeout = 10000,
             -- Use fzf sorter
             telescope_sorter = function()
                 return require("telescope").extensions.fzf.native_fzf_sorter()
             end,
+            -- integrations = {
+            --     telescope = true,
+            -- },
         },
     },
 }
