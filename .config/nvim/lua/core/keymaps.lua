@@ -100,6 +100,11 @@ mapkey('n', 'bx', ":bd<CR>", {
     noremap = true,
     silent = true,
 })
+mapkey('n', 'bc', ":bd<CR>", {
+    desc = "Unload buffer",
+    noremap = true,
+    silent = true,
+})
 mapkey('n', 'bX', ":bw!<CR>", {
     desc = "Force-unload buffer",
 
