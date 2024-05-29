@@ -29,3 +29,6 @@
 ^/ssh
 ^/logos
 ^/ascii
+^/bash
+# TODO: Make this work:
+# ^(?!\.config).+
