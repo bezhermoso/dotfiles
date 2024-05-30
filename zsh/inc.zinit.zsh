@@ -6,7 +6,7 @@ source "${ZINIT_HOME}/zinit.zsh"
 
 # Work around for Github dropping SVN protocol support:
 # https://github.com/zdharma-continuum/zinit/discussions/651#discussioncomment-9530645
-setopt RE_MATCH_PCRE   # _fix-omz-plugin function uses this regex style
+#setopt RE_MATCH_PCRE   # _fix-omz-plugin function uses this regex style (Not sure this is necessary)
 
 # Workaround for zinit issue#504: remove subversion dependency. Function clones all files in plugin
 # directory (on github) that might be useful to zinit snippet directory. Should only be invoked
