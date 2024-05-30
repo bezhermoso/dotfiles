@@ -1,10 +1,7 @@
 
 export ZDOTDIR="$HOME/.dotfiles/zsh"
 
-# Source zprezto's zshenv if present
-local zprezto_zshenv="$ZDOTDIR/.zprezto/runcoms/zshenv"
-if [[ -f "$zprezto_zshenv" ]]; then
-    source "$zprezto_zshenv"
-else
-    >&2 echo "Unable to source $zprezto_zshenv: Did you install zprezto?"
+# Ensure that a non-login, non-interactive shell has a defined environment.
+if [[ ( "$SHLVL" -eq 1 && ! -o LOGIN ) && -s "${ZDOTDIR:-$HOME}/.zprofile" ]]; then
+  source "${ZDOTDIR:-$HOME}/.zprofile"
 fi
