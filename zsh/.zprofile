@@ -84,13 +84,40 @@ export TERMINFO_DIRS="$TERMINFO_DIRS:$HOME/.local/share/terminfo"
 # Added by OrbStack: command-line tools and integration
 source ~/.orbstack/shell/init.zsh 2>/dev/null || :
 
+# From zprrezto:
+#
+# Paths
+#
 
-# Load zprezto's profile if present
-local zprezto_zprofile="$ZDOTDIR/.zprezto/runcoms/zprofile"
+# Ensure path arrays do not contain duplicates.
+typeset -gU cdpath fpath mailpath path
 
-if [[ -f "$zprezto_zprofile" ]]; then
-  source "$zprezto_zprofile"
-else
-  >&2 echo "Unable to source $zprezto_zprofile. Did you install zprezto?"
+# Set the list of directories that cd searches.
+# cdpath=(
+#   $cdpath
+# )
+
+# Set the list of directories that Zsh searches for programs.
+path=(
+  $HOME/{,s}bin(N)
+  /opt/{homebrew,local}/{,s}bin(N)
+  /usr/local/{,s}bin(N)
+  $path
+)
+
+#
+# Less
+#
+
+# Set the default Less options.
+# Mouse-wheel scrolling has been disabled by -X (disable screen clearing).
+# Remove -X to enable it.
+if [[ -z "$LESS" ]]; then
+  export LESS='-g -i -M -R -S -w -X -z-4'
 fi
 
+# Set the Less input preprocessor.
+# Try both `lesspipe` and `lesspipe.sh` as either might exist on a system.
+if [[ -z "$LESSOPEN" ]] && (( $#commands[(i)lesspipe(|.sh)] )); then
+  export LESSOPEN="| /usr/bin/env $commands[(i)lesspipe(|.sh)] %s 2>&-"
+fi

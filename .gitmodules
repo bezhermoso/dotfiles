@@ -18,9 +18,6 @@
 	path = .config/nvim/lua/dev/todos-lualine.nvim
 	url = git@github.com:bezhermoso/todos-lualine.nvim
 	branch = main
-[submodule "zsh/.zprezto"]
-	path = zsh/.zprezto
-	url = git@github.com:bezhermoso/prezto.git
 [submodule "alpha-nvim"]
 	path = .config/nvim/lua/dev/alpha-nvim
 	url = git@github.com:bezhermoso/alpha-nvim
