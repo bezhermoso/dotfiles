@@ -1,9 +1,3 @@
-[submodule "base16-shell"]
-	path = base16-shell
-	url = https://github.com/tinted-theming/base16-shell.git
-[submodule "base16-fzf"]
-	path = base16-fzf
-	url = git@github.com:tinted-theming/base16-fzf.git
 [submodule "openingh"]
     path = .config/nvim/lua/dev/openingh.nvim
     url = git@github.com:bezhermoso/openingh.nvim.git
