@@ -19,17 +19,6 @@ source_config "inc.zinit.zsh"
 # NOTE: This must be loaded before the zshrc from prezto. fpath should be final before loading prezto.
 source_config "inc.options.zsh"
 
-# # Load the zshrc from prezto
-# local zprezto_zshrc="$ZDOTDIR/.zprezto/runcoms/zshrc"
-# if [[ -f "${zprezto_zshrc}" ]]; then
-#   source "${zprezto_zshrc}"
-# else
-#   echo "Cannot source ${zprezto_zshrc}. Did you install zprezto?"
-# fi
-# .zprezto will load compinit. Otherwise, uncomment the following lines:
-# autoload -U +X bashcompinit && bashcompinit
-# autoload -U +X compinit && compinit
-
 # Load $WORK configuration that needs to load early
 work_config_entrypoint="${HOME}/.dotfiles/zsh/work-entrypoint.sh"
 [ -f "$work_config_entrypoint" ] && source "$work_config_entrypoint"
