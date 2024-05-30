@@ -64,6 +64,10 @@ cd ~/.dotfiles
 
 It is recommended to close & re-open your terminal to pick up the just-installed Zsh configurations.
 
+#### Install Zsh plugins
+
+I use [`zinit`](https://github.com/zdharma-continuum/zinit) to manage Zsh plugins. It should auto-install the plugins when you start a new Zsh session.
+
 #### Install `tmux` plugins
 
 ```sh
