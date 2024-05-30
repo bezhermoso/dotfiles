@@ -81,6 +81,7 @@ zi load zdharma-continuum/fast-syntax-highlighting
 
 zi ice atpull"%atclone" atclone"_fix-omz-plugin"
 zi snippet OMZP::macos
+
 zi ice atpull"%atclone" atclone"_fix-omz-plugin"
 zi snippet OMZP::colored-man-pages
 
