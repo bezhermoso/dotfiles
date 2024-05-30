@@ -65,12 +65,12 @@ zi load Aloxaf/fzf-tab
 # https://github.com/junegunn/fzf-git.sh
 zi load junegunn/fzf-git.sh
 
-# TODO: Move to somewhere else.
 zi load bezhermoso/jump-to-git-root
 zi load bezhermoso/jump-to-project-root
 
 zi ice atload"!_zsh_autosuggest_start"
 zi load zsh-users/zsh-autosuggestions
+
 # vi bindings to complete the autosuggestion:
 bindkey -M viins "^F" vi-forward-word
 bindkey -M viins "^E" vi-add-eol
@@ -82,8 +82,6 @@ zi ice atpull"%atclone" atclone"_fix-omz-plugin"
 zi snippet OMZP::macos
 zi ice atpull"%atclone" atclone"_fix-omz-plugin"
 zi snippet OMZP::colored-man-pages
-
-autoload mand manp pfd pfs tab ql os-rm-dir-metadata os-ls-download-history os-rm-download-history
 
 zi ice \
   atclone"git clone --recursive https://github.com/zsh-users/zsh-completions.git external" \

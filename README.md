@@ -34,7 +34,26 @@ cd ~/.dotfiles/homebrew/_core
 /opt/homebrew/bin/brew bundle install
 ```
 
-## Step 3: Configure tools
+## Step 3: Install a more recent version of Zsh
+
+The version of `zsh` that comes with macOS is usually outdated. The previous step should have installed a more recent version of `zsh` via Homebrew. To use it, add it to `/etc/shells`:
+
+```sh
+sudo -e /etc/shells
+
+# Add this line at the end of the file:
+/opt/homebrew/bin/zsh
+```
+
+...or whatever the path to the new version of `zsh` is (i.e. the output of `which zsh`)
+
+Then, change the default shell to the new version of `zsh`:
+
+```sh
+chsh -s /opt/homebrew/bin/zsh
+```
+
+## Step 4: Configure tools
 
 I use [Stow](https://www.gnu.org/software/stow/) to put configuration directories/files where they need to be for tools to work:
 
