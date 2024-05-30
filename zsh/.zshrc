@@ -12,10 +12,9 @@ function source_config() {
 }
 
 
-source_config "inc.zinit.zsh"
-# ./inc.theme.zsh
 source_config "inc.theme.zsh"
 source_config "inc.prompt.zsh"
+source_config "inc.zinit.zsh"
 
 # NOTE: This must be loaded before the zshrc from prezto. fpath should be final before loading prezto.
 source_config "inc.options.zsh"
