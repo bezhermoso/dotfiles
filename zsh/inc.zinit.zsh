@@ -67,6 +67,7 @@ zi load junegunn/fzf-git.sh
 
 zi load bezhermoso/jump-to-git-root
 zi load bezhermoso/jump-to-project-root
+zi load bezhermoso/zsh-choose-base16
 
 zi ice atload"!_zsh_autosuggest_start"
 zi load zsh-users/zsh-autosuggestions
