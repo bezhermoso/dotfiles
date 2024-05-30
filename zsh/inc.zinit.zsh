@@ -77,6 +77,7 @@ bindkey -M viins "^F" vi-forward-word
 bindkey -M viins "^E" vi-add-eol
 
 zi ice atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay"
+# https://github.com/zdharma-continuum/fast-syntax-highlighting
 zi load zdharma-continuum/fast-syntax-highlighting
 
 zi ice atpull"%atclone" atclone"_fix-omz-plugin"
