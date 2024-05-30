@@ -33,11 +33,11 @@ _fix-omz-plugin() {
 }
 
 zi ice atload"export BASE16_FZF_PATH=\$(pwd)"
-zi load tinted-theming/base16-fzf
+zi load tinted-theming/tinted-fzf
 
 export BASE16_SHELL_ENABLE_VARS=1
 zi ice src"profile_helper.sh" atload"export BASE16_SHELL_PATH=\$(pwd); [[ -z \$BASE16_THEME ]] && base16_gruvbox-material-dark-hard"
-zi load tinted-theming/base16-shell
+zi load tinted-theming/tinted-shell
 
 # Load powerlevel10k theme
 zinit ice depth"1" # git clone depth
