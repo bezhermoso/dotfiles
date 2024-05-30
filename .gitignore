@@ -28,3 +28,4 @@ gh/hosts.yml
 
 # Do not ignore tpm itself
 !.config/tmux/plugins/tpm
+bash/work.bash_profile
