@@ -92,6 +92,8 @@ zi snippet OMZP::macos
 
 zi ice atpull"%atclone" atclone"_fix-omz-plugin"
 zi snippet OMZP::colored-man-pages
+less_termcap[so]="${fg[black]}${bg[yellow]}"
+
 
 zi ice \
   atclone"git clone --recursive https://github.com/zsh-users/zsh-completions.git external" \
