@@ -2,14 +2,6 @@ if (( ! $+commands[brew] )); then
   return 0
 fi
 
-declare -a GOOGLE_CLOUD_SDK_TO_SOURCE
-GOOGLE_CLOUD_SDK_TO_SOURCE=(
-  "$(brew --prefix)/share/google-cloud-sdk/path.zsh.inc"
-  "$(brew --prefix)/share/google-cloud-sdk/completion.zsh.inc"
-)
-for gcf in $GOOGLE_CLOUD_SDK_TO_SOURCE; do
-  if [ -f "$gcf" ]; then
-    source "$gcf"
-  fi
-done
-
+if [[ -n $HOMEBREW_PREFIX/share/google-cloud-sdk/*.zsh.inc(-.) ]]; then
+  source $HOMEBREW_PREFIX/share/google-cloud-sdk/*.zsh.inc(-.)
+fi
