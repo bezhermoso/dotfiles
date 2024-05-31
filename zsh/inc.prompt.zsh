@@ -1,11 +1,28 @@
-# To customize prompt, run `p10k configure` or edit ~/.dotfiles/zsh/.p10k.zsh.
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.dotfiles/zsh/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block; everything else may go below.
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
 
-# Load Powerlevel10k configuration
-[[ ! -f ~/.dotfiles/zsh/.p10k.zsh ]] || source ~/.dotfiles/zsh/.p10k.zsh
+# Load powerlevel10k theme.
+# See ./inc.powerlevel10k.zsh for what's loaded much earlier in the shell.
+zinit ice depth"1" # git clone depth
+zinit light romkatv/powerlevel10k
+
+# Use vi bindings on the prompt
+zstyle ':prezto:module:editor' key-bindings 'vi'
+zi snippet PZTM::editor
+
+export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8,standout'
+zi ice atload'!_zsh_autosuggest_start; bindkey -M viins "^F" vi-forward-word; bindkey -M viins "^E" vi-add-eol'
+zi load zsh-users/zsh-autosuggestions
+
+# https://github.com/zdharma-continuum/fast-syntax-highlighting
+zi ice atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay"
+zi load zdharma-continuum/fast-syntax-highlighting
+
+# Configure Zsh surround capabilities
+autoload -Uz surround
+zle -N delete-surround surround
+zle -N add-surround surround
+zle -N change-surround surround
+bindkey -a cs change-surround
+bindkey -a ds delete-surround
+bindkey -a ys add-surround
+bindkey -M visual S add-surround
 

@@ -1,6 +1,5 @@
 ## FZF (Fuzzy Finder) CONFIGURATION
 #
-
 export FZF_COMPLETION_TRIGGER='~~'
 export FZF_DEFAULT_COMMAND='rg --files --no-ignore-vcs --hidden --follow --glob "!.git/*"'
 export FZF_DEFAULT_OPTS='
@@ -25,3 +24,15 @@ eval "$(fzf --zsh)"
 zle     -N            fzf-cd-widget
 bindkey -M vicmd '^Y' fzf-cd-widget
 bindkey -M viins '^Y' fzf-cd-widget
+
+# https://github.com/Aloxaf/fzf-tab
+# Use tmux popup
+zstyle ':fzf-tab:*' fzf-command ftb-tmux-popup
+# Don't show any preview in FZF picker for kubectl completions
+zstyle ':fzf-tab:complete:*' fzf-flags '--no-preview'
+zstyle ':fzf-tab:complete:*' popup-min-size 50 0
+zi load Aloxaf/fzf-tab
+
+# https://github.com/junegunn/fzf-git.sh
+zi load junegunn/fzf-git.sh
+

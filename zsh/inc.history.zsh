@@ -5,18 +5,22 @@
 # Ignore these command patterns in history:
 export HISTORY_IGNORE='(clear|history)'
 
-# Ignore commands that start with a space:
-export HIST_IGNORE_SPACE=1
-
-# When searching for history entries in the line editor, do not display duplicates of a line previously found, even if the duplicates are not contiguous.
-export HIST_FIND_NO_DUPS=1
-
+# Treat the '!' character specially during expansion.
+setopt BANG_HIST
+setopt EXTENDED_HISTORY
+# Share history between all sessions.
+setopt SHARE_HISTORY
+# Expire a duplicate event first when trimming history.
+setopt HIST_EXPIRE_DUPS_FIRST
 # Do not enter command lines into the history list if they are duplicates of the previous event.
-export HIST_IGNORE_DUPS=1
-
+setopt HIST_IGNORE_DUPS
 # If a new command line being added to the history list duplicates an older one, the older command is removed from the list (even if it is not the previous event).
-export HIST_IGNORE_ALL_DUPS=1
-
-# Whenever the user enters a line with history expansion, don’t execute the line directly; instead, perform history expansion and reload the line into the editing buffer.
-export HIST_VERIFY=1
-
+setopt HIST_IGNORE_ALL_DUPS 
+# When searching for history entries in the line editor, do not display duplicates of a line previously found, even if the duplicates are not contiguous.
+setopt HIST_FIND_NO_DUPS
+# Ignore commands that start with a space:
+setopt HIST_IGNORE_SPACE
+# Do not write a duplicate event to the history file.
+setopt HIST_SAVE_NO_DUPS
+# Expand history in place instead of executing immediately.
+setopt HIST_VERIFY

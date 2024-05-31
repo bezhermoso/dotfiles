@@ -11,12 +11,37 @@ function source_config() {
   fi
 }
 
+# Coerce 256-bit terminal colorspace
+# See https://gpanders.com/blog/the-definitive-guide-to-using-tmux-256color-on-macos/
+#export TERM='xterm-256color'
+export TERMINFO_DIRS=$TERMINFO_DIRS:$HOME/.local/share/terminfo:$HOME/.dotfiles/terminfo
 
-source_config "inc.theme.zsh"
-source_config "inc.prompt.zsh"
+# When using powerlevel10k, load inc.prompt.zsh before inc.zinit.zsh to take advantage of instant prompt
+source_config "inc.powerlevel10k.zsh"
 source_config "inc.zinit.zsh"
 
-# NOTE: This must be loaded before the zshrc from prezto. fpath should be final before loading prezto.
+source_config "inc.theming.zsh"
+source_config "inc.prompt.zsh"
+
+# Load the following Zprezto modules
+zi snippet PZTM::environment
+zi snippet PZTM::terminal
+zi snippet PZTM::directory
+zi snippet PZTM::spectrum
+
+# Enabled safe options. This aliases cp, ln, mv and rm so that they prompt
+# before deleting or overwriting files. Set to 'no' to disable this safer
+# behavior.
+zstyle ':prezto:module:utility' safe-ops yes
+zi snippet PZTM::utility
+
+zi ice \
+  atclone"git clone --recursive https://github.com/zsh-users/zsh-completions.git external" \
+  blockf
+zi snippet PZTM::completion
+
+
+# NOTE: Load this before fpath needs to be finalized.
 source_config "inc.options.zsh"
 
 # Load $WORK configuration that needs to load early
@@ -25,8 +50,6 @@ work_config_entrypoint="${HOME}/.dotfiles/zsh/work-entrypoint.sh"
 
 
 source_config "inc.bat.zsh"
-source_config "inc.autosuggest.zsh"
-source_config "inc.surround.zsh"
 source_config "inc.direnv.zsh"
 
 source_config "inc.python.zsh"
@@ -38,7 +61,6 @@ source_config "inc.aliases.zsh"
 
 
 # NOTE: The following needs to be included in the right order:
-
 source_config "inc.grep.zsh"
 source_config "inc.ripgrep.zsh"
 
@@ -59,6 +81,8 @@ source_config "inc.git.zsh"
 source_config "inc.gpg.zsh"
 source_config "inc.zoxide.zsh"
 source_config "inc.yazi.zsh"
+source_config "inc.macos.zsh"
+
 # Load $WORK configuration that needs to load after zprezto
 work_config_post_entrypoint="${HOME}/.dotfiles/zsh/work-entrypoint.post.sh"
 [ -f "$work_config_post_entrypoint" ] && source "$work_config_post_entrypoint"
