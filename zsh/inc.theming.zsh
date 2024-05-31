@@ -11,7 +11,7 @@ export BASE16_SHELL_ENABLE_VARS=1
 # and sets the theme to gruvbox-material-dark-hard if it is not already set.
 # src: Loads the profile helper script that actually sets the colors in the shell
 zi ice \
-  atload"export BASE16_SHELL_PATH=\$(pwd); [[ -z \$BASE16_THEME ]] && base16_gruvbox-material-dark-hard" \
+  atload'export BASE16_SHELL_PATH=$(pwd); [[ -z $BASE16_THEME ]] && base16_gruvbox-material-dark-hard' \
   src"profile_helper.sh"
 zi load tinted-theming/tinted-shell
 
