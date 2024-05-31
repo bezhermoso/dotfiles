@@ -51,9 +51,9 @@ export LESS=" -R"
 
 if (( $+commands[brew])); then
   # Add Homebrew's help directory to HELPDIR
-  HELPDIR=$(command brew --prefix)/share/zsh/help
+  HELPDIR=$HOMEBREW_PREFIX/share/zsh/help
   # Load dynamic frameworks installed via Homebrew
-  DYLD_LIBRARY_PATH="$(brew --prefix)/lib:$DYLD_LIBRARY_PATH"
+  DYLD_LIBRARY_PATH="$HOMEBREW_PREFIX/lib:$DYLD_LIBRARY_PATH"
 fi
 
 
@@ -67,7 +67,7 @@ fpath=(
   $HOME/.local/share/zsh/functions
   # Completions from Homebrew:
   /usr/local/share/zsh-completions
-  /opt/homebrew/share/zsh/site-functions
+  $HOMEBREW_PREFIX/share/zsh/site-functions
   # Existing fpaths:
   $fpath
 )
