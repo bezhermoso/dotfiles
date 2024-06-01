@@ -3,7 +3,7 @@
 
 ### Step 1: Clone
 
-Perform a recursive clone, including all the submodules:
+Perform a _recursive_ clone of this repo into `~/.dotfiles`:
 
 ```sh
 git clone --recursive --recurse-submodules git@github.com:bezhermoso/dotfiles.git ~/.dotfiles
