@@ -10,7 +10,7 @@ gui:
       - reverse
   # Spinner config will be respected by a future LazyGit release
   spinner:
-    frames: ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'] 
+    frames: ['⠋ ', '⠙ ', '⠹ ', '⠸ ', '⠼ ', '⠴ ', '⠦ ', '⠧ ', '⠇ ', '⠏ '] 
 os:
   open: 'open {{filename}}'
   editPreset: "nvim"
