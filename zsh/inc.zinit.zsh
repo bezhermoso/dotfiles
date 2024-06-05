@@ -22,10 +22,8 @@ _fix-omz-plugin() {
   cd ..
   local OMZP_PATH="ohmyzsh/plugins/$OMZP_NAME"
   local file
-  for file in ohmyzsh/plugins/$OMZP_NAME/*(D); do
-    local filename="$(basename $file)"
-    if [[ $filename == '.gitignore' ]] then continue; fi
-    if [[ $filename == "$OMZP_NAME.plugin.zsh" ]] then continue; fi
+  for file in ohmyzsh/plugins/$OMZP_NAME/*~(.gitignore|*.plugin.zsh)(D); do
+    local filename="${file:t}"
     echo "Copying $file to $(pwd)/$filename..."
     cp $file $filename
   done
