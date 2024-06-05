@@ -20,7 +20,6 @@ _fix-omz-plugin() {
   git sparse-checkout set --no-cone plugins/$OMZP_NAME
   git checkout --quiet
   cd ..
-  local OMZP_PATH="ohmyzsh/plugins/$OMZP_NAME"
   local file
   for file in ohmyzsh/plugins/$OMZP_NAME/*~(.gitignore|*.plugin.zsh)(D); do
     local filename="${file:t}"
