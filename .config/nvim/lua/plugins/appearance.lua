@@ -30,14 +30,9 @@ return {
         end,
     },
     {
-        -- https://github.com/nvim-tree/nvim-web-devicons
-        'nvim-tree/nvim-web-devicons',
-        lazy = true,
-    },
-    {
         -- https://github.com/RRethy/nvim-base16
         'RRethy/nvim-base16',
-        priority = 1000,
+        priority = 5000,
         lazy = false,
         dependencies = {
             { 'rcarriga/nvim-notify' },
@@ -71,7 +66,6 @@ return {
             vim.keymap.set('n', '<leader>bt', base16_live_reload.reload, {
                 desc = 'Base16: Load colorscheme from base16-shell',
             })
-
         end
     },
     {
@@ -84,6 +78,7 @@ return {
         },
         config = function()
             local notify = require('notify')
+            ---@diagnostic disable-next-line: missing-fields
             notify.setup({
                 render = "minimal",
             })
@@ -106,22 +101,6 @@ return {
             },
             scope = { enabled = false },
         },
-    },
-    {
-        'https://github.com/folke/zen-mode.nvim',
-        opts = {}
-    },
-    {
-        -- https://github.com/3rd/image.nvim
-        "3rd/image.nvim",
-        dependencies = {
-            {"luarocks.nvim"},
-        },
-        config = function()
-            require("image").setup({
-                backend = "ueberzug",
-            })
-        end
     },
     {
         -- https://github.com/goolord/alpha-nvim
@@ -163,6 +142,90 @@ return {
         end
     },
     {
+        -- https://github.com/stevearc/dressing.nvim
+        'stevearc/dressing.nvim',
+        opts = {
+            select = {
+                enable = false,
+                backend = { 'telescope' }
+            },
+            input = {
+                insert_only = false,
+                start_in_insert = false,
+                relative = "editor"
+            },
+            win_options = {
+                sidescrolloff = 10,
+            }
+        },
+    },
+    {
+        -- https://github.com/gelguy/wilder.nvim
+        "gelguy/wilder.nvim",
+        keys = { ":", "/", "?" },
+        config = function()
+            local wilder = require("wilder")
+            wilder.setup({
+                modes = { ":", "/", "?" },
+                next_key = "<C-n>",
+                previous_key = "<C-p>",
+            })
+            -- Enable fuzzy matching for commands and buffers
+            wilder.set_option("pipeline", {
+                wilder.branch(
+                    wilder.cmdline_pipeline({
+                        fuzzy = 1,
+                    }),
+                    wilder.vim_search_pipeline({
+                        fuzzy = 1,
+                    })
+                ),
+            })
+
+            wilder.set_option(
+                "renderer",
+                wilder.popupmenu_renderer(wilder.popupmenu_border_theme({
+                    highlighter = wilder.basic_highlighter(),
+                    highlights = {
+                        default = "Default",
+                        border = "String",
+                        selected = "StatusLine",
+                    },
+                    pumblend = 5,
+                    min_width = "100%",
+                    min_height = "25%",
+                    max_height = "25%",
+                    border = "rounded" or {
+                        -- Top border
+                        "─", "─", "─",
+                        -- Left
+                        "",
+                        -- Right
+                        "",
+                        -- Bottom border
+                        "-", "-", "-",
+                    },
+                    left = { " ", wilder.popupmenu_devicons() },
+                    right = { " ", wilder.popupmenu_scrollbar() },
+                }))
+            )
+        end,
+        event = "CmdLineEnter",
+        build = ":UpdateRemotePlugins"
+    },
+    {
+        -- https://github.com/3rd/image.nvim
+        "3rd/image.nvim",
+        dependencies = {
+            {"luarocks.nvim"},
+        },
+        config = function()
+            require("image").setup({
+                backend = "ueberzug",
+            })
+        end
+    },
+    {
         -- https://github.com/luukvbaal/statuscol.nvim
         "luukvbaal/statuscol.nvim",
         config = function ()
@@ -170,5 +233,14 @@ return {
                 relculright = true,
             })
         end
-    }
+    },
+    {
+        -- https://github.com/nvim-tree/nvim-web-devicons
+        'nvim-tree/nvim-web-devicons',
+        lazy = true,
+    },
+    {
+        'https://github.com/folke/zen-mode.nvim',
+        opts = {}
+    },
 }

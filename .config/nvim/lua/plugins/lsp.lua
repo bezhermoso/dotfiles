@@ -218,14 +218,13 @@ return {
                     }),
                 },
             })
-            -- Replaced by wilder.nvim. See ./dressing.lua
+            -- Replaced by wilder.nvim. See ./appearance.lua
             --[[ cmp.setup.cmdline({ '/', '?' }, {
                 mapping = cmp.mapping.preset.cmdline(),
                 sources = {
                     { name = 'buffer' }
                 }
             })
-
             cmp.setup.cmdline(':', {
                 mapping = cmp.mapping.preset.cmdline(),
                 sources = cmp.config.sources(
