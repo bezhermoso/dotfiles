@@ -3,15 +3,6 @@ return {
         -- https://github.com/nvim-treesitter/nvim-treesitter
         "nvim-treesitter/nvim-treesitter",
         build = ":TSUpdate",
-        dependencies = {
-            {
-                "nvim-treesitter/nvim-treesitter-textobjects",
-                after = "nvim-treesitter/nvim-treesitter",
-            },
-            {
-                "nvim-treesitter/playground",
-            },
-        },
         config = function()
             local configs = require("nvim-treesitter.configs")
             configs.setup({
@@ -127,5 +118,11 @@ return {
                 desc = "Open TODOs in Trouble",
             })
         end
+    },
+    {
+        'nvim-treesitter/nvim-treesitter-textobjects',
+        dependencies = {
+            'nvim-treesitter/nvim-treesitter',
+        },
     },
 }

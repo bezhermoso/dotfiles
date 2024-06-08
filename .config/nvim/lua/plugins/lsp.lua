@@ -113,6 +113,8 @@ return {
                 ensure_installed = {
                     -- Go
                     'gopls',
+                    -- JSON
+                    'jsonls',
                     -- PHP
                     'intelephense',
                     'phpactor',
