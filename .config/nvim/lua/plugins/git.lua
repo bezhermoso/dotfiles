@@ -80,7 +80,7 @@ return {
             { "<leader>G", function() require('neogit').open({ kind = "tab" }) end, desc = "Neogit: Git status (new tab)" },
             { "<leader>gs", function() require('neogit').open({ kind = "split" }) end, desc = "Neogit: Git status (split)" }
         },
-        config = {
+        opts = {
             graph_style = "unicode",
             console_timeout = 10000, -- ms before the console is opened; increasing this because Git can be slow in monorepos
             -- Use fzf sorter
