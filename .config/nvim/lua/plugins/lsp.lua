@@ -253,13 +253,6 @@ return {
         opts = {},
     },
     {
-        -- https://github.com/j-hui/fidget.nvim
-        "j-hui/fidget.nvim",
-        tag = "legacy",
-        event = "LspAttach",
-        opts = {}
-    },
-    {
         -- https://github.com/L3MON4D3/LuaSnip
         "L3MON4D3/LuaSnip",
         dependencies = { "rafamadriz/friendly-snippets" },

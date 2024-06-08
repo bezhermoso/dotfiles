@@ -214,6 +214,13 @@ return {
         build = ":UpdateRemotePlugins"
     },
     {
+        -- https://github.com/j-hui/fidget.nvim
+        "j-hui/fidget.nvim",
+        tag = "legacy",
+        event = "LspAttach",
+        opts = {}
+    },
+    {
         -- https://github.com/3rd/image.nvim
         "3rd/image.nvim",
         dependencies = {
