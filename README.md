@@ -104,3 +104,6 @@ Create a `~/.gitconfig` file & include relevant files from `~/.dotfiles/git` e.g
 	email = ...
 ```
 
+# TODOs
+
+- [x] Done for now
