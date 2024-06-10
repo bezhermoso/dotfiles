@@ -26,6 +26,10 @@ gh/hosts.yml
 # Ignore tpm (Tmux Plugin Manager) plugins
 .config/tmux/plugins/*
 
+# Ignore logs from btop
+.config/btop/btop.log
+
 # Do not ignore tpm itself
 !.config/tmux/plugins/tpm
 bash/work.bash_profile
+
