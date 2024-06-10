@@ -26,3 +26,4 @@ bindkey -a ds delete-surround
 bindkey -a ys add-surround
 bindkey -M visual S add-surround
 
+bindkey -M viins "^X^E" edit-command-line
