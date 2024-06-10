@@ -49,8 +49,9 @@ return {
             },
             { "petertriho/cmp-git" },
             { "folke/neoconf.nvim" },
-            { "folke/neodev.nvim" },
+            { "folke/lazydev.nvim" },
             { 'zbirenbaum/copilot-cmp' },
+            { "folke/lazydev.nvim" },
             -- Yank-ring
             { 'gbprod/yanky.nvim' },
             { 'chrisgrieser/cmp_yanky' },
@@ -103,7 +104,7 @@ return {
 
             require('neoconf').setup()
             -- Configure Lua LSP to understand Neovim plugin structures, etc.
-            require('neodev').setup()
+            -- require('lazydev').setup()
             require('mason').setup({
                 ui = {
                     border = "rounded",
@@ -180,6 +181,7 @@ return {
                     -- { name = 'copilot' },
                     { name = 'nvim_lsp' },
                     { name = 'luasnip' },
+                    { name = 'lazydev', group_index = 0 },
                     { name = 'path' },
                     { name = 'nvim_lsp_signature_help' },
                     { name = 'cmp_yanky' },
@@ -286,6 +288,18 @@ return {
             require('copilot').setup(copilot_opts)
         end
     },
+    {
+        "folke/lazydev.nvim",
+        ft = "lua", -- only load on lua files
+        opts = {
+            library = {
+                -- See the configuration section for more details
+                -- Load luvit types when the `vim.uv` word is found
+                { path = "luvit-meta/library", words = { "vim%.uv" } },
+            },
+        },
+    },
+    { "Bilal2453/luvit-meta", lazy = true }, -- optional `vim.uv` typings
     -- {
     --     'zbirenbaum/copilot-cmp',
     --     dependencies = {
