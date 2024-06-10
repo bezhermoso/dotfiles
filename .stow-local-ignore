@@ -3,6 +3,7 @@
 
 ^\.rgignore
 ^\.stowrc
+^\.ruby-lsp
 
 ^/Makefile
 ^/preview.png
