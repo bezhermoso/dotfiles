@@ -6,7 +6,7 @@
 ## where to store your encryption key, default is your system data directory
 # key_path = "~/.key"
 
-# keymap_mode = "vim-normal"
+keymap_mode = "vim-insert"
 
 ## where to store your auth session token, default is your system data directory
 # session_path = "~/.key"
