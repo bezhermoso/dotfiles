@@ -170,6 +170,9 @@ return {
         },
         config = function ()
             local easypick = require("easypick")
+            local telescope_actions = require("telescope.actions")
+            local telescope_action_state = require("telescope.actions.state")
+
             easypick.setup({
                 pickers = {
                     {
@@ -179,6 +182,15 @@ return {
                         previewer = easypick.previewers.branch_diff {
                             base_branch = "HEAD~5",
                         },
+                        action = function(prompt_bufnr, _)
+                            telescope_actions.select_default:replace(function()
+                                telescope_actions.close(prompt_bufnr)
+                                local selection = telescope_action_state.get_selected_entry()
+                                local git_root_path = require("plenary.job"):new({ command = "git", args = { "rev-parse", "--show-toplevel" } }):sync()[1]
+                                vim.cmd(string.format("e %s/%s", git_root_path, selection[1]))
+                            end)
+                            return true
+                        end,
                     }
                 }
             })
