@@ -53,6 +53,7 @@ return {
         -- https://github.com/sindrets/diffview.nvim
         "sindrets/diffview.nvim",
         enabled = git_installed,
+        cmd = { "DiffviewOpen" },
         event = "VeryLazy",
         keys = {
             { "<leader>do", ":DiffviewOpen<CR>", desc = "Diff: Open" },
