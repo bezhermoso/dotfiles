@@ -71,6 +71,7 @@ return {
         -- https://github.com/NeogitOrg/neogit
         "NeogitOrg/neogit",
         enabled = git_installed,
+        cmd = {"Neogit"},
         dependencies = {
             "nvim-lua/plenary.nvim",
             "sindrets/diffview.nvim", -- Diff integration
