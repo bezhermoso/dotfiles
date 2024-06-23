@@ -56,8 +56,8 @@ return {
         cmd = { "DiffviewOpen" },
         event = "VeryLazy",
         keys = {
-            { "<leader>do", ":DiffviewOpen<CR>", desc = "Diff: Open" },
-            { "<leader>dc", ":DiffviewClose<CR>", desc = "Diff: Close" },
+            { "<leader>dvo", ":DiffviewOpen<CR>", desc = "Diff: Open" },
+            { "<leader>dvc", ":DiffviewClose<CR>", desc = "Diff: Close" },
         },
         opts = {},
     },
