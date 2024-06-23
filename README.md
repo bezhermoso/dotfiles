@@ -104,6 +104,12 @@ Create a `~/.gitconfig` file & include relevant files from `~/.dotfiles/git` e.g
 	email = ...
 ```
 
+Install `gh` extensions:
+
+```sh
+make gh-extensions
+```
+
 # TODOs
 
 - [x] Done for now

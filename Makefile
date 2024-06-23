@@ -38,3 +38,8 @@ ssh_fallback: ~/.ssh/id_rsa_fallback
 image-2-ascii-converter:
 	go install github.com/TheZoraiz/ascii-image-converter@latest
 
+gh-extensions:
+	gh extension install dlvhdr/gh-dash
+	gh extension install yusukebe/gh-markdown-preview
+	gh extension install gennaro-tedesco/gh-f
+
