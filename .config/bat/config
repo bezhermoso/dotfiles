@@ -25,3 +25,4 @@
 #--map-syntax ".ignore:Git Ignore"
 --map-syntax="*.neon:YAML"
 --map-syntax="composer.lock:JSON"
+--map-syntax="**/.kube/config:YAML"
