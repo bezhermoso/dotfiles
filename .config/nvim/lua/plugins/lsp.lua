@@ -117,7 +117,6 @@ return {
                     -- JSON
                     'jsonls',
                     -- PHP
-                    'intelephense',
                     'phpactor',
                     -- Lua
                     'lua_ls',
