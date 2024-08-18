@@ -36,8 +36,11 @@ require('dap-go').setup({
         }
     },
     delve = {
-        port = 5005,
-    }
+        port = "${port}"
+    },
+    -- delve = {
+    --     port = 5005,
+    -- }
 })
 
 vim.keymap.set('n', '<leader>dui', function() require('dapui').toggle() end, {
