@@ -102,8 +102,8 @@
 [help]
 	autocorrect = prompt
 
-[url "git@github.com:"]
-	insteadOf = "https://github.com/"
+; [url "git@github.com:"]
+; 	insteadOf = "https://github.com/"
 
 # Helps to ensure that ~/.dotfiles commits are contributed w/ personal info
 [includeIf "gitdir:~/.dotfiles/**"]
