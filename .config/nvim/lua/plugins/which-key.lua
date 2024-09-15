@@ -11,7 +11,7 @@ return {
         spelling = {
             enabled = true,
         },
-        window = {
+        win = {
             border = "single",
         },
     }
