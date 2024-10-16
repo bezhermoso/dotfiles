@@ -305,4 +305,8 @@ return {
     --         { 'zbirenbaum/copilot.lua' },
     --     }
     -- }
+    {
+        "alexander-born/bazel.nvim",
+        dependencies = {'nvim-treesitter/nvim-treesitter'}
+    }
 }
