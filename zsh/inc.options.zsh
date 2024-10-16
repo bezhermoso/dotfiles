@@ -74,3 +74,6 @@ fpath=(
 
 autoload -Uz cd csview manpdf
 
+# Use Homebrew's directories for compilation
+# export CPPFLAGS="-I$HOMEBREW_PREFIX/include"
+# export LDFLAGS="-L$HOMEBREW_PREFIX/lib"
