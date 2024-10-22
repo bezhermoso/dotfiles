@@ -3,7 +3,7 @@
 MVD_DOWNLOADS_DIR=${MVD_DOWNLOADS_DIR:-$HOME/Downloads}
 
 function _mvd() {
-    for f in $(print -lr -- $MVD_DOWNLOADS_DIR/**/*(om[1,10]) | fzf -m); do
+    for f in $(print -lr -- $MVD_DOWNLOADS_DIR/*(om[1,10]) | fzf -m); do
         mv "${f}" $(pwd)/$(basename "${f}")
     done
 }
