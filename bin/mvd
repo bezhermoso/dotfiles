@@ -1,10 +1,22 @@
 #!/usr/bin/env zsh
 #
-MVD_DOWNLOADS_DIR=${MVD_DOWNLOADS_DIR:-$HOME/Downloads}
+downloads_dir=$HOME/Downloads
+
+declare -A destinations
+
+destinations[/Applications]="*.app"
+destinations[$HOME/Pictures]="*.(jpg|jpeg|png|gif)"
 
 function _mvd() {
-    for f in $(print -lr -- $MVD_DOWNLOADS_DIR/*(om[1,10]) | fzf -m); do
-        mv "${f}" $(pwd)/$(basename "${f}")
+    for f in $(print -lr -- $downloads_dir/*(om[1,10]) | fzf -m); do
+        dest_dir="$(pwd)"
+        for dest pattern in "${(@kv)destinations}"; do
+            if [[ $f == ${~pattern} ]]; then
+                dest_dir="${dest}"
+                break
+            fi
+        done
+        mv "${f}" "$dest_dir/$(basename "${f}")"
     done
 }
 
