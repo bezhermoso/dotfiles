@@ -1,4 +1,5 @@
 tap "homebrew/cask-fonts"
+tap "tinted-theming/tinted"
 cask "font-jetbrains-mono"
 cask "font-jetbrains-mono-nerd-font"
 
@@ -49,6 +50,7 @@ brew "rust"
 brew "sd"
 brew "stow"
 brew "telnet"
+brew "tinty"
 brew "tmux"
 brew "tree"
 brew "watch"

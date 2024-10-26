@@ -1,0 +1,10 @@
+#!/usr/bin/env zsh
+
+
+function _tinty-chooser() {
+    tinty apply $(tinty list | fzf --preview --tmux=center --border=rounded --highlight-line \
+        --query="$@" \
+        --preview='tinty info {}')
+}
+
+_tinty-chooser "$@"
