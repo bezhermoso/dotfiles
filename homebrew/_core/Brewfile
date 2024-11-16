@@ -2,6 +2,7 @@ tap "homebrew/cask-fonts"
 tap "tinted-theming/tinted"
 cask "font-jetbrains-mono"
 cask "font-jetbrains-mono-nerd-font"
+cask "nikitabobko/tap/aerospace"
 
 brew "atuin"
 brew "bat"
