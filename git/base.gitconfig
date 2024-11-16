@@ -31,6 +31,7 @@
 	s = status -s
 	ss = status --long
 	wc = whatchanged
+	latest = git log -n 1 --stat
 
 [gpg]
 	program = gpg
