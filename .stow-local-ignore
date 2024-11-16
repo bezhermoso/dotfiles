@@ -4,6 +4,7 @@
 ^\.rgignore
 ^\.stowrc
 ^\.ruby-lsp
+^\.bash_profile
 
 ^/Makefile
 ^/preview.png
