@@ -202,3 +202,14 @@ alt-shift-h = ['join-with left', 'mode main']
 alt-shift-j = ['join-with down', 'mode main']
 alt-shift-k = ['join-with up', 'mode main']
 alt-shift-l = ['join-with right', 'mode main']
+
+# Force these apps to be floating:
+
+[[on-window-detected]]
+if.app-name-regex-substring = '(1password|shortcuts|CARROT|eero-ios|printcenter|shottr)'
+check-further-callbacks = true
+run = ['layout floating']
+[[on-window-detected]]
+if.app-id = 'com.apple.ActivityMonitor'
+check-further-callbacks = true
+run = ['layout floating']
