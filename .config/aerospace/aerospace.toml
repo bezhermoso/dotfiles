@@ -206,7 +206,7 @@ alt-shift-l = ['join-with right', 'mode main']
 # Force these apps to be floating:
 
 [[on-window-detected]]
-if.app-name-regex-substring = '(1password|shortcuts|CARROT|eero-ios|printcenter|shottr)'
+if.app-name-regex-substring = '(1password|shortcuts|CARROT|eero-ios|printcenter|shottr|cardhop)'
 check-further-callbacks = true
 run = ['layout floating']
 [[on-window-detected]]
