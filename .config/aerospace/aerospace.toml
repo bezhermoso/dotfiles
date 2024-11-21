@@ -213,3 +213,7 @@ run = ['layout floating']
 if.app-id = 'com.apple.ActivityMonitor'
 check-further-callbacks = true
 run = ['layout floating']
+[[on-window-detected]]
+if.app-id = 'com.openai.chat'
+check-further-callbacks = true
+run = ['layout floating']
