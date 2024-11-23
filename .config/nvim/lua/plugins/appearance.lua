@@ -102,21 +102,21 @@ return {
             scope = { enabled = false },
         },
     },
-    {
-        -- https://github.com/goolord/alpha-nvim
-        'goolord/alpha-nvim',
-        dev = true,
-        dependencies = { 'nvim-tree/nvim-web-devicons' },
-        config = function()
-            local alpha = require('alpha')
-            require('alpha.term')
-            if block_hostnames[vim.fn.hostname()] then
-                alpha.setup(require('plugins.alpha.block').alpha_config())
-            else
-                alpha.setup(require('plugins.alpha.tolkien').alpha_config())
-            end
-        end
-    },
+    -- {
+    --     -- https://github.com/goolord/alpha-nvim
+    --     'goolord/alpha-nvim',
+    --     dev = true,
+    --     dependencies = { 'nvim-tree/nvim-web-devicons' },
+    --     config = function()
+    --         local alpha = require('alpha')
+    --         require('alpha.term')
+    --         if block_hostnames[vim.fn.hostname()] then
+    --             alpha.setup(require('plugins.alpha.block').alpha_config())
+    --         else
+    --             alpha.setup(require('plugins.alpha.tolkien').alpha_config())
+    --         end
+    --     end
+    -- },
     {
         -- https://github.com/chentoast/marks.nvim
         'chentoast/marks.nvim',
