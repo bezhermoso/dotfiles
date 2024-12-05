@@ -11,9 +11,9 @@ return {
                 sections = {
                     {
                         section = "terminal",
-                        cmd = "chafa ~/.dotfiles/one-ring.png --format symbols --symbols ascii --size 50x18 --stretch --fg-only; sleep .1",
+                        cmd = "chafa ~/.dotfiles/block-reverse-crop.gif --format symbols --symbols ascii --size 45x18 --stretch --fg-only; sleep .1",
                         height = 18,
-                        padding = 2,
+                        width = 45,
                         pane = 2
                     },
                     {
