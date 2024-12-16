@@ -1,0 +1,4 @@
+# vim: ft=zsh
+
+command rg --json "$@" | delta
+

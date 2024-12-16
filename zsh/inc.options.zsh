@@ -72,7 +72,7 @@ fpath=(
   $fpath
 )
 
-autoload -Uz cd csview manpdf
+autoload -Uz csview manpdf rg
 
 # Use Homebrew's directories for compilation
 # export CPPFLAGS="-I$HOMEBREW_PREFIX/include"
