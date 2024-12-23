@@ -5,6 +5,8 @@
 ^\.stowrc
 ^\.ruby-lsp
 ^\.bash_profile
+.*\.gif$
+.*\.png$
 
 ^/Makefile
 ^/preview.png
