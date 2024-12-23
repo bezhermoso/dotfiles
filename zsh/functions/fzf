@@ -1,0 +1,16 @@
+# vim: ft=zsh
+
+# This function is here so that we use the most up-to-date --color flags in the template sh file for every invocation.
+#
+# fzf can only be configured via --color flags, which is what the template sh file does via appending to
+# $FZF_DEFAULT_OPTS
+# This results in FZF_DEFAULT_OPTS growing in length for every invocation of fzf.
+#
+# Thus, we'll stash its current contents & revert to it after executing fzf.
+local _previous_fzf_opts=$FZF_DEFAULT_OPTS
+[[ -f ~/.config/tinted-theming/fzf.sh ]] && source ~/.config/tinted-theming/fzf.sh
+command fzf "$@"
+
+# Revert back to previous FZF_DEFAULT_OPTS value.
+export FZF_DEFAULT_OPTS=$_previous_fzf_opts
+
