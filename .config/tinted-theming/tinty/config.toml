@@ -1,0 +1,37 @@
+shell = "zsh -c '{}'"
+
+[[items]]
+name = "tinted-shell"
+path = "https://github.com/tinted-theming/tinted-shell"
+themes-dir = "scripts"
+hook = "source %f"
+supported-systems = ["base16", "base24"]
+
+[[items]]
+name = "tmux"
+path = "https://github.com/tinted-theming/base16-tmux"
+themes-dir = "colors"
+hook = "tmux run 2> /dev/null && tmux source-file %f"
+supported-systems = ["base16", "base24"]
+
+[[items]]
+name = "base16.nvim"
+path = "~/dev/tinted-base16.nvim"
+themes-dir = "themes"
+hook = "cp -f %f ~/.config/tinted-theming/set_theme.lua"
+supported-systems = ["base16", "base24"]
+
+[[items]]
+path = "~/dev/tinted-delta"
+name = "delta"
+themes-dir = "configs"
+hook = "cp -f %f ~/.config/tinted-theming/delta.gitconfig"
+supported-systems = ["base16", "base24"]
+
+[[items]]
+path = "https://github.com/tinted-theming/tinted-fzf"
+name = "fzf"
+themes-dir = "sh"
+hook = "cp -f %f ~/.config/tinted-theming/fzf.sh"
+supported-systems = ["base16", "base24"]
+
