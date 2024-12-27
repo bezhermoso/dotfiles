@@ -17,9 +17,11 @@ export BASE16_SHELL_ENABLE_VARS=1
 # atload: Sets the BASE16_SHELL_PATH to the installation directory managed by zinit, 
 # and sets the theme to gruvbox-material-dark-hard if it is not already set.
 # src: Loads the profile helper script that actually sets the colors in the shell
+# if: We don't need this when using Ghostty
 zi ice \
   atload'export BASE16_SHELL_PATH=$(pwd); [[ -z $BASE16_THEME ]] && base16_gruvbox-material-dark-hard' \
-  src"profile_helper.sh"
+  src"profile_helper.sh" \
+  if'[[ $TERM != xterm-ghostty ]]' \
 zi load tinted-theming/tinted-shell
 
 # base16 theme picker
