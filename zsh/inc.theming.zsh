@@ -6,7 +6,7 @@ zi ice \
 zi load tinted-theming/tinted-fzf
 
 # https://github.com/tinted-theming/tinted-jqp
-# atload: Sets the TINTED_FZF_PATH to the installation directory managed by zinit
+# atload: Sets the TINTED_JQP_PATH to the installation directory managed by zinit
 # This is used by tinted-shell's hook system to load reload the correct colors for FZF when the theme changes
 zi ice \
   atload"export TINTED_JQP_PATH=\$(pwd)"
