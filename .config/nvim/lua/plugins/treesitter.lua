@@ -94,17 +94,6 @@ return {
                 group = vim.api.nvim_create_augroup("ts_fold_workaround", { clear = true }),
                 command = "set foldexpr=nvim_treesitter#foldexpr()",
             })
-
-            local parsers_config = require('nvim-treesitter.parsers').get_parser_configs()
-            -- Register this parser manually to nvim-treesitter's parser directory
-            parsers_config.ghostty = {
-                install_info = {
-                    url = vim.fn.expand("~/.config/nvim/lua/dev/tree-sitter-ghostty"),
-                    files = { 'src/parser.c' },
-                    branch = 'main',
-                    requires_generate_from_grammar = true,
-                },
-            }
         end
     },
     {
@@ -146,5 +135,11 @@ return {
             -- set the highlight group of the rules
             vim.g.tstest_rule_hlgroup = "FoldColumn"
         end
+    },
+    {
+        "bezhermoso/tree-sitter-ghostty",
+        dev = true,
+        build = "make nvim_install",
+        ft = "ghostty"
     }
 }
