@@ -26,3 +26,4 @@
 --map-syntax="*.neon:YAML"
 --map-syntax="composer.lock:JSON"
 --map-syntax="**/.kube/config:YAML"
+--map-syntax="**/.ghostty/config:ini"
