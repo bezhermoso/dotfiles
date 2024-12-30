@@ -16,3 +16,6 @@
 	path = .config/nvim/lua/dev/alpha-nvim
 	url = git@github.com:bezhermoso/alpha-nvim
 	branch = redraw-terminal-elements
+[submodule ".config/nvim/lua/dev/tree-sitter-ghostty"]
+	path = .config/nvim/lua/dev/tree-sitter-ghostty
+	url = git@github.com:bezhermoso/tree-sitter-ghostty

@@ -99,7 +99,7 @@ return {
             -- Register this parser manually to nvim-treesitter's parser directory
             parsers_config.ghostty = {
                 install_info = {
-                    url = 'https://github.com/bezhermoso/tree-sitter-ghostty',
+                    url = vim.fn.expand("~/.config/nvim/lua/dev/tree-sitter-ghostty"),
                     files = { 'src/parser.c' },
                     branch = 'main',
                     requires_generate_from_grammar = true,
