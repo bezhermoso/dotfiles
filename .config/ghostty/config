@@ -6,7 +6,7 @@ font-feature = -calt
 
 font-size = 13
 font-thicken = true
-adjust-cell-height = 10%
+adjust-cell-height = 20%
 cursor-style = "block"
 
 # add a bit of padding between the cells & x-y edges of terminal window
