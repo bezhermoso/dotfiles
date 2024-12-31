@@ -1,11 +1,11 @@
 shell = "zsh -c '{}'"
 
-[[items]]
-name = "tinted-shell"
-path = "https://github.com/tinted-theming/tinted-shell"
-themes-dir = "scripts"
-hook = "source %f"
-supported-systems = ["base16", "base24"]
+# [[items]]
+# name = "tinted-shell"
+# path = "https://github.com/tinted-theming/tinted-shell"
+# themes-dir = "scripts"
+# hook = "source %f"
+# supported-systems = ["base16", "base24"]
 
 [[items]]
 name = "tmux"
