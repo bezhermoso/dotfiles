@@ -5,7 +5,7 @@ font-family = "TX-02"
 font-feature = -calt
 
 font-size = 13
-font-thicken = true
+# font-thicken = true
 adjust-cell-height = 20%
 cursor-style = "block"
 
