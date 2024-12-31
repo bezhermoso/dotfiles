@@ -20,8 +20,8 @@ export BASE16_SHELL_ENABLE_VARS=1
 # if: We don't need this when using Ghostty
 zi ice \
   atload'export BASE16_SHELL_PATH=$(pwd); [[ -z $BASE16_THEME ]] && base16_gruvbox-material-dark-hard' \
-  src"profile_helper.sh" \
-  if'[[ $TERM != xterm-ghostty ]]' \
+  if'[[ $__CFBundleIdentifier != ghostty ]]' \
+  src"profile_helper.sh"
 zi load tinted-theming/tinted-shell
 
 # base16 theme picker
