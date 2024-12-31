@@ -35,3 +35,10 @@ themes-dir = "sh"
 hook = "cp -f %f ~/.config/tinted-theming/fzf.sh"
 supported-systems = ["base16", "base24"]
 
+
+[[items]]
+path = "https://github.com/tinted-theming/tinted-terminal"
+name = "tinted-terminal"
+themes-dir = "themes/ghostty"
+supported-systems = ["base16", "base24"]
+
