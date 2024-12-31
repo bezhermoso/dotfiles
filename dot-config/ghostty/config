@@ -1,4 +1,5 @@
 # Berkeley Mono
+
 font-family = "TX-02"
 
 # disable programming ligatures
@@ -40,6 +41,4 @@ keybind = cmd+left_bracket=previous_tab
 keybind = cmd+right_bracket=next_tab
 keybind = cmd+comma=last_tab
 
-# Drop the trailing dot once tinty 0.25.x is released
 theme = "tinted-theming"
-
