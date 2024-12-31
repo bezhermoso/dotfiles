@@ -2,23 +2,23 @@
     path = .config/nvim/lua/dev/openingh.nvim
     url = git@github.com:bezhermoso/openingh.nvim.git
 [submodule "base16-live-reload.nvim"]
-	path = .config/nvim/lua/dev/base16-live-reload.nvim
+	path = dot-config/nvim/lua/dev/base16-live-reload.nvim
 	url = git@github.com:bezhermoso/base16-live-reload.nvim
 	branch = main
 [submodule "tpm"]
-	path = .config/tmux/plugins/tpm
+	path = dot-config/tmux/plugins/tpm
 	url = git@github.com:tmux-plugins/tpm.git
 [submodule "todos-lualine.nvim"]
-	path = .config/nvim/lua/dev/todos-lualine.nvim
+	path = dot-config/nvim/lua/dev/todos-lualine.nvim
 	url = git@github.com:bezhermoso/todos-lualine.nvim
 	branch = main
 [submodule "alpha-nvim"]
-	path = .config/nvim/lua/dev/alpha-nvim
+	path = dot-config/nvim/lua/dev/alpha-nvim
 	url = git@github.com:bezhermoso/alpha-nvim
 	branch = redraw-terminal-elements
 [submodule ".config/nvim/lua/dev/tree-sitter-ghostty"]
-	path = .config/nvim/lua/dev/tree-sitter-ghostty
+	path = dot-config/nvim/lua/dev/tree-sitter-ghostty
 	url = git@github.com:bezhermoso/tree-sitter-ghostty
 [submodule ".config/ghostty/shaders/ghostty-shaders"]
-	path = .config/ghostty/shaders/ghostty-shaders
+	path = dot-config/ghostty/shaders/ghostty-shaders
 	url = git@github.com:m-ahdal/ghostty-shaders.git
