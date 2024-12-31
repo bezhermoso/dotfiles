@@ -4,9 +4,13 @@ font-family = "TX-02"
 # disable programming ligatures
 font-feature = -calt
 
+font-variation = wdth=100
+font-variation = wght=500
+font-variation-bold = wght=800
+
 font-size = 13
 # font-thicken = true
-adjust-cell-height = 20%
+adjust-cell-height = 10%
 cursor-style = "block"
 
 # add a bit of padding between the cells & x-y edges of terminal window
