@@ -19,3 +19,6 @@
 [submodule ".config/nvim/lua/dev/tree-sitter-ghostty"]
 	path = .config/nvim/lua/dev/tree-sitter-ghostty
 	url = git@github.com:bezhermoso/tree-sitter-ghostty
+[submodule ".config/ghostty/shaders/ghostty-shaders"]
+	path = .config/ghostty/shaders/ghostty-shaders
+	url = git@github.com:m-ahdal/ghostty-shaders.git
