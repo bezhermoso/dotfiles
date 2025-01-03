@@ -1,0 +1,92 @@
+#!/usr/bin/env zsh
+# vim: ft=zsh
+
+# ===================
+# ghostty-icon-tinter
+# ===================
+function ghostty-icon-tinter {
+    typeset -a screen_color ghost_color
+
+    zmodload zsh/zutil
+    zparseopts -D -F -K -- \
+        {s,-screen}:=screen_colors_arg {g,-ghost}:=ghost_color_arg {h,-help}=help || return
+
+    if [[ -n $help ]]; then
+        cat <<EOF
+
+===================
+ghostty-icon-tinter
+===================
+
+Generates a Ghostty theme file with macos-icon-ghost-color and macos-icon-screen-color directives
+based on an existing theme. This script is mainly designed to be used with tinted-theming/tinty.
+
+USAGE:
+
+ghostty-icon-tinter [--screen <comma_separated_indices>] [--ghost=<index>] path/to/config
+
+EXAMPLE:
+
+    ghostty-icon-tinter \\
+        --ghost 15 \\
+        --screen 17,16,9 \\
+        ~/.config/ghosty/themes/custom-theme \\
+        >! ~/.config/ghostty/themes/custom-theme-v2
+
+This produces a new theme file that contains all contents of the existing one, but with
+macos-icon-* directives appended to the end, containing the desired colors from
+the source theme's palette. In this example, macos-icon-ghost-color will be
+assigned the color from palette[1], whereas macos-icon-screen-color will
+contain palette[17], palette[16], palette[9] colors as a gradient.
+
+EOF
+        return 0
+    fi
+
+    file="$1"
+
+    if [[ -z $file ]]; then
+        >&2 echo "file must be specified."
+        return 1
+    fi
+
+    ghost_color=$ghost_color_arg[-1]
+    screen_colors=$screen_colors_arg[-1]
+    screen_colors=(${(s/,/)screen_colors})
+
+
+    if [[ -z $screen_colors && -z $ghost_color ]]; then
+        >&2 echo "no screen color or ghost color provided. nothing to do."
+        return 0
+    fi
+
+    file_contents=$(cat $file)
+
+    echo $file_contents
+    # Extract palette color for ghost
+    ghost_color_value=$(_extract_palette_value $ghost_color $file_contents)
+    if [[ -n $ghost_color_value ]]; then
+        echo "# ghostty-color-tinter: extracted palette color $ghost_color:"
+        echo "macos-icon-ghost-color = $ghost_color_value"
+    fi
+
+
+    declare -a screen_color_values
+    for c in $screen_colors[@]; do
+        screen_color_values+=($(_extract_palette_value $c $file_contents))
+    done
+    if [[ -n $screen_color_values ]]; then
+        echo "# ghostty-color-tinter: extracted palette colors ${(j[,])screen_colors}:"
+        echo "macos-icon-screen-color = ${(j[,])screen_color_values}"
+    fi
+
+
+}
+
+function _extract_palette_value {
+    # Note: return the last recurrence, in case there are multiple.
+    echo "$2" | sed -nE 's/^palette = '$1'=(#[a-zA-Z0-9]{6})/\1/p' \
+        | tail -n 1
+}
+
+ghostty-icon-tinter $@
