@@ -37,13 +37,13 @@ supported-systems = ["base16", "base24"]
 
 
 [[items]]
-path = "https://github.com/tinted-theming/tinted-terminal"
+path = "https://github.com/bezhermoso/tinted-terminal"
 name = "tinted-terminal"
-themes-dir = "themes/ghostty"
+themes-dir = "themes/ghostty-scripts"
 hook = '''
-~/.dotfiles/bin/ghostty-icon-tinter \
-    --ghost 15 \
-    --screen 12 %f \
+sh %f \
+    -g 15 \
+    -s 12 \
     >! ~/.config/ghostty/themes/tinted-theming
 '''
 supported-systems = ["base16", "base24"]
