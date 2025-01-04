@@ -40,6 +40,11 @@ supported-systems = ["base16", "base24"]
 path = "https://github.com/tinted-theming/tinted-terminal"
 name = "tinted-terminal"
 themes-dir = "themes/ghostty"
-hook = "command cp -f %f ~/.config/ghostty/themes/tinted-theming"
+hook = '''
+~/.dotfiles/bin/ghostty-icon-tinter \
+    --ghost 15 \
+    --screen 12 %f \
+    >! ~/.config/ghostty/themes/tinted-theming
+'''
 supported-systems = ["base16", "base24"]
 
