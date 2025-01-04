@@ -140,6 +140,5 @@ return {
         "bezhermoso/tree-sitter-ghostty",
         dev = true,
         build = "make nvim_install",
-        ft = "ghostty"
     }
 }
