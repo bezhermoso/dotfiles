@@ -250,4 +250,8 @@ return {
         'https://github.com/folke/zen-mode.nvim',
         opts = {}
     },
+    {
+        'brenoprata10/nvim-highlight-colors',
+        opts = {}
+    }
 }
