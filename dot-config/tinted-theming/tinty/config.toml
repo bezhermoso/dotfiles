@@ -16,13 +16,13 @@ supported-systems = ["base16", "base24"]
 
 [[items]]
 name = "base16.nvim"
-path = "~/dev/tinted-base16.nvim"
+path = "https://github.com/bezhermoso/tinted-base16.nvim"
 themes-dir = "themes"
 hook = "cp -f %f ~/.config/tinted-theming/set_theme.lua"
 supported-systems = ["base16", "base24"]
 
 [[items]]
-path = "~/dev/tinted-delta"
+path = "https://github.com/tinted-theming/tinted-delta"
 name = "delta"
 themes-dir = "configs"
 hook = "cp -f %f ~/.config/tinted-theming/delta.gitconfig"
@@ -37,8 +37,8 @@ supported-systems = ["base16", "base24"]
 
 
 [[items]]
-path = "https://github.com/bezhermoso/tinted-terminal"
-name = "tinted-terminal"
+path = "https://github.com/tinted-theming/tinted-terminal"
+name = "tinted-terminal-ghostty"
 themes-dir = "themes/ghostty-scripts"
 hook = '''
 sh %f \
@@ -48,3 +48,9 @@ sh %f \
 '''
 supported-systems = ["base16", "base24"]
 
+[[items]]
+path = "https://github.com/tinted-theming/tinted-terminal"
+name = "tinted-terminal-iterm2"
+themes-dir = "themes-16/iterm2-scripts"
+hook = "sh %f"
+supported-systems = ["base16", "base24"]
