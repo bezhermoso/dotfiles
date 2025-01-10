@@ -1,6 +1,7 @@
 # Berkeley Mono
 
 font-family = "TX-02"
+font-family = "TX-02-Variable"
 
 # disable programming ligatures
 font-feature = -calt
