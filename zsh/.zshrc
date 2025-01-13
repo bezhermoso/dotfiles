@@ -57,6 +57,7 @@ source_config "inc.nodejs.zsh"
 source_config "inc.ruby.zsh"
 source_config "inc.golang.zsh"
 source_config "inc.java.zsh"
+source_config "inc.rust.zsh"
 
 source_config "inc.aliases.zsh"
 
