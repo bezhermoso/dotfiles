@@ -89,6 +89,11 @@ return {
             telescope_sorter = function()
                 return require("telescope").extensions.fzf.native_fzf_sorter()
             end,
+            integrations = {
+                -- ??? This only works if set to false!
+                telescope = false,
+                diffview = true,
+            }
         },
     },
 }

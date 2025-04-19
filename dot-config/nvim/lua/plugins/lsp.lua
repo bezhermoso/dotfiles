@@ -132,6 +132,11 @@ return {
                         require('lspconfig').lua_ls.setup(lsp_zero.nvim_lua_ls({
                             settings = {
                                 cmd = {"lua-language-server", "--log-level=trace"},
+                                Lua = {
+                                    diagnostics = {
+                                        globals = {"vim", "Snacks"}
+                                    }
+                                }
                             },
                         }))
                     end,

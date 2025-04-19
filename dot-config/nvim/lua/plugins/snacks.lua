@@ -4,14 +4,34 @@ return {
         priority = 1000,
         lazy = false,
         opts = {
-            bigfile = { enabled = true },
+            ---@class snacks.bigfile.Config
+            ---@field enabled? boolean
+            bigfile = {
+                enabled = true,
+                notify = true,
+                size = 2 * 1024 * 2024, -- 2MB
+                line_length = 1000,     -- files with a line >= this number is considered big file
+                setup = function(ctx)
+                    if vim.fn.exists(":NoMatchParen") ~= 0 then
+                        vim.cmd([[NoMatchParen]])
+                    end
+                    Snacks.util.wo(0, { foldmethod = "manual", statuscolumn = "", conceallevel = 0 })
+                    vim.b.minianimate_disable = true
+                    vim.schedule(function()
+                        if vim.api.nvim_buf_is_valid(ctx.buf) then
+                            vim.bo[ctx.buf].syntax = ctx.ft
+                        end
+                    end)
+                end
+            },
             dashboard = {
                 enabled = true,
                 pane_gap = 10,
                 sections = {
                     {
                         section = "terminal",
-                        cmd = "chafa ~/.dotfiles/block-reverse-crop.gif --format symbols --symbols ascii --size 45x18 --stretch --fg-only; sleep .1",
+                        cmd =
+                        "chafa ~/.dotfiles/block-reverse-crop.gif --format symbols --symbols ascii --size 45x18 --stretch --fg-only; sleep .1",
                         height = 18,
                         width = 45,
                         pane = 2
@@ -30,8 +50,8 @@ return {
                     },
                     -- { section = "keys", gap = 1, padding = 1 },
                     { title = "Recent Files\n", section = "recent_files", indent = 2, padding = 2 },
-                    { title = "Projects\n", section = "projects", indent = 2, padding = 2 },
-                    { title = "Actiions\n", section = "keys", indent = 2, padding = 2 },
+                    { title = "Projects\n",     section = "projects",     indent = 2, padding = 2 },
+                    { title = "Actiions\n",     section = "keys",         indent = 2, padding = 2 },
                 },
             },
             notifier = {
@@ -45,7 +65,19 @@ return {
                 notification = {
                     wo = { wrap = true } -- Wrap notifications
                 }
-            }
+            },
+            explorer = {
+
+            },
+            picker = {
+                sources = {
+                    explorer = {}
+                }
+            },
+            image = {
+                enabled = true,
+            },
+            lazygit = {},
         },
         init = function()
             vim.api.nvim_create_autocmd("User", {
@@ -70,7 +102,7 @@ return {
                         { off = 0, on = vim.o.conceallevel > 0 and vim.o.conceallevel or 2 }):map("<leader>uc")
                     Snacks.toggle.treesitter():map("<leader>uT")
                     Snacks.toggle.option("background", { off = "light", on = "dark", name = "Dark Background" }):map(
-                    "<leader>ub")
+                        "<leader>ub")
                     Snacks.toggle.inlay_hints():map("<leader>uh")
                 end,
             })
