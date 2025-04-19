@@ -8,6 +8,17 @@ shell = "zsh -c '{}'"
 # supported-systems = ["base16", "base24"]
 
 [[items]]
+name = "iterm2-scpt"
+path = "~/dev/tinted-terminal"
+themes-dir = "themes-16/iterm2-applescripts"
+hook = '''
+cp -f %f ~/Library/Application\ Support/iTerm2/Scripts/AutoLaunch.scpt;
+osascript %f
+'''
+supported-systems = ["base16", "base24"]
+
+
+[[items]]
 name = "tmux"
 path = "https://github.com/tinted-theming/base16-tmux"
 themes-dir = "colors"
@@ -17,6 +28,7 @@ supported-systems = ["base16", "base24"]
 [[items]]
 name = "base16.nvim"
 path = "https://github.com/bezhermoso/tinted-base16.nvim"
+revision = "master"
 themes-dir = "themes"
 hook = "cp -f %f ~/.config/tinted-theming/set_theme.lua"
 supported-systems = ["base16", "base24"]
@@ -42,15 +54,16 @@ name = "tinted-terminal-ghostty"
 themes-dir = "themes/ghostty-scripts"
 hook = '''
 sh %f \
-    -g 15 \
+    -g 12 \
     -s 12 \
     >! ~/.config/ghostty/themes/tinted-theming
 '''
 supported-systems = ["base16", "base24"]
 
-[[items]]
-path = "https://github.com/tinted-theming/tinted-terminal"
-name = "tinted-terminal-iterm2"
-themes-dir = "themes-16/iterm2-scripts"
-hook = "sh %f"
-supported-systems = ["base16", "base24"]
+# [[items]]
+# path = "https://github.com/tinted-theming/tinted-terminal"
+# name = "tinted-terminal-iterm2"
+# # revision = "8996a7d799e90f447df973d3d8f1901b4bab0e52"
+# themes-dir = "themes-16/iterm2-scripts"
+# hook = "sh %f"
+# supported-systems = ["base16", "base24"]
