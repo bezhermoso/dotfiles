@@ -22,3 +22,6 @@
 [submodule ".config/ghostty/shaders/ghostty-shaders"]
 	path = dot-config/ghostty/shaders/ghostty-shaders
 	url = git@github.com:m-ahdal/ghostty-shaders.git
+[submodule "tinted-nvim"]
+	path = dot-config/nvim/lua/dev/tinted-nvim
+	url = git@github.com:tinted-theming/tinted-nvim
