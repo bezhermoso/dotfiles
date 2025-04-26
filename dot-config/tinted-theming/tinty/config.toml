@@ -1,36 +1,10 @@
 shell = "zsh -c '{}'"
 
-# [[items]]
-# name = "tinted-shell"
-# path = "https://github.com/tinted-theming/tinted-shell"
-# themes-dir = "scripts"
-# hook = "source %f"
-# supported-systems = ["base16", "base24"]
-
-[[items]]
-name = "iterm2-scpt"
-path = "~/dev/tinted-terminal"
-themes-dir = "themes-16/iterm2-applescripts"
-hook = '''
-cp -f %f ~/Library/Application\ Support/iTerm2/Scripts/AutoLaunch.scpt;
-osascript %f
-'''
-supported-systems = ["base16", "base24"]
-
-
 [[items]]
 name = "tmux"
-path = "https://github.com/tinted-theming/base16-tmux"
+path = "https://github.com/tinted-theming/tinted-tmux"
 themes-dir = "colors"
 hook = "tmux run 2> /dev/null && tmux source-file %f"
-supported-systems = ["base16", "base24"]
-
-[[items]]
-name = "base16.nvim"
-path = "https://github.com/bezhermoso/tinted-base16.nvim"
-revision = "master"
-themes-dir = "themes"
-hook = "cp -f %f ~/.config/tinted-theming/set_theme.lua"
 supported-systems = ["base16", "base24"]
 
 [[items]]
