@@ -65,7 +65,7 @@ return {
                 vim.keymap.set('n', '<leader>mv', vim.lsp.buf.rename, {
                     desc = 'LSP: Rename',
                 })
-                vim.keymap.set({'n', 'v'}, '<leader>ca', vim.lsp.buf.code_action, {
+                vim.keymap.set({ 'n', 'v' }, '<leader>ca', vim.lsp.buf.code_action, {
                     desc = 'LSP: Code Actions...',
                 })
                 vim.keymap.set('n', 'gd', vim.lsp.buf.definition, {
@@ -123,18 +123,31 @@ return {
                     -- YAML
                     'yamlls',
                     -- Protobuf
-                    'bufls',
+                    'buf',
+                    -- HTML
+                    'emmet_language_server',
+                    'emmet_ls',
+                    -- Markdown/writing
+                    'harper_ls',
+                    'marksman',
+                    -- Ruby
+                    'ruby_lsp',
+                    -- Rust
+                    'rust_analyzer',
+                    -- TypeScript/JavaScript
+                    'ts_ls',
                 },
+                automatic_installation = true,
                 handlers = {
                     lsp_zero.default_setup,
                     lua_ls = function()
                         -- Make Lua language server understand Neovim API
                         require('lspconfig').lua_ls.setup(lsp_zero.nvim_lua_ls({
                             settings = {
-                                cmd = {"lua-language-server", "--log-level=trace"},
+                                cmd = { "lua-language-server", "--log-level=trace" },
                                 Lua = {
                                     diagnostics = {
-                                        globals = {"vim", "Snacks"}
+                                        globals = { "vim", "Snacks" }
                                     }
                                 }
                             },
@@ -154,9 +167,12 @@ return {
                                         ["http://json.schemastore.org/chart"] = "Chart.{yml,yaml}",
                                         ["https://json.schemastore.org/dependabot-v2"] = ".github/dependabot.{yml,yaml}",
                                         ["https://json.schemastore.org/gitlab-ci"] = "*gitlab-ci*.{yml,yaml}",
-                                        ["https://raw.githubusercontent.com/OAI/OpenAPI-Specification/main/schemas/v3.1/schema.json"] = "*api*.{yml,yaml}",
-                                        ["https://raw.githubusercontent.com/argoproj/argo-workflows/master/api/jsonschema/schema.son"] = "*flow*.{yml,yaml}",
-                                        ["https://raw.githubusercontent.com/compose-spec/compose-spec/master/schema/compose-spec.json"] = "*docker-compose*.{yml,yaml}",
+                                        ["https://raw.githubusercontent.com/OAI/OpenAPI-Specification/main/schemas/v3.1/schema.json"] =
+                                        "*api*.{yml,yaml}",
+                                        ["https://raw.githubusercontent.com/argoproj/argo-workflows/master/api/jsonschema/schema.son"] =
+                                        "*flow*.{yml,yaml}",
+                                        ["https://raw.githubusercontent.com/compose-spec/compose-spec/master/schema/compose-spec.json"] =
+                                        "*docker-compose*.{yml,yaml}",
                                         kubernetes = "ccd-*/**/*.yaml.template",
                                     },
                                     customTags = {
@@ -167,6 +183,17 @@ return {
                             },
                         })
                     end,
+                    rust_analyzer = function()
+                        require("lspconfig").rust_analyzer.setup({
+                            settings = {
+                                ['rust-analyzer'] = {
+                                    check = {
+                                        command = "clippy",
+                                    }
+                                }
+                            }
+                        });
+                    end
                 }
             })
 
@@ -185,7 +212,7 @@ return {
                     -- { name = 'copilot' },
                     { name = 'nvim_lsp' },
                     { name = 'luasnip' },
-                    { name = 'lazydev', group_index = 0 },
+                    { name = 'lazydev',                group_index = 0 },
                     { name = 'path' },
                     { name = 'nvim_lsp_signature_help' },
                     { name = 'cmp_yanky' },
@@ -211,16 +238,19 @@ return {
                     ['<C-k>'] = cmp_mappings.prev_cmp_item,
                     ['<Tab>'] = cmp_mappings.next_cmp_item,
                     ['<S-Tab>'] = cmp_mappings.prev_cmp_item,
-                    ['<M-;>'] = cmp.mapping(function (_)
-                       vim.api.nvim_feedkeys(vim.fn['copilot#Accept'](vim.api.nvim_replace_termcodes('<Tab>', true, true, true)), 'n', true)
+                    ['<M-;>'] = cmp.mapping(function(_)
+                        vim.api.nvim_feedkeys(
+                        vim.fn['copilot#Accept'](vim.api.nvim_replace_termcodes('<Tab>', true, true, true)), 'n', true)
                     end),
                 }),
                 window = {
                     completion = cmp.config.window.bordered({
-                        winhighlight = 'Normal:Normal,FloatBorder:FloatBorder,CursorLine:Visual,Search:None,CmpItemAbbr:None'
+                        winhighlight =
+                        'Normal:Normal,FloatBorder:FloatBorder,CursorLine:Visual,Search:None,CmpItemAbbr:None'
                     }),
                     documentation = cmp.config.window.bordered({
-                        winhighlight = 'Normal:Normal,FloatBorder:FloatBorder,CursorLine:Visual,Search:None,CmpItemAbbr:None'
+                        winhighlight =
+                        'Normal:Normal,FloatBorder:FloatBorder,CursorLine:Visual,Search:None,CmpItemAbbr:None'
                     }),
                 },
             })
@@ -312,6 +342,6 @@ return {
     -- }
     {
         "alexander-born/bazel.nvim",
-        dependencies = {'nvim-treesitter/nvim-treesitter'}
+        dependencies = { 'nvim-treesitter/nvim-treesitter' }
     }
 }
