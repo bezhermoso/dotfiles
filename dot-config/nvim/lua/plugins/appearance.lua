@@ -37,10 +37,10 @@ return {
         lazy = false,
         dependencies = {
             { 'rcarriga/nvim-notify' },
-            -- {
-            --     "bezhermoso/base16-live-reload.nvim",
-            --     dev = true,
-            -- },
+            {
+                "bezhermoso/base16-live-reload.nvim",
+                dev = true,
+            },
             { 'rktjmp/fwatch.nvim' },
         },
         config = function()
@@ -58,7 +58,7 @@ return {
             -- set_line_number_hls()
 
             vim.api.nvim_create_autocmd("User", {
-                pattern = "TintedColorsPost",
+                pattern = "Base16ReloadPost",
                 callback = function()
                     set_line_number_hls()
                 end,
@@ -74,38 +74,35 @@ return {
         dev = true,
         dependencies = {
             { 'rcarriga/nvim-notify' },
-            -- {
-            --     "bezhermoso/base16-live-reload.nvim",
-            --     dev = true,
-            -- },
             { 'rktjmp/fwatch.nvim' },
         },
         config = function()
-            local base16 = require('tinted-colorscheme')
-
-            local set_line_number_hls = function ()
-                local colors = base16.colors
-                base16.highlight.CursorLineNr = { guifg = colors.base0A, ctermfg = colors.cterm0A, fg = colors.base0A, gui = "bold" }
-                base16.highlight.LineNr = { guifg = colors.base02, ctermfg = colors.cterm02, fg = colors.base02 }
+            local set_line_number_hls = function()
+                local tinted = require("tinted-colorscheme")
+                local colors = tinted.colors
+                print(vim.inspect(tinted))
+                tinted.highlight.CursorLineNr = {
+                    guifg = colors.base0A,
+                    ctermfg = colors.cterm0A,
+                    fg = colors.base0A,
+                    gui =
+                        "bold"
+                }
+                tinted.highlight.LineNr = { guifg = colors.base02, ctermfg = colors.cterm02, fg = colors.base02 }
             end
 
-            base16.setup("", {
+            require('tinted-colorscheme').setup("", {
                 supports = {
                     live_reload = true
                 }
             })
-            -- set_line_number_hls()
 
             vim.api.nvim_create_autocmd("User", {
-                pattern = "Base16ReloadPost",
+                pattern = "TintedColorsPost",
                 callback = function()
                     set_line_number_hls()
                 end,
             })
-
-            -- vim.keymap.set('n', '<leader>bt', base16_live_reload.reload, {
-            --     desc = 'Base16: Load colorscheme from base16-shell',
-            -- })
         end
     },
     {
@@ -264,7 +261,7 @@ return {
         -- https://github.com/3rd/image.nvim
         "3rd/image.nvim",
         dependencies = {
-            {"luarocks.nvim"},
+            { "luarocks.nvim" },
         },
         config = function()
             require("image").setup({
@@ -275,7 +272,7 @@ return {
     {
         -- https://github.com/luukvbaal/statuscol.nvim
         "luukvbaal/statuscol.nvim",
-        config = function ()
+        config = function()
             require("statuscol").setup({
                 relculright = true,
             })
