@@ -38,4 +38,4 @@ bash/work.bash_profile
 dot-config/ghostty/themes/base16*
 dot-config/ghostty/themes/base24*
 dot-config/ghostty/themes/tinted-theming
-
+dot-config/bat/themes/*
