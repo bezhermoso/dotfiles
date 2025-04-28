@@ -123,7 +123,7 @@ return {
                     -- YAML
                     'yamlls',
                     -- Protobuf
-                    'buf',
+                    'buf_ls',
                     -- HTML
                     'emmet_language_server',
                     'emmet_ls',
