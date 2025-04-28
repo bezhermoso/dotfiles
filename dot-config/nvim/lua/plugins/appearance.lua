@@ -80,7 +80,6 @@ return {
             local set_line_number_hls = function()
                 local tinted = require("tinted-colorscheme")
                 local colors = tinted.colors
-                print(vim.inspect(tinted))
                 tinted.highlight.CursorLineNr = {
                     guifg = colors.base0A,
                     ctermfg = colors.cterm0A,
