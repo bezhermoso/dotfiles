@@ -34,6 +34,13 @@ sh %f \
 '''
 supported-systems = ["base16", "base24"]
 
+[[items]]
+path = "https://github.com/tinted-theming/tinted-terminal"
+name = "tinted-terminal-alacritty"
+themes-dir = "themes/alacritty"
+hook = "cp -f %f ~/.config/alacritty/colors.toml && touch ~/.config/alacritty/alacritty.toml"
+supported-systems = ["base16", "base24"]
+
 # [[items]]
 # path = "https://github.com/tinted-theming/tinted-terminal"
 # name = "tinted-terminal-iterm2"
