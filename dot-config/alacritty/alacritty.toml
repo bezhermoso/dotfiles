@@ -7,7 +7,9 @@ args = ["-l"]
 [window]
 padding = { x = 10, y = 10 }
 dynamic_padding = true
-decorations = "None"
+decorations = "Buttonless"
+# opacity = 0.9
+# blur = true
 
 [scrolling]
 history = 100000
