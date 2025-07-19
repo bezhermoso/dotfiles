@@ -264,7 +264,10 @@ return {
         },
         config = function()
             require("image").setup({
-                backend = "ueberzug",
+                -- backend = "ueberzug",
+                backend = "kitty",
+                integrations = {},
+                kitty_method = "normal",
             })
         end
     },
