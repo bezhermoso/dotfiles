@@ -1,4 +1,6 @@
 shell = "zsh -c '{}'"
+preferred-schemes = ["base16-gruvbox-material-dark-hard", "base24-github-dark"]
+
 hooks = ["osascript -so ~/.dotfiles/dot-config/ghostty/reload-config.scpt"]
 
 [[items]]
