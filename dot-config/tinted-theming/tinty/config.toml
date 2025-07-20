@@ -1,4 +1,5 @@
 shell = "zsh -c '{}'"
+hooks = ["osascript -so ~/.dotfiles/dot-config/ghostty/reload-config.scpt"]
 
 [[items]]
 name = "tmux"
