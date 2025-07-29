@@ -1,9 +1,22 @@
 #!/usr/bin/env zsh
+#
+
+new_session_str="New session..."
+
+function _session_list() {
+    tmux list-sessions -F "#{session_name}"
+}
 
 function _picker() {
-    local output=$(tmux list-sessions -F "#{session_name}" | fzf --print-query --expect=ctrl-n \
+
+    if (( $(tmux display-message -p "#{server_sessions}") < 2 )); then
+        vared -p "New session name: " -c new_session_name
+        _create_and_switch_to_session "$new_session_name"
+        return
+    fi
+
+    local output=$(_session_list | fzf --print-query --expect=ctrl-n \
         --preview= \
-        --tmux=center,50%,50% \
         --layout=reverse --border=rounded \
         --border-label="  Session Picker " --border-label-pos=2 \
         --prompt="󱞩 " --no-separator --info=inline-right \
