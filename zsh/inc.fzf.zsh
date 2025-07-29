@@ -6,7 +6,6 @@ export FZF_DEFAULT_OPTS='
   --no-mouse --margin=0,0,0,1
   --prompt="› "
   --tabstop=2
-  -1
   --preview="[[ -d {} ]] && tree -L 1 {} || bat --style=numbers --color=always --line-range=:500 {}"
 '
 export FZF_CTRL_R_OPTS='--preview=""'
