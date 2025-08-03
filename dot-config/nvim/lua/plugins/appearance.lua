@@ -95,9 +95,6 @@ return {
                 supports = {
                     live_reload = true
                 },
-                highlights = {
-                    telescope_borders = true
-                }
             })
 
             vim.api.nvim_create_autocmd("User", {
