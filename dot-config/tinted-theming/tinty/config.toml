@@ -1,5 +1,5 @@
 shell = "zsh -c '{}'"
-preferred-schemes = ["base16-gruvbox-material-dark-hard", "base24-github-dark"]
+preferred-schemes = ["base16-gruvbox-dark-hard", "base24-github-dark", "base16-gruvbox-light-hard"]
 
 hooks = ["osascript -so ~/.dotfiles/dot-config/ghostty/reload-config.scpt"]
 
