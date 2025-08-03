@@ -13,7 +13,7 @@ return {
             { "bezhermoso/todos-lualine.nvim", dev = true },
             { "stevearc/aerial.nvim" }
         },
-        config = function ()
+        config = function()
             -- TODO: Configure colors
             -- local todos_component = require("todos-lualine").component({})
             require('lualine').setup({
@@ -47,9 +47,10 @@ return {
             local base16 = require('base16-colorscheme')
             local base16_live_reload = require("base16-live-reload")
 
-            local set_line_number_hls = function ()
+            local set_line_number_hls = function()
                 local colors = base16.colors
-                base16.highlight.CursorLineNr = { guifg = colors.base0A, ctermfg = colors.cterm0A, fg = colors.base0A, gui = "bold" }
+                base16.highlight.CursorLineNr = { guifg = colors.base0A, ctermfg = colors.cterm0A, fg = colors.base0A, gui =
+                "bold" }
                 base16.highlight.LineNr = { guifg = colors.base02, ctermfg = colors.cterm02, fg = colors.base02 }
             end
 
@@ -85,7 +86,7 @@ return {
                     ctermfg = colors.cterm0A,
                     fg = colors.base0A,
                     gui =
-                        "bold"
+                    "bold"
                 }
                 tinted.highlight.LineNr = { guifg = colors.base02, ctermfg = colors.cterm02, fg = colors.base02 }
             end
@@ -93,6 +94,9 @@ return {
             require('tinted-colorscheme').setup("", {
                 supports = {
                     live_reload = true
+                },
+                highlights = {
+                    telescope_borders = true
                 }
             })
 
@@ -138,21 +142,22 @@ return {
             scope = { enabled = false },
         },
     },
-    -- {
-    --     -- https://github.com/goolord/alpha-nvim
-    --     'goolord/alpha-nvim',
-    --     dev = true,
-    --     dependencies = { 'nvim-tree/nvim-web-devicons' },
-    --     config = function()
-    --         local alpha = require('alpha')
-    --         require('alpha.term')
-    --         if block_hostnames[vim.fn.hostname()] then
-    --             alpha.setup(require('plugins.alpha.block').alpha_config())
-    --         else
-    --             alpha.setup(require('plugins.alpha.tolkien').alpha_config())
-    --         end
-    --     end
-    -- },
+    {
+        -- https://github.com/goolord/alpha-nvim
+        'goolord/alpha-nvim',
+        enabled = false,
+        dev = true,
+        dependencies = { 'nvim-tree/nvim-web-devicons' },
+        config = function()
+            local alpha = require('alpha')
+            require('alpha.term')
+            if block_hostnames[vim.fn.hostname()] then
+                alpha.setup(require('plugins.alpha.block').alpha_config())
+            else
+                alpha.setup(require('plugins.alpha.tolkien').alpha_config())
+            end
+        end
+    },
     {
         -- https://github.com/chentoast/marks.nvim
         'chentoast/marks.nvim',
@@ -292,5 +297,9 @@ return {
     {
         'brenoprata10/nvim-highlight-colors',
         opts = {}
+    },
+    {
+        "sphamba/smear-cursor.nvim",
+        opts = {},
     }
 }
