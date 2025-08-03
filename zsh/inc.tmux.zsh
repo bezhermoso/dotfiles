@@ -14,3 +14,15 @@ function tmuxp() {
 
 compinit -U tmuxp
 
+
+# ZLE widget for pulling up interactive zoxide & change directory.
+function _tmux-picker-widget {
+  zle push-line
+  ~/.config/tmux/picker.zsh <>$TTY
+  zle accept-line
+}
+
+# Bind interactive zoxide widget to Ctrl-U
+zle -N _tmux-picker-widget
+bindkey -M vicmd '^s^s' _tmux-picker-widget
+bindkey -M viins '^s^s' _tmux-picker-widget
