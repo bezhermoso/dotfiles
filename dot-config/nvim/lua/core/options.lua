@@ -127,3 +127,17 @@ vim.opt.lazyredraw = true
 
 -- Preview the result of substitute commands live on the buffer & on a temporarily split
 vim.opt.inccommand = "split"
+
+
+--- Diagnostics
+---
+vim.diagnostic.config({
+    virtual_lines = true
+})
+
+
+--- Toggle virtual_lines diagnostics on/off
+vim.keymap.set('n', 'gK', function()
+    local new_config = not vim.diagnostic.config().virtual_lines
+    vim.diagnostic.config({ virtual_lines = new_config })
+end, { desc = 'Toggle diagnostic virtual_lines' })
