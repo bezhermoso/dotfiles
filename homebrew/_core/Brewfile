@@ -69,5 +69,9 @@ brew "zsh"
 brew "fx"
 brew "uv"
 brew "gum"
+brew "charmbracelet/tap/crush"
 cask "1password-cli"
+cask "bettertouchtool"
 cask "font-monaspace-nerd-font"
+
+
