@@ -3,19 +3,24 @@
 # Safe and efficient color setup
 (( ${+functions[colors]} )) || autoload -U colors && colors
 
-if (( ! $+commands[gum] )); then
-    2>&1 echo "${fg[red]}Requires \`gum\`. Press any key to exit.${reset_color}"
-    read -n 1
-    exit 1
-fi
+function _check_required_command() {
+    local cmd="$1"
+    if (( ! $+commands[$cmd] )); then
+        2>&1 echo "${fg[red]}Requires \`${cmd}\`."
+        if [[ -n $TMUX ]]; then
+            read -n 1
+        fi
+    fi
+}
 
-if (( ! $+commands[zoxide] )); then
-    2>&1 echo "${fg[red]}Requires \`zoxide\`. Press any key to exit.${reset_color}"
-    read -n 1
-    exit 1
-fi
+_check_required_command gum
+_check_required_command zoxide
 
 new_session_str="New session..."
+shortcut_new_w_query="ctrl-n"
+shortcut_pick_directory="ctrl-g"
+
+border_val="rounded"
 
 function _session_list() {
     echo "New session..."
@@ -24,8 +29,9 @@ function _session_list() {
 
 function _picker() {
 
-    local shortcut_new_w_query="ctrl-n"
-    local shortcut_pick_directory="ctrl-g"
+    zparseopts -D -E -- -border::=border
+    border_val=${border#--border}
+    border_val=${border_val#=}
 
     local session_count=$(tmux display-message -p "#{server_sessions}" 2>/dev/null)
     local session_count=${session_count:-0}
@@ -49,25 +55,22 @@ function _picker() {
 
     fi
 
-    # if [[ -n $TMUX && (( $session_count < 2)) ]]; then
-    #     # We are attached to the only available sesssion in tmux. Prompt for a name:
-    #     local name=$(gum input --header="No other sessions. Pick a name:")
-    #     if [[ -n $name ]]; then
-    #         _create_and_switch_to_session "$name"
-    #     fi
-    #     return
-    # fi
+    local fzf_args=(--print-query --preview= --layout=reverse --no-separator --info=inline-right)
 
-    local output=$(_session_list | fzf --print-query --expect="${shortcut_new_w_query},${shortcut_pick_directory}" \
-        --preview= \
-        --layout=reverse --border=rounded \
-        --border-label="  Session Picker " --border-label-pos=2 \
-        --prompt="󱞩 " --no-separator --info=inline-right \
-        --input-border=rounded \
+    fzf_args+=(--input-border=rounded \
         --footer="${fg[yellow]}${shortcut_new_w_query}${reset_color}: create new w/ query ${fg[yellow]}${shortcut_pick_directory}${reset_color}: pick directory..." \
-        --color 'footer:20,label:11'
-        
-    )
+        --color 'footer:20,label:11' \
+        --prompt="󱞩 ")
+
+    fzf_args+=(--expect="${shortcut_new_w_query},${shortcut_pick_directory}")
+
+    if [[ $border_val != "none" ]]; then
+        fzf_args+=(--border=rounded --border-label="  Session Picker " --border-label-pos=2)
+    else
+        fzf_args+=(--border=none)
+    fi
+
+    local output=$(_session_list | fzf "$fzf_args[@]")
 
     local lines=("${(@f)output}")
 
@@ -154,11 +157,18 @@ function _session_from_directory_picker() {
     # TODO: Prefill as query in a way that can be undone w/ backspace. Not possible with zoxide.
     # May be possible to wrap zoxide query w/ fzf.
     local query="$1"
-    local target_dir="$(_list_dirs | fzf --preview= --layout=reverse --border=rounded)"
+
+    local fzf_args=(--preview= --layout=reverse)
+
+    if [[ $border_val == "none" ]]; then
+        fzf_args+=(--border=none)
+    fi
+
+    local target_dir="$(_list_dirs | fzf "$fzf_args[@]")"
     local dirname=${target_dir##*/}
     if [[ -n $dirname ]]; then
         _create_and_switch_to_session "$dirname" "$target_dir"
     fi
 }
 
-_picker
+_picker "$@"
