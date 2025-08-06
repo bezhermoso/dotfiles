@@ -128,7 +128,7 @@ return {
     },
     {
         "tree-sitter-grammars/tree-sitter-test",
-        build = "mkdir parser && tree-sitter build -o parser/test.so",
+        build = "rm -rf parser && mkdir parser && tree-sitter build -o parser/test.so",
         ft = "test",
         init = function()
             -- toggle full-width rules for test separators
