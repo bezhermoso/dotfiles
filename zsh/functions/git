@@ -1,0 +1,21 @@
+# vim: ft=zsh
+
+
+function _print_alias_def() {
+    if [[ ! -o interactive ]]; then
+        return
+    fi
+
+    autoload -Uz colors && colors
+    local cmd="$1"
+    local alias_def="$(command git config --get "alias.$cmd" 2>/dev/null)"
+    if [[ -n $alias_def ]]; then
+        print -u2 -P "%F{8}# %B$cmd%b is aliased to: %B$alias_def%b%f"
+    fi
+}
+
+_print_alias_def "$1"
+
+
+command git "$@"
+

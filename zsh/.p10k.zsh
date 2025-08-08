@@ -1642,7 +1642,7 @@
   # Displays what the primary branch for the repository probably is: is it master or main?
   function prompt_git_primary_branch() {
     for branch in main master; do
-      git rev-parse --verify "$branch" &>/dev/null && p10k segment -f 13 -t "$branch" -i '' && return
+      command git rev-parse --verify "$branch" &>/dev/null && p10k segment -f 13 -t "$branch" -i '' && return
     done
   }
   # Show git primary branch only when the command you are typing invokes one of these tools:
