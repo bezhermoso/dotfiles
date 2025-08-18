@@ -15,9 +15,18 @@
 
 [mergetool "nvimdiff3"]
 	cmd = nvim -d  $BASE $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'
+	prompt = false
+	keepBackup = false
 
 [mergetool "fugitive"]
 	cmd = nvim -f -c "Gvdiffsplit!" "$MERGED"
+	prompt = false
+	keepBackup = false
+
+[mergetool "diffview.nvim"]
+	cmd = nvim -n -c "DiffviewOpen" "$MERGED"
+	prompt = false
+	keepBackup = false
 # ]]]
 
 [column]
