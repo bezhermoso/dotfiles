@@ -1,0 +1,95 @@
+" .ideavimrc is a configuration file for IdeaVim plugin. It uses
+"   the same commands as the original .vimrc configuration.
+" You can find a list of commands here: https://jb.gg/h38q75
+" Find more examples here: https://jb.gg/share-ideavimrc
+
+
+"" -- Suggested options --
+" Show a few lines of context around the cursor. Note that this makes the
+" text scroll if you mouse-click near the start or end of the window.
+let mapleader = " "
+set scrolloff=5
+
+" Do incremental searching.
+set incsearch
+
+set commentary
+set argtextobj
+set easymotion
+set textobj-entire
+set ReplaceWithRegister
+set exchange
+set which-key
+set relativenumber
+
+set ideajoin
+set ideastatusicon=gray
+
+" Don't use Ex mode, use Q for formatting.
+map Q gq
+
+" --- Enable IdeaVim plugins https://jb.gg/ideavim-plugins
+
+" Highlight copied text
+Plug 'machakann/vim-highlightedyank'
+" Commentary plugin
+Plug 'tpope/vim-commentary'
+
+
+"" -- Map IDE actions to IdeaVim -- https://jb.gg/abva4t
+"" Map \r to the Reformat Code action
+"map \r <Action>(ReformatCode)
+
+"" Map <leader>d to start debug
+"map <leader>d <Action>(Debug)
+
+"" Map \b to toggle the breakpoint on the current line
+"map \b <Action>(ToggleLineBreakpoint)
+map gd <Action>(GotoDeclaration)
+map gf <Action>(GotoTypeDeclaration)
+map gi <Action>(GotoImplementation)
+map gy <Action>(GotoClass)
+map gc <Action>(GotoChangeSignature)
+map ga <Action>(GotoAction)
+map gr <Action>(ShowUsages)
+map <leader>ff <Action>(SearchEverywhere)
+map <Leader>fp <Action>(FindInPath)
+map <Leader>fo <Action>(GotoSymbol)
+map x] <Action>(NextDiff)
+map x[ <Action>(PreviousDiff)
+map g[ <Action>(VcsShowPrevChangeMarker)
+map g] <Action>(VcsShowNextChangeMarker)
+
+
+map <leader>z <Action>(ToggleDistractionFreeMode)
+map <leader>n <Action>(ActivateProjectToolWindow)
+
+
+map <leader>db <Action>(ToggleLineBreakpoint)
+map <Leader>dr <Action>(Resume)
+map <Leader>dn <Action>(StepOver)
+map <Leader>di <Action>(StepInto)
+map <Leader>do <Action>(StepOut)
+map <Leader>dc <Action>(RunToCursor)
+
+map <leader>e <Action>(RecentFiles)
+
+nmap <leader>mv <Action>(RenameElement)
+nmap <leader>rs <Action>(ChangeSignature)
+map <leader>== <Action>(ReformatCode)
+nmap K <Action>(ShowHoverInfo)
+
+nmap [b <Action>(PreviousTab)
+nmap ]b <Action>(NextTab)
+nmap <leader>bc <Action>(CloseAllEditorsButActive)
+nmap <leader>bC <Action>(CloseAllEditors)
+nmap <leader>c <Action>(CloseContent)
+
+nmap _ <Action>(SplitHorizontally)
+"" <Bar> is actually |
+nmap <Bar> <Action>(SplitVertically)
+
+nmap <leader>vr <Action>(IdeaVim.ReloadVimRc.reload)
+
+nmap <leader>br <Action>(Bazel.ResyncAction)
+nmap <leader>bbr <Action>(Bazel.BuildAndResyncAction)
