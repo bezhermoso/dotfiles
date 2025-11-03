@@ -3,5 +3,5 @@
 export LAZY_NVIM_DEV_PATH="$HOME/.config/nvim/lua/dev"
 
 # Point neovim to a nodenv-managed node:
-export NVIM_NODE_HOST_PROG_PATH="$HOME/.nodenv/versions/20.2.0/bin"
+export NVIM_NODE_HOST_PROG_PATH="$HOME/.nodenv/versions/22.21.1/bin"
 
