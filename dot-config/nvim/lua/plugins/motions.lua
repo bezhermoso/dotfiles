@@ -4,8 +4,9 @@ return {
         dependencies = {
             { "tpope/vim-repeat" }
         },
-        config = function()
-            require("leap").set_default_mappings()
-        end
+        keys = {
+            { "s", "<Plug>(leap)", desc = "Leap", silent = true, mode = {"n", "x", "o"} },
+            { "S", "<Plug>(leap-from-window)", desc = "Leap from window", silent = true, mode = {"n"} },
+        },
     }
 }
