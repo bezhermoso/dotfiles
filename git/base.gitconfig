@@ -27,6 +27,11 @@
 	cmd = nvim -n -c "DiffviewOpen" "$MERGED"
 	prompt = false
 	keepBackup = false
+
+[mergetool "idea"]
+	cmd = idea1 merge $BASE $REMOTE $MERGED
+	prompt = false
+	keepBackup = false
 # ]]]
 
 [column]
