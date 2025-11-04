@@ -1,6 +1,5 @@
 # vim: ft=zsh
 
-
 function _print_alias_def() {
     if [[ ! -o interactive ]]; then
         return
@@ -10,7 +9,9 @@ function _print_alias_def() {
     local cmd="$1"
     local alias_def="$(command git config --get "alias.$cmd" 2>/dev/null)"
     if [[ -n $alias_def ]]; then
-        print -u2 -P "%F{8}# %B$cmd%b is aliased to: %B$alias_def%b%f"
+        print -u2 -P -n "%F{8}# %B$cmd%b is aliased to: %B"
+        print -u2 -n -R $alias_def
+        print -u2 -P "%b%f"
     fi
 }
 

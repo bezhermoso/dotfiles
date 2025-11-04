@@ -46,6 +46,7 @@
 	ss = status --long
 	wc = whatchanged
 	latest = git log -n 1 --stat
+	logme = "!git log --author=\"$(git config user.email)\" --pretty=format:'%C(yellow)%h%Creset %C(blue)%ad%Creset ⋮ %C(bold)%s%Creset %C(bold red)%d%Creset' --graph"
 
 [gpg]
 	program = gpg
