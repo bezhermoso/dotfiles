@@ -28,26 +28,26 @@ return {
                 enabled = true,
                 pane_gap = 10,
                 sections = {
-                    {
-                        section = "terminal",
-                        cmd =
-                        "chafa ~/.dotfiles/block-reverse-crop.gif --format symbols --symbols ascii --size 45x18 --stretch --fg-only; sleep .1",
-                        height = 18,
-                        width = 45,
-                        pane = 2
-                    },
-                    {
-                        pane = 2,
-                        icon = " ",
-                        title = "Git Status\n",
-                        section = "terminal",
-                        enabled = function() return Snacks.git.get_root() ~= nil end,
-                        cmd = "git status --short --branch --renames",
-                        height = 5,
-                        padding = 1,
-                        ttl = 5 * 60,
-                        indent = 3,
-                    },
+                    -- {
+                    --     section = "terminal",
+                    --     cmd =
+                    --     "chafa ~/.dotfiles/block-reverse-crop.gif --format symbols --symbols ascii --size 45x18 --stretch --fg-only; sleep .1",
+                    --     height = 18,
+                    --     width = 45,
+                    --     pane = 2
+                    -- },
+                    -- {
+                    --     pane = 2,
+                    --     icon = " ",
+                    --     title = "Git Status\n",
+                    --     section = "terminal",
+                    --     enabled = function() return Snacks.git.get_root() ~= nil end,
+                    --     cmd = "git status --short --branch --renames",
+                    --     height = 5,
+                    --     padding = 1,
+                    --     ttl = 5 * 60,
+                    --     indent = 3,
+                    -- },
                     -- { section = "keys", gap = 1, padding = 1 },
                     { title = "Recent Files\n", section = "recent_files", indent = 2, padding = 2 },
                     { title = "Projects\n",     section = "projects",     indent = 2, padding = 2 },
