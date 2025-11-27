@@ -175,33 +175,38 @@ mkdir -p "${XDG_DATA_HOME}/zsh" "${XDG_CACHE_HOME}/less"
 
 ## 7. Implement async/deferred loading with zsh-defer
 
-**Status**: ⏳ Pending
-**Impact**: Medium-High (can save 100-300ms on startup)
+**Status**: ⏭️ Skipped
+**Impact**: Low (marginal benefit after improvement #1)
 **Location**: `.zshrc`
 
-**Recommendation**:
-Use `romkatv/zsh-defer` to load non-critical plugins asynchronously:
+**Analysis Performed**:
+Analyzed all 23 config files loaded in `.zshrc` to identify safe candidates for deferred loading.
 
-```zsh
-# Add after zinit initialization
-zi light romkatv/zsh-defer
+**Safe to defer (8 files)**:
+- `inc.bat.zsh` - bat/batman aliases
+- `inc.gcloud.zsh` - Google Cloud SDK completions (slowest candidate)
+- `inc.ansible.zsh` - Single env var
+- `inc.neovim.zsh` - Nvim env vars
+- `inc.ripgrep.zsh` - Single env var
+- `inc.yazi.zsh` - Single alias
+- `inc.macos.zsh` - Oh-My-Zsh plugin
+- `inc.gum.zsh` - Gum styling vars
 
-# Defer slow, non-critical initializations
-zsh-defer source_config "inc.gcloud.zsh"    # GCloud SDK is slow
-zsh-defer source_config "inc.ansible.zsh"
-zsh-defer source_config "inc.java.zsh"
-zsh-defer source_config "inc.gpg.zsh"
+**Cannot defer (15 files)**:
+- Files with ZLE widgets/keybindings (zoxide, tmux, tinty, atuin)
+- Files with PATH modifications (golang, rust, java, grep)
+- Files with critical functionality (direnv, aliases, git, gpg)
+- Order-dependent files (history → fzf → atuin)
+- Already optimized (python, nodejs, ruby via lazy-loading)
 
-# Keep these synchronous (needed immediately):
-# - inc.fzf.zsh (keybindings)
-# - inc.atuin.zsh (history)
-# - inc.zoxide.zsh (cd replacement)
-```
+**Why skipped**:
+1. **Already optimized**: Improvement #1 captured the real performance gains (lazy-loading pyenv/nodenv/rbenv)
+2. **Technical limitation**: Attempted simple background loading `{ source_config "inc.gcloud.zsh" } &!` but completion scripts require main shell context. Error: `command not found: _bash_complete`
+3. **Complexity vs. benefit**: Would need `zsh-defer` plugin for proper deferred completion loading, but marginal benefit (~50-100ms) doesn't justify added complexity
+4. **Most candidates trivial**: Only inc.gcloud.zsh would meaningfully benefit; others are too small to matter
 
-**Benefits**:
-- Shell becomes interactive faster
-- Non-critical tools load in background
-- No functional changes to user experience
+**Decision**:
+Skip this improvement. The 60-70% startup performance gains from improvement #1 (lazy-loading) already captured the low-hanging fruit. Deferring the remaining 8 files would add complexity without significant benefit
 
 ---
 
