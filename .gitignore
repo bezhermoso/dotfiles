@@ -42,3 +42,4 @@ dot-config/bat/themes/*
 
 # Ignore the colors table created by tinty-terminal for Alacritty
 dot-config/alacritty/colors.toml
+*.zwc

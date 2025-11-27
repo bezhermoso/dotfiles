@@ -1,0 +1,37 @@
+#!/usr/bin/env zsh
+# Git pre-commit hook: Recompile changed .zsh files to bytecode
+# This ensures .zwc files are always in sync with committed .zsh files
+
+set -euo pipefail
+
+# Check if any .zsh files are being committed
+changed_zsh_files=$(git diff --cached --name-only --diff-filter=ACM | grep '\.zsh$' || true)
+
+if [[ -z "$changed_zsh_files" ]]; then
+  # No .zsh files changed, skip
+  exit 0
+fi
+
+echo "🔧 Recompiling changed zsh files..."
+
+compiled=0
+while IFS= read -r file; do
+  if [[ -f "$file" ]]; then
+    if zcompile "$file" 2>/dev/null; then
+      echo "  ✓ Compiled $file"
+      # Stage the compiled .zwc file if it exists
+      if [[ -f "${file}.zwc" ]]; then
+        git add "${file}.zwc" 2>/dev/null || true
+      fi
+      ((compiled++))
+    else
+      echo "  ✗ Failed to compile $file" >&2
+    fi
+  fi
+done <<< "$changed_zsh_files"
+
+if [[ $compiled -gt 0 ]]; then
+  echo "✅ Recompiled $compiled file(s)"
+fi
+
+exit 0
