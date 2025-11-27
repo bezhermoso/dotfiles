@@ -11,11 +11,23 @@
   fi
 
   # Compile all zsh configuration files for faster sourcing
-  # Exclude zinit directories (plugin managers don't like .zwc files)
-  local zinit_home="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit"
+  # Exclude plugin manager and cache directories
+  local -a exclude_patterns=(
+    "*/.zinit/*" "*/zinit/*"                    # Zinit
+    "*/.oh-my-zsh/*" "*/.zprezto/*"            # Oh My Zsh, Prezto
+    "*/.antigen/*" "*/.zplug/*"                # Antigen, zplug
+    "*/.zgen/*" "*/.zgenom/*" "*/sheldon/*"    # zgen, zgenom, sheldon
+    "*/.antibody/*" "*/.cache/antibody/*"      # Antibody
+    "*/.zcompcache/*" "*/.zsh_sessions/*"      # Caches
+  )
+
   for file in ${ZDOTDIR:-$HOME}/**/*.zsh(N); do
-    # Skip zinit managed plugins
-    [[ "$file" == *"${zinit_home}"* || "$file" == *"/.zinit/"* ]] && continue
+    # Skip plugin manager/cache files
+    local skip=0
+    for pattern in "${exclude_patterns[@]}"; do
+      [[ "$file" == $~pattern ]] && { skip=1; break; }
+    done
+    [[ $skip -eq 1 ]] && continue
 
     if [[ ! -f "${file}.zwc" || "$file" -nt "${file}.zwc" ]]; then
       zcompile "$file"

@@ -5,18 +5,39 @@
 set -euo pipefail
 
 ZDOTDIR="${ZDOTDIR:-$HOME/.dotfiles/zsh}"
-ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit"
 compiled_count=0
 error_count=0
 
+# Common plugin manager and cache directories to exclude
+EXCLUDE_PATTERNS=(
+  "*/.zinit/*"                    # Zinit (old location)
+  "*/zinit/*"                     # Zinit (XDG location)
+  "*/.oh-my-zsh/*"               # Oh My Zsh
+  "*/.zprezto/*"                  # Prezto
+  "*/.antigen/*"                  # Antigen
+  "*/.zplug/*"                    # zplug
+  "*/.zgen/*"                     # zgen
+  "*/.zgenom/*"                   # zgenom
+  "*/sheldon/*"                   # Sheldon
+  "*/.antibody/*"                 # Antibody
+  "*/.cache/antibody/*"           # Antibody cache
+  "*/.zcompcache/*"               # Completion cache
+  "*/.zsh_sessions/*"             # macOS zsh sessions
+)
+
 echo "🔧 Compiling zsh configuration files..."
 
-# Compile all .zsh files (excluding zinit managed plugins)
+# Compile all .zsh files (excluding plugin managers and caches)
 for file in "$ZDOTDIR"/**/*.zsh(N); do
-  # Skip files in zinit directories (plugin managers don't like .zwc files)
-  if [[ "$file" == *"${ZINIT_HOME}"* ]] || [[ "$file" == *"/.zinit/"* ]]; then
-    continue
-  fi
+  # Skip files in plugin manager or cache directories
+  local skip=0
+  for pattern in "${EXCLUDE_PATTERNS[@]}"; do
+    if [[ "$file" == $~pattern ]]; then
+      skip=1
+      break
+    fi
+  done
+  [[ $skip -eq 1 ]] && continue
   # Skip if .zwc exists and is newer than source
   if [[ -f "${file}.zwc" && ! "$file" -nt "${file}.zwc" ]]; then
     continue
