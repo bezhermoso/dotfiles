@@ -35,7 +35,6 @@ fi
 
 # Paths
 #
-export PATH="$HOME/Library/Python/3.5/bin:$PATH"
 
 # phpbrew
 [[ -s "${HOME}/.phpbrew/bashrc" ]] && source "$HOME/.phpbrew/bashrc"

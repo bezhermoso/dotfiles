@@ -2,6 +2,14 @@
 # https://zsh.sourceforge.io/Doc/Release/Parameters.html#Parameters-Used-By-The-Shell
 # https://zsh.sourceforge.io/Doc/Release/Options.html
 
+# XDG-compliant history location (fallback when Atuin is unavailable)
+export HISTFILE="${XDG_DATA_HOME:-$HOME/.local/share}/zsh/history"
+export HISTSIZE=50000
+export SAVEHIST=50000
+
+# Ensure directory exists
+[[ -d "${HISTFILE:h}" ]] || mkdir -p "${HISTFILE:h}"
+
 # Ignore these command patterns in history:
 export HISTORY_IGNORE='(clear|history)'
 
