@@ -6,7 +6,7 @@ export FZF_DEFAULT_OPTS='
   --no-mouse --margin=0,0,0,1
   --prompt="› "
   --tabstop=2
-  --preview="[[ -d {} ]] && tree -L 1 {} || bat --style=numbers --color=always --line-range=:500 {}"
+  --preview="[[ -d {} ]] && (eza -1a {} 2>/dev/null || ls -1A {} | head -100) || bat --style=numbers --color=always --line-range=:500 {}"
 '
 export FZF_CTRL_R_OPTS='--preview=""'
 
