@@ -72,7 +72,6 @@ source_config "inc.fzf.zsh"
 # Configures atuin to be the history manager. Will override history-related zsh & FZF settings.
 source_config "inc.atuin.zsh"
 
-source_config "inc.fasd.zsh"
 source_config "inc.gcloud.zsh"
 source_config "inc.ansible.zsh"
 source_config "inc.neovim.zsh"
