@@ -5,13 +5,18 @@
 set -euo pipefail
 
 ZDOTDIR="${ZDOTDIR:-$HOME/.dotfiles/zsh}"
+ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit"
 compiled_count=0
 error_count=0
 
 echo "🔧 Compiling zsh configuration files..."
 
-# Compile all .zsh files
+# Compile all .zsh files (excluding zinit managed plugins)
 for file in "$ZDOTDIR"/**/*.zsh(N); do
+  # Skip files in zinit directories (plugin managers don't like .zwc files)
+  if [[ "$file" == *"${ZINIT_HOME}"* ]] || [[ "$file" == *"/.zinit/"* ]]; then
+    continue
+  fi
   # Skip if .zwc exists and is newer than source
   if [[ -f "${file}.zwc" && ! "$file" -nt "${file}.zwc" ]]; then
     continue

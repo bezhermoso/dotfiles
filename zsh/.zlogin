@@ -11,7 +11,12 @@
   fi
 
   # Compile all zsh configuration files for faster sourcing
+  # Exclude zinit directories (plugin managers don't like .zwc files)
+  local zinit_home="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit"
   for file in ${ZDOTDIR:-$HOME}/**/*.zsh(N); do
+    # Skip zinit managed plugins
+    [[ "$file" == *"${zinit_home}"* || "$file" == *"/.zinit/"* ]] && continue
+
     if [[ ! -f "${file}.zwc" || "$file" -nt "${file}.zwc" ]]; then
       zcompile "$file"
     fi
