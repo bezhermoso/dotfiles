@@ -10,7 +10,7 @@ gui:
       - reverse
   # Spinner config will be respected by a future LazyGit release
   spinner:
-    frames: ['⠋ ', '⠙ ', '⠹ ', '⠸ ', '⠼ ', '⠴ ', '⠦ ', '⠧ ', '⠇ ', '⠏ '] 
+    frames: ['⠋ ', '⠙ ', '⠹ ', '⠸ ', '⠼ ', '⠴ ', '⠦ ', '⠧ ', '⠇ ', '⠏ ']
 os:
   open: 'open {{filename}}'
   editPreset: "nvim"
@@ -19,13 +19,12 @@ keybinding:
     quit: 'Q'
 git:
   mainBranches: ['main', 'master', 'live']
-  paging:
-    colorArg: always
-    pager: delta --paging=never --detect-dark-light=never
+  pagers:
+    - colorArg: always
+      pager: delta --paging=never --detect-dark-light=never
 customCommands:
   - key: '<c-t>'
     context: global
     description: 'Open Lazygit in new tmux window'
     command: '[[ -n $TMUX ]] && tmux new-window -c $(tmux display-message -p "#{pane_current_path}") lazygit && tmux display-popup -C'
 #promptToReturnFromSubprocess: false
-
