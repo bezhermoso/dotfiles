@@ -9,6 +9,13 @@
       command rmdir  "${zcompdump}.zwc.lock" 2>/dev/null
     fi
   fi
+
+  # Compile all zsh configuration files for faster sourcing
+  for file in ${ZDOTDIR:-$HOME}/**/*.zsh(N); do
+    if [[ ! -f "${file}.zwc" || "$file" -nt "${file}.zwc" ]]; then
+      zcompile "$file"
+    fi
+  done
 } &!
 
 # Execute code only if STDERR is bound to a TTY.
