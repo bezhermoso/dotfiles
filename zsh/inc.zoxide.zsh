@@ -4,8 +4,6 @@ fi
 
 eval "$(zoxide init zsh --cmd cd)"
 
-# Manual alias for interactive selection (since --cmd cd doesn't create zi)
-alias zi='__zoxide_zi'
 
 # ZLE widget for pulling up interactive zoxide & change directory.
 function _zoxide-cd-widget {
