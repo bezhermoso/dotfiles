@@ -1,8 +1,6 @@
 shell = "zsh -c '{}'"
 preferred-schemes = ["base16-gruvbox-dark-hard", "base24-github-dark", "base16-gruvbox-light-hard"]
 
-hooks = ["osascript -so ~/.dotfiles/dot-config/ghostty/reload-config.scpt"]
-
 [[items]]
 name = "tmux"
 path = "https://github.com/tinted-theming/tinted-tmux"
@@ -33,7 +31,8 @@ hook = '''
 sh %f \
     -g 12 \
     -s 12 \
-    >! ~/.config/ghostty/themes/tinted-theming
+    >! ~/.config/ghostty/themes/tinted-theming \
+ && killall -SIGUSR2 ghostty
 '''
 supported-systems = ["base16", "base24"]
 
