@@ -23,7 +23,7 @@ while IFS= read -r file; do
       if [[ -f "${file}.zwc" ]]; then
         git add "${file}.zwc" 2>/dev/null || true
       fi
-      ((compiled++))
+      ((++compiled))
     else
       echo "  ✗ Failed to compile $file" >&2
     fi
