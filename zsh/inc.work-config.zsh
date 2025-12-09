@@ -12,8 +12,8 @@ WORK_CONFIG_ENCRYPTED_PRE="${HOME}/.dotfiles/zsh/work-entrypoint.sh.gpg"
 WORK_CONFIG_ENCRYPTED_POST="${HOME}/.dotfiles/zsh/work-entrypoint.post.sh.gpg"
 
 # Decrypted target files (persistent, survives restarts)
-WORK_CONFIG_DECRYPTED_PRE="${WORK_CONFIG_DIR}/work-entrypoint.sh"
-WORK_CONFIG_DECRYPTED_POST="${WORK_CONFIG_DIR}/work-entrypoint.post.sh"
+export WORK_CONFIG_DECRYPTED_PRE="${WORK_CONFIG_DIR}/work-entrypoint.sh"
+export WORK_CONFIG_DECRYPTED_POST="${WORK_CONFIG_DIR}/work-entrypoint.post.sh"
 
 # Check if running on work machine
 _is_work_machine() {
@@ -129,16 +129,17 @@ if _is_work_machine; then
   if [[ -f "$WORK_CONFIG_ENCRYPTED_POST" ]]; then
     _decrypt_work_config "$WORK_CONFIG_ENCRYPTED_POST" "$WORK_CONFIG_DECRYPTED_POST"
   fi
-
+  # NB: THIS DOESN'T WORK. 
   # Load decrypted pre-config
-  if [[ -f "$WORK_CONFIG_DECRYPTED_PRE" ]]; then
-    source "$WORK_CONFIG_DECRYPTED_PRE"
-  fi
+  # if [[ -f "$WORK_CONFIG_DECRYPTED_PRE" ]]; then
+  #   echo "Work config being loaded: $WORK_CONFIG_DECRYPTED_PRE"
+  #   source "$WORK_CONFIG_DECRYPTED_PRE"
+  # fi
 
   # Check for changes and prompt for re-encryption (in background, non-blocking)
   # This runs after shell startup to avoid slowing down prompt
   {
-    sleep 1  # Brief delay to let shell fully initialize
+    sleep 5  # Brief delay to let shell fully initialize
 
     if _check_work_config_sync "$WORK_CONFIG_ENCRYPTED_PRE" "$WORK_CONFIG_DECRYPTED_PRE"; then
       _prompt_reencrypt_work_config "$WORK_CONFIG_DECRYPTED_PRE" "$WORK_CONFIG_ENCRYPTED_PRE"

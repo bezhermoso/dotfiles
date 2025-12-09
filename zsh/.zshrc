@@ -44,8 +44,10 @@ zi snippet PZTM::completion
 # NOTE: Load this before fpath needs to be finalized.
 source_config "inc.options.zsh"
 
-# Load $WORK configuration system (handles decryption, loads pre-config)
+# Manages $WORK configuration system (handles decryption & populates env vars)
 source_config "inc.work-config.zsh"
+
+[[ -f "${WORK_CONFIG_DECRYPTED_PRE}" ]] && source "${WORK_CONFIG_DECRYPTED_PRE}"
 
 
 source_config "inc.bat.zsh"
@@ -85,10 +87,8 @@ source_config "inc.macos.zsh"
 source_config "inc.gum.zsh"
 source_config "inc.tinty.zsh"
 
-# Load $WORK post-configuration (from decrypted location if on work machine)
-if [[ -f "${HOME}/.local/share/dotfiles/work/work-entrypoint.post.sh" ]]; then
-  source "${HOME}/.local/share/dotfiles/work/work-entrypoint.post.sh"
-fi
+# # Load $WORK post-configuration (from decrypted location if on work machine)
+[[ -f "$WORK_CONFIG_DECRYPTED_POST" ]] && source "$WORK_CONFIG_DECRYPTED_POST"
 
 # Secure ShellFish integration:
 if [[ -f "$HOME/.shellfishrc" ]]; then
