@@ -1,7 +1,7 @@
 tap 'charmbracelet/tap'
-tap 'tinted-theming/tinted'
 tap 'jstkdng/programs'
 tap 'nikitabobko/tap'
+tap 'tinted-theming/tinted'
 
 cask 'font-jetbrains-mono'
 cask 'font-jetbrains-mono-nerd-font'
