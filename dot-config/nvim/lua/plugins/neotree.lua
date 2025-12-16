@@ -147,6 +147,9 @@ return {
                         never_show = {
                             ".git"
                         },
+                        never_show_by_pattern = {
+                            "*/.dotfiles/zsh/*.zwc"
+                        }
                     },
                     follow_current_file = {
                         enabled = true,
