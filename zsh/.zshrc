@@ -79,6 +79,7 @@ source_config "inc.ansible.zsh"
 source_config "inc.neovim.zsh"
 source_config "inc.edit-command-line.zsh"
 source_config "inc.undo.zsh"
+source_config "inc.magic-space.zsh"
 source_config "inc.tmux.zsh"
 
 source_config "inc.git.zsh"
