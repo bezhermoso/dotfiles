@@ -83,6 +83,7 @@ source_config "inc.magic-space.zsh"
 source_config "inc.chpwd.zsh"
 source_config "inc.suffix-aliases.zsh"
 source_config "inc.global-aliases.zsh"
+source_config "inc.zmv.zsh"
 source_config "inc.tmux.zsh"
 
 source_config "inc.git.zsh"
