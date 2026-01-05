@@ -77,6 +77,7 @@ source_config "inc.atuin.zsh"
 source_config "inc.gcloud.zsh"
 source_config "inc.ansible.zsh"
 source_config "inc.neovim.zsh"
+source_config "inc.zmv.zsh"
 source_config "inc.tmux.zsh"
 
 source_config "inc.git.zsh"
