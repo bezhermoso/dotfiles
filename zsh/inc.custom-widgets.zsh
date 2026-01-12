@@ -24,13 +24,6 @@ clear-history-keep-buffer() {
 zle -N clear-history-keep-buffer
 bindkey '^Xl' clear-history-keep-buffer
 
-# Example: Insert current date
-insert-date() {
-    LBUFFER+=$(date '+%Y-%m-%d')
-}
-zle -N insert-date
-bindkey '^Xd' insert-date
-
 # Example: Prepend 'sudo' to current command
 prepend-sudo() {
     if [[ $BUFFER != "sudo "* ]]; then
