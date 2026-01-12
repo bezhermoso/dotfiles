@@ -73,6 +73,11 @@ bindkey '^Xde' _hotkey_docker_exec
 # bindkey -s '^Xcd' 'cd ..^M'
 bindkey -s '^Xmk' 'mkdir -p '
 
+# Date insertion
+_hotkey_insert_date() { LBUFFER+=$(date '+%Y-%m-%d') }
+zle -N _hotkey_insert_date
+bindkey '^Xdd' _hotkey_insert_date
+
 # Search patterns
 _hotkey_find() { _insert_with_cursor 'find . -name "{CURSOR}"' }
 zle -N _hotkey_find
