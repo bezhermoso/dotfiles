@@ -61,6 +61,17 @@ bindkey -s '^Xgs' 'git status^M'  # ^M = Enter (auto-execute)
 bindkey -s '^Xgd' 'git diff '
 bindkey -s '^Xgl' 'git log --oneline -10^M'
 
+# Vi command mode: git shortcuts
+# The "x" prefix is a mnemonic for "expansion" (mirroring ^X in emacs mode).
+# Simple insertions use 'i' prefix to enter insert mode before the text.
+bindkey -M vicmd 'xgc' _hotkey_git_commit
+bindkey -M vicmd -s 'xga' 'igit add '
+bindkey -M vicmd -s 'xgp' 'igit push'
+bindkey -M vicmd -s 'xgP' 'igit push --force-with-lease'
+bindkey -M vicmd -s 'xgs' 'igit status^M'
+bindkey -M vicmd -s 'xgd' 'igit diff '
+bindkey -M vicmd -s 'xgl' 'igit log --oneline -10^M'
+
 # Docker shortcuts
 bindkey -s '^Xdc' 'docker compose '
 bindkey -s '^Xdp' 'docker ps'
@@ -68,15 +79,26 @@ _hotkey_docker_exec() { _insert_with_cursor 'docker exec -it {CURSOR} /bin/bash'
 zle -N _hotkey_docker_exec
 bindkey '^Xde' _hotkey_docker_exec
 
+# Vi command mode: docker shortcuts
+bindkey -M vicmd -s 'xdc' 'idocker compose '
+bindkey -M vicmd -s 'xdp' 'idocker ps'
+bindkey -M vicmd 'xde' _hotkey_docker_exec
+
 # Common command patterns
 # bindkey -s '^Xll' 'ls -lah^M'
 # bindkey -s '^Xcd' 'cd ..^M'
 bindkey -s '^Xmk' 'mkdir -p '
 
+# Vi command mode: common commands
+bindkey -M vicmd -s 'xmk' 'imkdir -p '
+
 # Date insertion
 _hotkey_insert_date() { LBUFFER+=$(date '+%Y-%m-%d') }
 zle -N _hotkey_insert_date
 bindkey '^Xdd' _hotkey_insert_date
+
+# Vi command mode: date insertion
+bindkey -M vicmd 'xdd' _hotkey_insert_date
 
 # Search patterns
 _hotkey_find() { _insert_with_cursor 'find . -name "{CURSOR}"' }
@@ -86,6 +108,10 @@ bindkey '^Xfg' _hotkey_find
 _hotkey_rg() { _insert_with_cursor 'rg "{CURSOR}" .' }
 zle -N _hotkey_rg
 bindkey '^Xrg' _hotkey_rg
+
+# Vi command mode: search patterns
+bindkey -M vicmd 'xfg' _hotkey_find
+bindkey -M vicmd 'xrg' _hotkey_rg
 
 # SSH shortcuts (customize with your common hosts)
 # bindkey -s '^Xsh' 'ssh user@hostname'
