@@ -1,0 +1,8 @@
+{
+  "name": "personal-tools",
+  "description": "Personal commands, skills, and agents for daily development",
+  "version": "1.0.0",
+  "author": {
+    "name": "Personal"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "name": "personal-tools",
+  "owner": {
+    "name": "Personal",
+    "email": "personal@local"
+  },
+  "plugins": [
+    {
+      "name": "personal-tools",
+      "source": "./plugins/personal-tools",
+      "description": "Personal commands, skills, and agents",
+      "version": "1.0.0",
+      "author": {
+        "name": "Personal"
+      }
+    }
+  ]
+}
