@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #
 # build-claude-config.sh
-# Builds ~/.claude/CLAUDE.md by merging personal and work configurations
+# Builds ~/.claude/CLAUDE.md and installs commands/skills by merging personal and work configurations
 #
 # This script is safe to run multiple times (idempotent)
 #
@@ -17,20 +17,38 @@ WORK_CLAUDE_DIR="${CLAUDE_WORK_DIR:-$HOME/.claude/work}"
 PERSONAL_CLAUDE="$DOTFILES_DIR/claude/personal/CLAUDE.md"
 WORK_CLAUDE="$WORK_CLAUDE_DIR/CLAUDE.md"
 
+# Source directories for commands and skills
+PERSONAL_COMMANDS="$DOTFILES_DIR/claude/personal/commands"
+PERSONAL_SKILLS="$DOTFILES_DIR/claude/personal/skills"
+WORK_COMMANDS="$WORK_CLAUDE_DIR/commands"
+WORK_SKILLS="$WORK_CLAUDE_DIR/skills"
+
 # Destination
 OUTPUT_FILE="$CLAUDE_DIR/CLAUDE.md"
+TARGET_COMMANDS="$CLAUDE_DIR/commands"
+TARGET_SKILLS="$CLAUDE_DIR/skills"
 
 # Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
+CYAN='\033[0;36m'
 NC='\033[0m' # No Color
 
 echo -e "${BLUE}🔧 Building Claude configuration...${NC}"
+echo ""
 
-# Ensure ~/.claude directory exists
+# Ensure ~/.claude directories exist
 mkdir -p "$CLAUDE_DIR"
+mkdir -p "$TARGET_COMMANDS"
+mkdir -p "$TARGET_SKILLS"
+
+# =============================================================================
+# 1. Build CLAUDE.md
+# =============================================================================
+
+echo -e "${CYAN}📝 Building CLAUDE.md...${NC}"
 
 # Check if personal config exists
 if [[ ! -f "$PERSONAL_CLAUDE" ]]; then
@@ -58,26 +76,186 @@ fi
         echo "<!-- Merged from $WORK_CLAUDE -->"
         echo ""
         cat "$WORK_CLAUDE"
-        echo -e "${GREEN}✓ Merged work configuration from $WORK_CLAUDE${NC}"
+        echo -e "${GREEN}  ✓ Merged work configuration from $WORK_CLAUDE${NC}"
     else
-        echo -e "${YELLOW}⚠ No work configuration found at $WORK_CLAUDE (skipping)${NC}"
+        echo -e "${YELLOW}  ⚠ No work configuration found at $WORK_CLAUDE (skipping)${NC}"
     fi
 
 } > "$OUTPUT_FILE"
 
-echo -e "${GREEN}✅ Generated $OUTPUT_FILE${NC}"
+echo -e "${GREEN}  ✅ Generated $OUTPUT_FILE${NC}"
 
-# Show a summary
+# =============================================================================
+# 2. Install Commands
+# =============================================================================
+
+echo ""
+echo -e "${CYAN}🔌 Installing commands...${NC}"
+
+PERSONAL_CMD_COUNT=0
+WORK_CMD_COUNT=0
+
+# Install personal commands
+if [[ -d "$PERSONAL_COMMANDS" ]]; then
+    while IFS= read -r -d '' cmd_file; do
+        cmd_name=$(basename "$cmd_file")
+        target="$TARGET_COMMANDS/$cmd_name"
+
+        # Remove existing symlink or file if it exists
+        [[ -L "$target" || -f "$target" ]] && rm -f "$target"
+
+        # Create symlink
+        ln -sf "$cmd_file" "$target"
+        ((PERSONAL_CMD_COUNT++)) || true
+    done < <(find "$PERSONAL_COMMANDS" -maxdepth 1 -type f -name "*.md" -print0 2>/dev/null || true)
+
+    if [[ $PERSONAL_CMD_COUNT -gt 0 ]]; then
+        echo -e "${GREEN}  ✓ Installed $PERSONAL_CMD_COUNT personal command(s)${NC}"
+    fi
+else
+    echo -e "${YELLOW}  ⚠ No personal commands directory found${NC}"
+fi
+
+# Install work commands
+if [[ -d "$WORK_COMMANDS" ]]; then
+    while IFS= read -r -d '' cmd_file; do
+        cmd_name=$(basename "$cmd_file")
+        target="$TARGET_COMMANDS/$cmd_name"
+
+        # Check for conflicts
+        if [[ -L "$target" ]] && [[ "$(readlink "$target")" == "$PERSONAL_COMMANDS/$cmd_name" ]]; then
+            echo -e "${YELLOW}  ⚠ WARNING: Work command '$cmd_name' conflicts with personal command (keeping personal)${NC}"
+            continue
+        fi
+
+        # Remove existing symlink or file if it exists
+        [[ -L "$target" || -f "$target" ]] && rm -f "$target"
+
+        # Create symlink
+        ln -sf "$cmd_file" "$target"
+        ((WORK_CMD_COUNT++)) || true
+    done < <(find "$WORK_COMMANDS" -maxdepth 1 -type f -name "*.md" -print0 2>/dev/null || true)
+
+    if [[ $WORK_CMD_COUNT -gt 0 ]]; then
+        echo -e "${GREEN}  ✓ Installed $WORK_CMD_COUNT work command(s)${NC}"
+    fi
+else
+    echo -e "${YELLOW}  ⚠ No work commands directory found${NC}"
+fi
+
+if [[ $PERSONAL_CMD_COUNT -eq 0 && $WORK_CMD_COUNT -eq 0 ]]; then
+    echo -e "${YELLOW}  ⚠ No commands to install${NC}"
+fi
+
+# =============================================================================
+# 3. Install Skills
+# =============================================================================
+
+echo ""
+echo -e "${CYAN}🎯 Installing skills...${NC}"
+
+PERSONAL_SKILL_COUNT=0
+WORK_SKILL_COUNT=0
+
+# Install personal skills
+if [[ -d "$PERSONAL_SKILLS" ]]; then
+    while IFS= read -r -d '' skill_dir; do
+        skill_name=$(basename "$skill_dir")
+        target="$TARGET_SKILLS/$skill_name"
+
+        # Skip if not a directory or if it doesn't contain SKILL.md
+        [[ ! -f "$skill_dir/SKILL.md" ]] && continue
+
+        # Remove existing symlink or directory if it exists
+        [[ -L "$target" || -d "$target" ]] && rm -rf "$target"
+
+        # Create symlink
+        ln -sf "$skill_dir" "$target"
+        ((PERSONAL_SKILL_COUNT++)) || true
+    done < <(find "$PERSONAL_SKILLS" -mindepth 1 -maxdepth 1 -type d -print0 2>/dev/null || true)
+
+    if [[ $PERSONAL_SKILL_COUNT -gt 0 ]]; then
+        echo -e "${GREEN}  ✓ Installed $PERSONAL_SKILL_COUNT personal skill(s)${NC}"
+    fi
+else
+    echo -e "${YELLOW}  ⚠ No personal skills directory found${NC}"
+fi
+
+# Install work skills
+if [[ -d "$WORK_SKILLS" ]]; then
+    while IFS= read -r -d '' skill_dir; do
+        skill_name=$(basename "$skill_dir")
+        target="$TARGET_SKILLS/$skill_name"
+
+        # Skip if not a directory or if it doesn't contain SKILL.md
+        [[ ! -f "$skill_dir/SKILL.md" ]] && continue
+
+        # Check for conflicts
+        if [[ -L "$target" ]] && [[ "$(readlink "$target")" == "$PERSONAL_SKILLS/$skill_name" ]]; then
+            echo -e "${YELLOW}  ⚠ WARNING: Work skill '$skill_name' conflicts with personal skill (keeping personal)${NC}"
+            continue
+        fi
+
+        # Remove existing symlink or directory if it exists
+        [[ -L "$target" || -d "$target" ]] && rm -rf "$target"
+
+        # Create symlink
+        ln -sf "$skill_dir" "$target"
+        ((WORK_SKILL_COUNT++)) || true
+    done < <(find "$WORK_SKILLS" -mindepth 1 -maxdepth 1 -type d -print0 2>/dev/null || true)
+
+    if [[ $WORK_SKILL_COUNT -gt 0 ]]; then
+        echo -e "${GREEN}  ✓ Installed $WORK_SKILL_COUNT work skill(s)${NC}"
+    fi
+else
+    echo -e "${YELLOW}  ⚠ No work skills directory found${NC}"
+fi
+
+if [[ $PERSONAL_SKILL_COUNT -eq 0 && $WORK_SKILL_COUNT -eq 0 ]]; then
+    echo -e "${YELLOW}  ⚠ No skills to install${NC}"
+fi
+
+# =============================================================================
+# 4. Summary
+# =============================================================================
+
+echo ""
+echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+echo -e "${BLUE}📊 Summary${NC}"
+echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+
+# CLAUDE.md stats
 PERSONAL_LINES=$(wc -l < "$PERSONAL_CLAUDE")
 TOTAL_LINES=$(wc -l < "$OUTPUT_FILE")
 WORK_LINES=$((TOTAL_LINES - PERSONAL_LINES - 10)) # Approximate, accounting for headers
 
 echo ""
-echo "📊 Summary:"
-echo "  Personal config: $PERSONAL_LINES lines"
+echo "  Configuration (CLAUDE.md):"
+echo "    Personal config: $PERSONAL_LINES lines"
 if [[ -f "$WORK_CLAUDE" ]]; then
-    echo "  Work config:     $WORK_LINES lines (approx)"
+    echo "    Work config:     $WORK_LINES lines (approx)"
 fi
-echo "  Total:           $TOTAL_LINES lines"
+echo "    Total:           $TOTAL_LINES lines"
+
 echo ""
-echo -e "${BLUE}💡 Tip: Run 'make claude-config' to rebuild anytime${NC}"
+echo "  Commands:"
+echo "    Personal: $PERSONAL_CMD_COUNT"
+echo "    Work:     $WORK_CMD_COUNT"
+echo "    Total:    $((PERSONAL_CMD_COUNT + WORK_CMD_COUNT))"
+
+echo ""
+echo "  Skills:"
+echo "    Personal: $PERSONAL_SKILL_COUNT"
+echo "    Work:     $WORK_SKILL_COUNT"
+echo "    Total:    $((PERSONAL_SKILL_COUNT + WORK_SKILL_COUNT))"
+
+echo ""
+echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+echo ""
+echo -e "${GREEN}✅ Claude configuration complete!${NC}"
+echo ""
+echo -e "${BLUE}💡 Tips:${NC}"
+echo "  • Run 'make claude-config' to rebuild anytime"
+echo "  • Use '/help' in Claude Code to see your commands"
+echo "  • Skills activate automatically based on context"
+echo ""

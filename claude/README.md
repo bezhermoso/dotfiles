@@ -1,30 +1,53 @@
 # Claude AI Configuration Framework
 
-This directory contains a framework for managing personal and work Claude AI configurations separately, with safeguards to prevent accidental commits of work-related content.
+This directory contains a framework for managing personal and work Claude AI configurations, commands, and skills separately, with safeguards to prevent accidental commits of work-related content.
 
 ## 🎯 Goals
 
-1. **Version control personal AI guidance** - Commit your personal CLAUDE.md to dotfiles
+1. **Version control personal AI guidance** - Commit your personal CLAUDE.md, commands, and skills to dotfiles
 2. **Incorporate work AI guidance** - Merge work-provided configs without tracking them
 3. **Prevent exposure** - Multiple safeguards against accidentally committing work content
 4. **Subordinate by design** - Doesn't assume ownership of `~/.claude/`, plays nice with work tooling
 
+## ✨ Features
+
+- **CLAUDE.md**: Personal + work AI configuration merged
+- **Commands**: Personal + work slash commands installed via symlinks
+- **Skills**: Personal + work skills installed via symlinks
+- **Safety**: Multiple layers prevent accidental work content commits
+- **Flexibility**: Works standalone or with work-provided tooling
+
 ## 📁 Directory Structure
 
 ```
-dotfiles/
-├── claude/
-│   ├── README.md                    # This file
-│   ├── build-claude-config.sh       # Build script (merges configs)
-│   ├── personal/
-│   │   └── CLAUDE.md                # YOUR personal AI guidelines (COMMITTED)
-│   └── work-template/
-│       └── CLAUDE.md                # Template for work config (COMMITTED)
-│
-~/.claude/                            # Claude AI runtime directory (NOT in dotfiles)
-├── CLAUDE.md                         # Generated file (DO NOT EDIT)
-└── work/
-    └── CLAUDE.md                     # Work-specific config (NOT COMMITTED)
+dotfiles/claude/
+├── README.md                         # This file
+├── COMMANDS-AND-SKILLS.md            # Commands/skills guide
+├── build-claude-config.sh            # Build script (merges & installs)
+├── personal/                         # YOUR personal configs (COMMITTED)
+│   ├── CLAUDE.md                     # AI guidelines
+│   ├── commands/                     # Slash commands
+│   │   └── example.md
+│   └── skills/                       # Skills
+│       └── example-skill/
+│           └── SKILL.md
+└── work-template/                    # Templates (COMMITTED)
+    ├── CLAUDE.md                     # Work config template
+    ├── commands/                     # Work commands template
+    └── skills/                       # Work skills template
+
+~/.claude/                            # Runtime directory (NOT in dotfiles)
+├── CLAUDE.md                         # Generated (personal + work merged)
+├── commands/                         # Generated (symlinks)
+│   ├── example.md                    → dotfiles/claude/personal/commands/example.md
+│   └── work-cmd.md                   → ~/.claude/work/commands/work-cmd.md
+├── skills/                           # Generated (symlinks)
+│   ├── example-skill/                → dotfiles/claude/personal/skills/example-skill/
+│   └── work-skill/                   → ~/.claude/work/skills/work-skill/
+└── work/                             # Work configs (NOT COMMITTED, gitignored)
+    ├── CLAUDE.md                     # Work AI guidelines
+    ├── commands/                     # Work commands
+    └── skills/                       # Work skills
 ```
 
 ## 🚀 Setup
@@ -58,6 +81,54 @@ Edit work guidelines (this file is gitignored):
 vim ~/.claude/work/CLAUDE.md
 make claude-config  # Rebuild
 ```
+
+### Managing Commands and Skills
+
+The framework also manages slash commands and skills:
+
+**Personal commands** (tracked in git):
+```bash
+# Create a command
+cat > ~/.dotfiles/claude/personal/commands/my-cmd.md <<'EOF'
+---
+description: What this command does
+---
+# My Command
+Instructions for Claude...
+EOF
+
+# Install
+make claude-config
+
+# Use in Claude Code
+/my-cmd
+```
+
+**Personal skills** (tracked in git):
+```bash
+# Create a skill
+mkdir -p ~/.dotfiles/claude/personal/skills/my-skill
+cat > ~/.dotfiles/claude/personal/skills/my-skill/SKILL.md <<'EOF'
+---
+name: my-skill
+description: When to activate this skill
+---
+# My Skill
+Knowledge for Claude...
+EOF
+
+# Install
+make claude-config
+```
+
+**Work commands/skills** (gitignored):
+```bash
+# Add to ~/.claude/work/commands/ and ~/.claude/work/skills/
+# They'll be installed alongside personal ones
+make claude-config
+```
+
+📖 **See [COMMANDS-AND-SKILLS.md](./COMMANDS-AND-SKILLS.md) for complete documentation.**
 
 ## 🔒 Safety Features
 
