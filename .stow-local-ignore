@@ -34,5 +34,6 @@
 ^/logos
 ^/ascii
 ^/bash
+^/claude
 # TODO: Make this work:
 # ^(?!\.config).+

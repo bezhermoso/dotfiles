@@ -77,3 +77,30 @@ setup-zsh: compile-zsh install-launchagent install-git-hooks
 	@echo "  • On commit: Git pre-commit hook"
 	@echo ""
 
+# Claude AI configuration management
+.PHONY: claude-config
+claude-config:
+	@./claude/build-claude-config.sh
+
+.PHONY: claude-setup
+claude-setup:
+	@echo "🤖 Setting up Claude AI configuration..."
+	@mkdir -p ~/.claude/work
+	@if [ ! -f ~/.claude/work/CLAUDE.md ]; then \
+		echo "📝 Creating work CLAUDE.md template..."; \
+		cp claude/work-template/CLAUDE.md ~/.claude/work/CLAUDE.md; \
+		echo "⚠️  Edit ~/.claude/work/CLAUDE.md with work-specific guidelines"; \
+	else \
+		echo "✓ Work CLAUDE.md already exists"; \
+	fi
+	@$(MAKE) claude-config
+	@echo ""
+	@echo "✅ Claude configuration complete!"
+	@echo ""
+	@echo "  Personal config: ./claude/personal/CLAUDE.md"
+	@echo "  Work config:     ~/.claude/work/CLAUDE.md"
+	@echo "  Generated:       ~/.claude/CLAUDE.md"
+	@echo ""
+	@echo "💡 Run 'make claude-config' to rebuild after editing"
+	@echo ""
+

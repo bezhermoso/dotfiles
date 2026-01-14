@@ -43,3 +43,10 @@ dot-config/bat/themes/*
 # Ignore the colors table created by tinty-terminal for Alacritty
 dot-config/alacritty/colors.toml
 *.zwc
+
+# Claude AI configuration - work-related files
+# Work Claude configs should live in ~/.claude/work/ (not in dotfiles)
+claude/work/*
+!claude/work-template/
+dot-claude/
+.claude/
