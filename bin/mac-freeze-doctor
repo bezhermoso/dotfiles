@@ -1,0 +1,309 @@
+#!/usr/bin/env zsh
+# mac-freeze-doctor.zsh — Diagnose and fix macOS freeze/high-CPU issues
+# Based on a real troubleshooting session, March 2026
+#
+# Retrospective timeline:
+# ─────────────────────────────────────────────────────────────────────
+# SYMPTOM:  Mac freezing constantly, suspected corespotlightd CPU spike.
+#
+# FINDING 1: fs_usage showed corespotlightd doing RdMeta B-tree walks on
+#            /dev/disk3 — a full re-index across a 4TB APFS volume.
+#
+# FINDING 2: `mdutil -s /` showed indexing DISABLED on /, yet corespotlightd
+#            was still burning 71% CPU. Red herring: the process was stuck
+#            writing to corrupt index stores in a loop, not actively indexing.
+#
+# FINDING 3: `mdutil -as` revealed /System/Volumes/Preboot had indexing
+#            enabled — an 8.3GB volume with no searchable content. Disabled it.
+#            ✅ Partial fix.
+#
+# FINDING 4: fs_usage piped through frequency analysis exposed Logitech
+#            Options+ (logioptionsplus_updater) as the top filesystem I/O
+#            consumer across multiple PIDs/threads. Uninstalled it entirely.
+#            ✅ Fix — disk I/O noise eliminated.
+#
+# FINDING 5: top revealed the real CPU pileup:
+#            - com.apple.WebKit (PID 3432): 100% CPU for 8.5 HOURS — runaway
+#            - com.apple.podcas: 82% CPU — stuck indexing/downloading
+#            - corespotlightd: 76% — fed by Podcasts + WebKit pushing into
+#              CoreSpotlight stores
+#            - suggestd: 72% — downstream of corespotlightd
+#            Total: ~325% CPU from a cascade. kernel_task at 91% was thermal
+#            throttling in response.
+#
+# RESOLUTION: Kill chain in order (WebKit → Podcasts → suggestd →
+#             corespotlightd), remove Logitech Options+, re-enable Spotlight
+#             with clean index + exclusions.
+#
+# KEY LESSON: The initial suspect (corespotlightd) was a SYMPTOM, not the
+#             root cause. Multiple processes were feeding it work. Always
+#             check the full top output before focusing on one process.
+#
+# WHAT DIDN'T WORK:
+#   - `sudo rm -rf /System/Volumes/Data/.Spotlight-V100` → SIP blocked it
+#   - `sudo mdutil -E /` with indexing disabled → just re-confirmed disabled
+#   - Killing corespotlightd alone → it respawned and resumed the loop
+#     because upstream processes (Podcasts, WebKit) kept feeding it
+#
+# WHAT WORKED:
+#   - Killing the entire chain of runaway processes in dependency order
+#   - Disabling Preboot indexing
+#   - Removing Logitech Options+
+#   - Re-enabling Spotlight: enable FIRST, then erase (order matters)
+#   - Adding exclusions for dev directories before re-index
+# ─────────────────────────────────────────────────────────────────────
+
+set -euo pipefail
+
+# ── Colors & formatting ──────────────────────────────────────────────
+autoload -U colors && colors
+RED=$fg[red]; GREEN=$fg[green]; YELLOW=$fg[yellow]; CYAN=$fg[cyan]; BOLD=$bold_color; RESET=$reset_color
+
+header()  { print "\n${BOLD}${CYAN}═══ $1 ═══${RESET}" }
+info()    { print "${CYAN}ℹ${RESET}  $1" }
+warn()    { print "${YELLOW}⚠${RESET}  $1" }
+success() { print "${GREEN}✓${RESET}  $1" }
+danger()  { print "${RED}✗${RESET}  $1" }
+ask()     { print -n "${YELLOW}?${RESET}  $1 [y/N] "; read -r ans; [[ "$ans" =~ ^[Yy] ]] }
+
+# ── Thresholds ───────────────────────────────────────────────────────
+CPU_THRESHOLD=50  # % CPU to flag a process as problematic
+KNOWN_OFFENDERS=(
+  "logioptionsplus"
+  "logioptionsplus_updater"
+  "logioptionsplus_agent"
+)
+KNOWN_RUNAWAYS=(
+  "com.apple.WebKit"
+  "com.apple.podcas"
+  "corespotlightd"
+  "suggestd"
+  "nsurlsessiond"
+  "trustd"
+  "mediaanalysisd"
+  "photolibraryd"
+  "photoanalysisd"
+)
+
+# ── Step 1: System overview ──────────────────────────────────────────
+header "SYSTEM OVERVIEW"
+
+sw_vers_output=$(sw_vers 2>/dev/null)
+print "$sw_vers_output"
+sysctl -n machdep.cpu.brand_string 2>/dev/null
+print "Memory: $(sysctl -n hw.memsize | awk '{printf "%.0f GB", $1/1073741824}')"
+print ""
+
+# ── Step 2: Top CPU consumers ────────────────────────────────────────
+header "TOP CPU CONSUMERS"
+
+# Capture top output
+top_snapshot=$(top -l 2 -o cpu -n 15 -s 2 | tail -16)
+print "$top_snapshot"
+print ""
+
+# Parse high-CPU processes
+high_cpu_pids=()
+high_cpu_names=()
+
+while IFS= read -r line; do
+  pid=$(echo "$line" | awk '{print $1}')
+  cmd=$(echo "$line" | awk '{print $2}')
+  cpu=$(echo "$line" | awk '{print $3}')
+
+  # Skip header or non-numeric
+  [[ "$pid" =~ ^[0-9]+$ ]] || continue
+  cpu_int=${cpu%.*}
+  (( cpu_int >= CPU_THRESHOLD )) || continue
+
+  high_cpu_pids+=("$pid")
+  high_cpu_names+=("$cmd")
+  danger "$cmd (PID $pid) at ${cpu}% CPU"
+done <<< "$top_snapshot"
+
+if (( ${#high_cpu_pids} == 0 )); then
+  success "No processes above ${CPU_THRESHOLD}% CPU. System looks healthy."
+fi
+
+# ── Step 3: Check for known offenders ────────────────────────────────
+header "KNOWN OFFENDER CHECK"
+
+found_offenders=()
+for offender in "${KNOWN_OFFENDERS[@]}"; do
+  pids_found=$(pgrep -f "$offender" 2>/dev/null || true)
+  if [[ -n "$pids_found" ]]; then
+    danger "Found running: $offender (PIDs: ${pids_found//$'\n'/, })"
+    found_offenders+=("$offender")
+  fi
+done
+
+if (( ${#found_offenders} == 0 )); then
+  success "No known offenders running."
+else
+  warn "Logitech Options+ is a known cause of disk I/O storms."
+  if ask "Kill Logitech Options+ processes?"; then
+    for offender in "${found_offenders[@]}"; do
+      killall -9 "$offender" 2>/dev/null && success "Killed $offender" || true
+    done
+  fi
+fi
+
+# ── Step 4: Spotlight status ─────────────────────────────────────────
+header "SPOTLIGHT STATUS"
+
+mdutil_output=$(sudo mdutil -as 2>/dev/null)
+print "$mdutil_output"
+print ""
+
+# Check if Preboot is indexed (it shouldn't be)
+if echo "$mdutil_output" | grep -A1 "Preboot" | grep -q "Indexing enabled"; then
+  warn "Preboot volume has indexing enabled (unnecessary)."
+  if ask "Disable Spotlight on Preboot?"; then
+    sudo mdutil -i off /System/Volumes/Preboot
+    success "Preboot indexing disabled."
+  fi
+fi
+
+# ── Step 5: Check for runaway processes ──────────────────────────────
+header "RUNAWAY PROCESS ANALYSIS"
+
+for proc_name in "${KNOWN_RUNAWAYS[@]}"; do
+  while IFS= read -r line; do
+    [[ -z "$line" ]] && continue
+    pid=$(echo "$line" | awk '{print $2}')
+    cpu=$(echo "$line" | awk '{print $3}')
+    time_str=$(echo "$line" | awk '{print $10}')
+
+    cpu_int=${cpu%.*}
+    (( cpu_int >= CPU_THRESHOLD )) || continue
+
+    # Extract hours from TIME column (HH:MM.SS or MM:SS.SS)
+    hours=0
+    if [[ "$time_str" =~ ^([0-9]+):([0-9]+) ]]; then
+      mins=${match[1]}
+      (( hours = mins / 60 ))
+    fi
+
+    danger "$proc_name (PID $pid): ${cpu}% CPU, runtime: $time_str"
+
+    if (( hours >= 1 )); then
+      warn "  → Running for ${hours}+ hours at high CPU. Likely stuck."
+    fi
+  done < <(ps aux | grep "$proc_name" | grep -v grep 2>/dev/null || true)
+done
+
+# ── Step 6: Filesystem I/O check ─────────────────────────────────────
+header "FILESYSTEM I/O HOTSPOTS"
+
+info "Sampling filesystem activity for 5 seconds..."
+io_snapshot=$(sudo fs_usage -w -e -f filesys 2>/dev/null | head -500 || true)
+
+if [[ -n "$io_snapshot" ]]; then
+  info "Top processes by filesystem operations:"
+  echo "$io_snapshot" | awk '{print $NF}' | sort | uniq -c | sort -rn | head -10
+  print ""
+
+  # Check for Spotlight-specific I/O
+  spotlight_io=$(echo "$io_snapshot" | grep -c "corespotlightd" || true)
+  if (( spotlight_io > 100 )); then
+    warn "corespotlightd: $spotlight_io filesystem operations in 5s — elevated."
+  fi
+fi
+
+# ── Step 7: Memory pressure ──────────────────────────────────────────
+header "MEMORY PRESSURE"
+
+mem_pressure=$(memory_pressure 2>/dev/null | tail -1)
+print "$mem_pressure"
+
+if echo "$mem_pressure" | grep -qi "critical\|warning"; then
+  danger "Memory pressure is elevated. System may be swapping."
+  info "Check for memory hogs: top -l 1 -o mem -n 10"
+fi
+
+# ── Step 8: Offer fixes ──────────────────────────────────────────────
+header "RECOMMENDED ACTIONS"
+
+# Collect killable processes
+kill_targets=()
+for i in {1..${#high_cpu_pids}}; do
+  pid=${high_cpu_pids[$i]}
+  name=${high_cpu_names[$i]}
+
+  # Don't offer to kill critical system processes
+  [[ "$name" == "kernel_task" || "$name" == "WindowServer" ]] && continue
+  kill_targets+=("$pid:$name")
+done
+
+if (( ${#kill_targets} > 0 )); then
+  warn "High-CPU processes that can be killed:"
+  for target in "${kill_targets[@]}"; do
+    pid=${target%%:*}
+    name=${target#*:}
+    info "  PID $pid — $name"
+  done
+
+  if ask "Kill all listed high-CPU processes?"; then
+    for target in "${kill_targets[@]}"; do
+      pid=${target%%:*}
+      name=${target#*:}
+      kill -9 "$pid" 2>/dev/null && success "Killed $name ($pid)" || warn "Failed to kill $pid"
+    done
+    info "Waiting 5 seconds for system to settle..."
+    sleep 5
+  fi
+fi
+
+# ── Step 9: Spotlight rebuild option ─────────────────────────────────
+if (( spotlight_io > 100 )) 2>/dev/null || false; then
+  header "SPOTLIGHT REBUILD"
+  warn "Spotlight appears to be churning. Options:"
+  info "  1) Kill corespotlightd and let it restart clean"
+  info "  2) Full rebuild: erase indexes and re-index from scratch"
+  info "  3) Skip"
+  print -n "${YELLOW}?${RESET}  Choose [1/2/3]: "; read -r choice
+
+  case "$choice" in
+    1)
+      sudo killall -9 corespotlightd 2>/dev/null
+      success "Killed corespotlightd. It will restart automatically."
+      ;;
+    2)
+      info "Erasing indexes and rebuilding..."
+      sudo mdutil -i on /
+      sudo mdutil -i on /System/Volumes/Data
+      sudo mdutil -E /
+      sudo mdutil -E /System/Volumes/Data
+      sudo mdutil -i off /System/Volumes/Preboot
+      success "Spotlight rebuild initiated. CPU will spike temporarily."
+      warn "Add exclusions NOW: System Settings → Siri & Spotlight → Privacy"
+      warn "Recommended exclusions for dev machines:"
+      info "  ~/.gradle"
+      info "  ~/.m2"
+      info "  ~/go"
+      info "  ~/node_modules"
+      info "  Project build/ and out/ directories"
+      info "  Docker volumes, VM disk images"
+      ;;
+    *)
+      info "Skipped."
+      ;;
+  esac
+fi
+
+# ── Step 10: Final status ────────────────────────────────────────────
+header "POST-FIX STATUS"
+
+info "Current top CPU consumers:"
+top -l 1 -o cpu -n 5 -s 1 | tail -6
+
+print ""
+info "Spotlight status:"
+sudo mdutil -as 2>/dev/null
+
+print ""
+success "Diagnostic complete."
+info "If freezes persist, check:"
+info "  • Which app spawns runaway WebKit processes (ps -p <PID> -o ppid,command)"
+info "  • Thermal state: sudo powermetrics --samplers smc -i 5000 -n 1 | grep temp"
+info "  • Disk I/O: sudo fs_usage -w -e -f filesys | head -500"
