@@ -8,13 +8,14 @@
 .*\.gif$
 .*\.png$
 
-^/Makefile
-^/preview.png
-^/README.md
 ^/*.md
+^/Makefile
+^/README.md
 ^/applescripts
+^/ascii
 ^/base16-fzf
 ^/base16-shell
+^/bash
 ^/bin
 ^/fzf
 ^/gh
@@ -22,17 +23,19 @@
 ^/hammerspoon
 ^/homebrew
 ^/languages
+^/launchagents
+^/logos
 ^/mycli
 ^/notes
 ^/pgcli
+^/preview.png
+^/scripts
+^/ssh
+^/terminfo
+^/terminfo.bak
 ^/tig
 ^/vim
 ^/workflows
 ^/zsh
-^/terminfo
-^/ssh
-^/logos
-^/ascii
-^/bash
 # TODO: Make this work:
 # ^(?!\.config).+
