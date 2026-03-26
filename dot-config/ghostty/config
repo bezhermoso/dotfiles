@@ -43,3 +43,4 @@ keybind = cmd+right_bracket=next_tab
 keybind = cmd+comma=last_tab
 
 theme = "tinted-theming"
+unfocused-split-opacity = 0.8
