@@ -18,7 +18,7 @@ return {
             -- local todos_component = require("todos-lualine").component({})
             require('lualine').setup({
                 options = {
-                    theme = 'base16',
+                    theme = 'tinted',
                     section_separators = '',
                     component_separators = '',
                 },
