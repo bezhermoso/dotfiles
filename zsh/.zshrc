@@ -92,6 +92,7 @@ source_config "inc.yazi.zsh"
 source_config "inc.macos.zsh"
 source_config "inc.gum.zsh"
 source_config "inc.tinty.zsh"
+source_config "inc.claude.zsh"
 
 # # Load $WORK post-configuration (from decrypted location if on work machine)
 [[ -f "$WORK_CONFIG_DECRYPTED_POST" ]] && source "$WORK_CONFIG_DECRYPTED_POST"
@@ -104,3 +105,11 @@ fi
 # Clean up the local variables & functions
 unset current_dir
 unset -f source_config
+
+# export WT_MAIN_REPO_ROOT="$HOME/dev/java-monorepo"
+# export WT_WORKTREES_BASE="$HOME/dev/java-monorepo-wts"
+# export WT_IDEA_FILES_BASE="$HOME/dev/java-monorepo-ide-files"
+# export WT_ACTIVE_WORKTREE="$HOME/dev/java"
+# export WT_BASE_BRANCH=master
+#
+[[ -f "$HOME/.wt/wt.sh" ]] && source "$HOME/.wt/wt.sh"
