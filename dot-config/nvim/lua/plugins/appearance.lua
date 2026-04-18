@@ -73,36 +73,39 @@ return {
         priority = 5000,
         lazy = false,
         dev = true,
-        dependencies = {
-            { 'rcarriga/nvim-notify' },
-            { 'rktjmp/fwatch.nvim' },
-        },
         config = function()
-            local set_line_number_hls = function()
-                local tinted = require("tinted-colorscheme")
-                local colors = tinted.colors
-                tinted.highlight.CursorLineNr = {
-                    guifg = colors.base0A,
-                    ctermfg = colors.cterm0A,
-                    fg = colors.base0A,
-                    gui =
-                    "bold"
+            require("tinted-nvim").setup({
+                selector = {
+                    enabled = true,
+                    mode = "file",
+                    path = "~/.local/share/tinted-theming/tinty/current_scheme"
                 }
-                tinted.highlight.LineNr = { guifg = colors.base02, ctermfg = colors.cterm02, fg = colors.base02 }
-            end
-
-            require('tinted-colorscheme').setup("", {
-                supports = {
-                    live_reload = true
-                },
             })
+            -- local set_line_number_hls = function()
+            --     local tinted = require("tinted-colorscheme")
+            --     local colors = tinted.colors
+            --     tinted.highlight.CursorLineNr = {
+            --         guifg = colors.base0A,
+            --         ctermfg = colors.cterm0A,
+            --         fg = colors.base0A,
+            --         gui =
+            --         "bold"
+            --     }
+            --     tinted.highlight.LineNr = { guifg = colors.base02, ctermfg = colors.cterm02, fg = colors.base02 }
+            -- end
 
-            vim.api.nvim_create_autocmd("User", {
-                pattern = "TintedColorsPost",
-                callback = function()
-                    set_line_number_hls()
-                end,
-            })
+            -- require('tinted-colorscheme').setup("", {
+            --     supports = {
+            --         live_reload = true
+            --     },
+            -- })
+
+            -- vim.api.nvim_create_autocmd("User", {
+            --     pattern = "TintedColorsPost",
+            --     callback = function()
+            --         set_line_number_hls()
+            --     end,
+            -- })
         end
     },
     {
