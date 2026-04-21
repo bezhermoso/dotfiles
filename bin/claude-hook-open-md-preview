@@ -1,0 +1,26 @@
+#!/usr/bin/env zsh
+#
+# open-md-preview — Open Markdown artifacts in a preview editor.
+# Used as a Claude Code PostToolUse hook on Write|Edit.
+#
+# Reads hook JSON from stdin, extracts file_path, and opens .md files
+# from artifact directories (thoughts/, .claude/plans/) in iA Writer
+# or Marked 2.
+
+set -euo pipefail
+
+local file
+file=$(jq -r '.tool_input.file_path' <&0)
+
+# Only act on Markdown files
+[[ "$file" == *.md ]] || exit 0
+
+# Only act on artifact directories worth reviewing
+[[ "$file" == *thoughts/* || "$file" == */.claude/plans/* ]] || exit 0
+
+# Prefer iA Writer, fall back to Marked 2
+if [[ -d "/Applications/iA Writer.app" ]]; then
+  open -a "iA Writer" "$file" 2>/dev/null || true
+elif [[ -d "/Applications/Marked 2.app" ]]; then
+  open -a "Marked 2" "$file" 2>/dev/null || true
+fi
