@@ -1,5 +1,13 @@
 shell = "zsh -c '{}'"
-preferred-schemes = ["base16-gruvbox-dark-hard", "base24-github-dark", "base16-gruvbox-light-hard"]
+
+default-cycle-ring = "default"
+
+# preferred-schemes = ["base16-gruvbox-dark-hard", "base24-github-dark", "base16-gruvbox-light-hard"]
+
+[[rings]]
+name = "default"
+schemes = ["base16-gruvbox-dark-hard", "base24-github-dark", "base16-gruvbox-light-hard"]
+
 
 [[items]]
 name = "tmux"
@@ -34,13 +42,6 @@ sh %f \
     >! ~/.config/ghostty/themes/tinted-theming \
  && killall -SIGUSR2 ghostty
 '''
-supported-systems = ["base16", "base24"]
-
-[[items]]
-path = "https://github.com/tinted-theming/tinted-terminal"
-name = "tinted-terminal-alacritty"
-themes-dir = "themes/alacritty"
-hook = "cp -f %f ~/.config/alacritty/colors.toml && touch ~/.config/alacritty/alacritty.toml"
 supported-systems = ["base16", "base24"]
 
 # [[items]]
