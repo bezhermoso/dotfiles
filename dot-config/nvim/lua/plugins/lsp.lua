@@ -315,7 +315,7 @@ return {
     {
         -- https://github.com/zbirenbaum/copilot.lua
         "zbirenbaum/copilot.lua",
-        enabled = false,
+        cond = false,
         cmd = 'Copilot',
         event = 'InsertEnter',
         config = function()
