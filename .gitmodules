@@ -26,3 +26,6 @@
 	path = dot-config/nvim/lua/dev/tinted-nvim
 	url = git@github.com:tinted-theming/tinted-nvim
     branch = main
+[submodule "dot-config/nvim/lua/dev/shibboleth.nvim"]
+	path = dot-config/nvim/lua/dev/shibboleth.nvim
+	url = git@github.com:bezhermoso/shibboleth.nvim
