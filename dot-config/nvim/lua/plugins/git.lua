@@ -4,7 +4,7 @@ return {
     {
         -- https://github.com/tpope/vim-fugitive
         "tpope/vim-fugitive",
-        enabled = git_installed,
+        cond = git_installed,
         dependencies = {
             "tpope/vim-rhubarb",
         },
@@ -16,7 +16,7 @@ return {
     {
         -- https://github.com/lewis6991/gitsigns.nvim
         "lewis6991/gitsigns.nvim",
-        enabled = git_installed,
+        cond = git_installed,
         keys = {
             { "<leader>gB", ":Gitsigns blame_line<CR>", {
                 desc = "Git: Show blame on current line",
@@ -34,7 +34,7 @@ return {
     {
         -- https://github.com/Almo7aya/openingh.nvim
         "Almo7aya/openingh.nvim",
-        enabled = gh_installed,
+        cond = gh_installed,
         lazy = false,
         config = function()
             require('openingh').setup()
