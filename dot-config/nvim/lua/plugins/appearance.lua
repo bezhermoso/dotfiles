@@ -186,33 +186,43 @@ return {
                 ),
             })
 
-            wilder.set_option(
-                "renderer",
-                wilder.popupmenu_renderer(wilder.popupmenu_border_theme({
-                    highlighter = wilder.basic_highlighter(),
-                    highlights = {
-                        default = "Default",
-                        border = "String",
-                        selected = "StatusLine",
-                    },
-                    pumblend = 5,
-                    min_width = "100%",
-                    min_height = "25%",
-                    max_height = "25%",
-                    border = "rounded" or {
-                        -- Top border
-                        "─", "─", "─",
-                        -- Left
-                        "",
-                        -- Right
-                        "",
-                        -- Bottom border
-                        "-", "-", "-",
-                    },
-                    left = { " ", wilder.popupmenu_devicons() },
-                    right = { " ", wilder.popupmenu_scrollbar() },
-                }))
-            )
+            local function configure_renderer()
+                wilder.set_option(
+                    "renderer",
+                    wilder.popupmenu_renderer(wilder.popupmenu_border_theme({
+                        highlighter = wilder.basic_highlighter(),
+                        highlights = {
+                            default = "PMenu",
+                            border = "String",
+                            selected = "StatusLine",
+                        },
+                        pumblend = 5,
+                        min_width = "100%",
+                        min_height = "25%",
+                        max_height = "25%",
+                        border = "rounded" or {
+                            -- Top border
+                            "─",
+                            "─",
+                            "─",
+                            -- Left
+                            "",
+                            -- Right
+                            "",
+                            -- Bottom border
+                            "-",
+                            "-",
+                            "-",
+                        },
+                        left = { " ", wilder.popupmenu_devicons() },
+                        right = { " ", wilder.popupmenu_scrollbar() },
+                    }))
+                )
+            end
+            configure_renderer()
+            vim.api.nvim_create_autocmd("ColorScheme", {
+                callback = configure_renderer
+            })
         end,
         event = "CmdLineEnter",
         build = ":UpdateRemotePlugins"
