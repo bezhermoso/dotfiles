@@ -7,5 +7,10 @@
     "padding": 0
   },
   "cleanupPeriodDays": 180,
-  "alwaysThinkingEnabled": true
+  "alwaysThinkingEnabled": true,
+  "voice": {
+    "enabled": true,
+    "mode": "hold"
+  },
+  "voiceEnabled": true
 }
