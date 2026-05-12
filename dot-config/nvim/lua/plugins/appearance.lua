@@ -1,37 +1,37 @@
 local block_hostnames = {
     ["balerion.local"] = true,
-    ["block-03.local"] = true
+    ["block-03.local"] = true,
 }
 
 return {
     {
         -- https://github.com/nvim-lualine/lualine.nvim
-        'nvim-lualine/lualine.nvim',
+        "nvim-lualine/lualine.nvim",
         lazy = false,
         dependencies = {
             { "folke/todo-comments.nvim" },
             { "bezhermoso/todos-lualine.nvim", dev = true },
-            { "stevearc/aerial.nvim" }
+            { "stevearc/aerial.nvim" },
         },
         config = function()
             -- TODO: Configure colors
             -- local todos_component = require("todos-lualine").component({})
-            require('lualine').setup({
+            require("lualine").setup({
                 options = {
-                    theme = 'tinted',
-                    section_separators = '',
-                    component_separators = '',
+                    theme = "tinted",
+                    section_separators = "",
+                    component_separators = "",
                 },
                 sections = {
                     -- lualine_b = { 'branch', 'diff', 'diagnostics', todos_component },
-                    lualine_c = { 'filename', 'aerial' },
+                    lualine_c = { "filename", "aerial" },
                 },
             })
         end,
     },
     {
         -- https://github.com/tinted-theming/tinted-nvim
-        'tinted-theming/tinted-nvim',
+        "tinted-theming/tinted-nvim",
         enabled = true,
         priority = 5000,
         lazy = false,
@@ -41,8 +41,8 @@ return {
                 selector = {
                     enabled = true,
                     mode = "file",
-                    path = "~/.local/share/tinted-theming/tinty/current_scheme"
-                }
+                    path = "~/.local/share/tinted-theming/tinty/current_scheme",
+                },
             })
             -- local set_line_number_hls = function()
             --     local tinted = require("tinted-colorscheme")
@@ -69,29 +69,29 @@ return {
             --         set_line_number_hls()
             --     end,
             -- })
-        end
+        end,
     },
     {
         -- https://github.com/rcarriga/nvim-notify
-        'rcarriga/nvim-notify',
+        "rcarriga/nvim-notify",
         lazy = false,
         priority = 1000,
         keys = {
-            { "<leader>]", ":lua require('notify').dismiss()<CR>", desc = 'Dismiss notifications' },
+            { "<leader>]", ":lua require('notify').dismiss()<CR>", desc = "Dismiss notifications" },
         },
         config = function()
-            local notify = require('notify')
+            local notify = require("notify")
             ---@diagnostic disable-next-line: missing-fields
             notify.setup({
                 render = "minimal",
             })
             vim.notify = notify
-        end
+        end,
     },
     {
         -- https://github.com/lukas-reineke/indent-blankline.nvim
-        'lukas-reineke/indent-blankline.nvim',
-        main = 'ibl',
+        "lukas-reineke/indent-blankline.nvim",
+        main = "ibl",
         opts = {
             indent = {
                 --highlight = {'CursorColumn', 'Whitespace'},
@@ -107,34 +107,34 @@ return {
     },
     {
         -- https://github.com/goolord/alpha-nvim
-        'goolord/alpha-nvim',
+        "goolord/alpha-nvim",
         enabled = false,
         dev = true,
-        dependencies = { 'nvim-tree/nvim-web-devicons' },
+        dependencies = { "nvim-tree/nvim-web-devicons" },
         config = function()
-            local alpha = require('alpha')
-            require('alpha.term')
+            local alpha = require("alpha")
+            require("alpha.term")
             if block_hostnames[vim.fn.hostname()] then
-                alpha.setup(require('plugins.alpha.block').alpha_config())
+                alpha.setup(require("plugins.alpha.block").alpha_config())
             else
-                alpha.setup(require('plugins.alpha.tolkien').alpha_config())
+                alpha.setup(require("plugins.alpha.tolkien").alpha_config())
             end
-        end
+        end,
     },
     {
         -- https://github.com/chentoast/marks.nvim
-        'chentoast/marks.nvim',
+        "chentoast/marks.nvim",
         config = function()
-            require('marks').setup({
+            require("marks").setup({
                 default_mappings = true,
                 builtin_marks = {},
                 cyclic = true,
                 force_write_shada = false,
                 bookmark_0 = {
-                    sign = '⚑',
-                    hl = 'Todo',
+                    sign = "⚑",
+                    hl = "Todo",
                 },
-                excluded_filetypes = { 'help', 'dashboard', 'dressing', 'DressingSelect', 'neo-tree' },
+                excluded_filetypes = { "help", "dashboard", "dressing", "DressingSelect", "neo-tree" },
                 -- mappings = {
                 --     toggle = 'm',
                 --     cycle = 'M',
@@ -143,24 +143,24 @@ return {
                 --     prev = '[',
                 -- },
             })
-        end
+        end,
     },
     {
         -- https://github.com/stevearc/dressing.nvim
-        'stevearc/dressing.nvim',
+        "stevearc/dressing.nvim",
         opts = {
             select = {
                 enable = false,
-                backend = { 'telescope' }
+                backend = { "telescope" },
             },
             input = {
                 insert_only = false,
                 start_in_insert = false,
-                relative = "editor"
+                relative = "editor",
             },
             win_options = {
                 sidescrolloff = 10,
-            }
+            },
         },
     },
     {
@@ -225,14 +225,14 @@ return {
             })
         end,
         event = "CmdLineEnter",
-        build = ":UpdateRemotePlugins"
+        build = ":UpdateRemotePlugins",
     },
     {
         -- https://github.com/j-hui/fidget.nvim
         "j-hui/fidget.nvim",
         tag = "legacy",
         event = "LspAttach",
-        opts = {}
+        opts = {},
     },
     {
         -- https://github.com/3rd/image.nvim
@@ -247,7 +247,7 @@ return {
                 integrations = {},
                 kitty_method = "normal",
             })
-        end
+        end,
     },
     {
         -- https://github.com/luukvbaal/statuscol.nvim
@@ -256,23 +256,23 @@ return {
             require("statuscol").setup({
                 relculright = true,
             })
-        end
+        end,
     },
     {
         -- https://github.com/nvim-tree/nvim-web-devicons
-        'nvim-tree/nvim-web-devicons',
+        "nvim-tree/nvim-web-devicons",
         lazy = true,
     },
     {
-        'https://github.com/folke/zen-mode.nvim',
-        opts = {}
+        "https://github.com/folke/zen-mode.nvim",
+        opts = {},
     },
     {
-        'brenoprata10/nvim-highlight-colors',
-        opts = {}
+        "brenoprata10/nvim-highlight-colors",
+        opts = {},
     },
     {
         "sphamba/smear-cursor.nvim",
         opts = {},
-    }
+    },
 }
