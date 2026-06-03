@@ -124,6 +124,9 @@ end
 vim.opt.ttyfast = true
 vim.opt.lazyredraw = true
 -- ]]]
+--
+
+vim.opt.diffopt:append("inline:char")
 
 -- Preview the result of substitute commands live on the buffer & on a temporarily split
 vim.opt.inccommand = "split"
