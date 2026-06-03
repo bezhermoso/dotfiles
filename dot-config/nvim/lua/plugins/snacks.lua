@@ -51,7 +51,18 @@ return {
                     -- { section = "keys", gap = 1, padding = 1 },
                     { title = "Recent Files\n", section = "recent_files", indent = 2, padding = 2 },
                     { title = "Projects\n",     section = "projects",     indent = 2, padding = 2 },
-                    { title = "Actiions\n",     section = "keys",         indent = 2, padding = 2 },
+                    { title = "Actiions\n",     section = "keys",         indent = 2, padding = 0 },
+                    {
+                        pane = 1,
+                        indent = 2,
+                        padding = 0,
+                        icon = "󰎟 ",
+                        desc = "Notifications",
+                        key = "N",
+                        action = function()
+                            Snacks.notifier.show_history()
+                        end,
+                    },
                 },
             },
             notifier = {
@@ -63,16 +74,14 @@ return {
             words = { enabled = true },
             styles = {
                 notification = {
-                    wo = { wrap = true } -- Wrap notifications
-                }
+                    wo = { wrap = true }, -- Wrap notifications
+                },
             },
-            explorer = {
-
-            },
+            explorer = {},
             picker = {
                 sources = {
-                    explorer = {}
-                }
+                    explorer = {},
+                },
             },
             image = {
                 enabled = true,
@@ -98,11 +107,13 @@ return {
                     Snacks.toggle.option("relativenumber", { name = "Relative Number" }):map("<leader>uL")
                     Snacks.toggle.diagnostics():map("<leader>ud")
                     Snacks.toggle.line_number():map("<leader>ul")
-                    Snacks.toggle.option("conceallevel",
-                        { off = 0, on = vim.o.conceallevel > 0 and vim.o.conceallevel or 2 }):map("<leader>uc")
+                    Snacks.toggle
+                        .option("conceallevel", { off = 0, on = vim.o.conceallevel > 0 and vim.o.conceallevel or 2 })
+                        :map("<leader>uc")
                     Snacks.toggle.treesitter():map("<leader>uT")
-                    Snacks.toggle.option("background", { off = "light", on = "dark", name = "Dark Background" }):map(
-                        "<leader>ub")
+                    Snacks.toggle
+                        .option("background", { off = "light", on = "dark", name = "Dark Background" })
+                        :map("<leader>ub")
                     Snacks.toggle.inlay_hints():map("<leader>uh")
                 end,
             })
