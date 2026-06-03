@@ -3,88 +3,68 @@ return {
         -- https://github.com/nvim-treesitter/nvim-treesitter
         "nvim-treesitter/nvim-treesitter",
         build = ":TSUpdate",
+        branch = "main",
         config = function()
-            local configs = require("nvim-treesitter.configs")
-            ---@diagnostic disable-next-line: missing-fields
-            configs.setup({
-                ensure_installed = {
-                    "bash",
-                    "c",
-                    "comment",
-                    "commonlisp",
-                    "css",
-                    "csv",
-                    "diff",
-                    "dockerfile",
-                    "fish",
-                    "git_config",
-                    "git_rebase",
-                    "gitattributes",
-                    "gitcommit",
-                    "gitignore",
-                    "go",
-                    "gomod",
-                    "gosum",
-                    "gowork",
-                    "gpg",
-                    "graphql",
-                    "groovy",
-                    "hcl",
-                    "html",
-                    "http",
-                    "java",
-                    "javascript",
-                    "jq",
-                    "json",
-                    "jsonc",
-                    "latex",
-                    "ledger",
-                    "lua",
-                    "luap",
-                    "make",
-                    "markdown",
-                    "markdown_inline",
-                    "mermaid",
-                    "org",
-                    "passwd",
-                    "perl",
-                    "php",
-                    "proto",
-                    "python",
-                    "query",
-                    "racket",
-                    "regex",
-                    "requirements",
-                    "rust",
-                    "scheme",
-                    "sql",
-                    "svelte",
-                    "swift",
-                    "terraform",
-                    "toml",
-                    "tsv",
-                    "twig",
-                    "typescript",
-                    "vim",
-                    "vimdoc",
-                    "vue",
-                    "yaml",
-                },
-                sync_install = false,
-                highlight = {
-                    enable = true,
-                    additional_vim_regex_highlighting = false,
-                },
-                indent = { enable = true },
-                -- incremental_selection = {
-                --     enable = true,
-                --     keymaps = {
-                --         init_selection = '<leader>s',
-                --         node_incremental = '<leader>s',
-                --         scope_incremental = '<leader>s',
-                --         node_decremental = '<leader>S',
-                --     }
-                -- }
+            require("nvim-treesitter").install({
+                "bash",
+                "c",
+                "comment",
+                "commonlisp",
+                "css",
+                "csv",
+                "diff",
+                "dockerfile",
+                "fish",
+                "git_config",
+                "git_rebase",
+                "gitattributes",
+                "gitcommit",
+                "gitignore",
+                "go",
+                "gomod",
+                "gosum",
+                "gowork",
+                "gpg",
+                "graphql",
+                "groovy",
+                "hcl",
+                "html",
+                "http",
+                "java",
+                "javascript",
+                "jq",
+                "json",
+                "latex",
+                "ledger",
+                "lua",
+                "luap",
+                "make",
+                "markdown",
+                "markdown_inline",
+                "mermaid",
+                "passwd",
+                "perl",
+                "php",
+                "proto",
+                "python",
+                "query",
+                "racket",
+                "regex",
+                "requirements",
+                "rust",
+                "scheme",
+                "sql",
+                "svelte",
+                "swift",
+                "terraform",
+                "toml",
+                "tsv",
+                "twig",
+                "typescript",
+                "vim",
+                "vimdoc",
+                "vue",
+                "yaml",
             })
             vim.opt.foldmethod = "expr"
             vim.opt.foldenable = false
@@ -95,12 +75,13 @@ return {
                 group = vim.api.nvim_create_augroup("ts_fold_workaround", { clear = true }),
                 command = "set foldexpr=nvim_treesitter#foldexpr()",
             })
-        end
+        end,
     },
     {
         -- https://github.com/nvim-treesitter/nvim-treesitter-context
         "nvim-treesitter/nvim-treesitter-context",
-        opts = {}
+        branch = "master",
+        opts = {},
     },
     {
         -- https://github.com/folke/todo-comments.nvim
@@ -110,7 +91,7 @@ return {
             { "nvim-telescope/telescope.nvim" },
             { "folke/trouble.nvim" },
         },
-        config = function ()
+        config = function()
             require("todo-comments").setup()
             vim.keymap.set("n", "<leader>tt", "<cmd>TodoTelescope<cr>", {
                 desc = "Search for TODOs in the project",
@@ -118,13 +99,23 @@ return {
             vim.keymap.set("n", "<leader>te", "<cmd>TodoTrouble<cr>", {
                 desc = "Open TODOs in Trouble",
             })
-        end
+        end,
     },
     {
-        'nvim-treesitter/nvim-treesitter-textobjects',
-        dependencies = {
-            'nvim-treesitter/nvim-treesitter',
-        },
+        "nvim-treesitter/nvim-treesitter-textobjects",
+        branch = "main",
+        init = function()
+            -- Disable entire built-in ftplugin mappings to avoid conflicts.
+            -- See https://github.com/neovim/neovim/tree/master/runtime/ftplugin for built-in ftplugins.
+            vim.g.no_plugin_maps = true
+
+            -- Or, disable per filetype (add as you like)
+            -- vim.g.no_python_maps = true
+            -- vim.g.no_ruby_maps = true
+            -- vim.g.no_rust_maps = true
+            -- vim.g.no_go_maps = true
+        end,
+        opts = {},
     },
     {
         "tree-sitter-grammars/tree-sitter-test",
@@ -135,7 +126,7 @@ return {
             vim.g.tstest_fullwidth_rules = false
             -- set the highlight group of the rules
             vim.g.tstest_rule_hlgroup = "FoldColumn"
-        end
+        end,
     },
     {
         "bezhermoso/tree-sitter-ghostty",
@@ -147,5 +138,7 @@ return {
     },
     {
         "RRethy/nvim-treesitter-textsubjects",
+        -- It doesn't yet support nvim-treesitter rewrite
+        cond = false
     },
 }
