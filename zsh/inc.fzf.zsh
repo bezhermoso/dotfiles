@@ -30,6 +30,8 @@ zstyle ':fzf-tab:*' fzf-command ftb-tmux-popup
 # Don't show any preview in FZF picker for kubectl completions
 zstyle ':fzf-tab:complete:*' fzf-flags '--no-preview'
 zstyle ':fzf-tab:complete:*' popup-min-size 50 0
+zstyle -d ':completion:*' format
+zstyle ':completion:*:descriptions' format '-- %d --'
 zi load Aloxaf/fzf-tab
 
 # https://github.com/junegunn/fzf-git.sh
