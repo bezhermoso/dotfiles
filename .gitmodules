@@ -1,10 +1,6 @@
 [submodule "openingh"]
     path = .config/nvim/lua/dev/openingh.nvim
     url = git@github.com:bezhermoso/openingh.nvim.git
-[submodule "base16-live-reload.nvim"]
-	path = dot-config/nvim/lua/dev/base16-live-reload.nvim
-	url = git@github.com:bezhermoso/base16-live-reload.nvim
-	branch = main
 [submodule "tpm"]
 	path = dot-config/tmux/plugins/tpm
 	url = git@github.com:tmux-plugins/tpm.git
