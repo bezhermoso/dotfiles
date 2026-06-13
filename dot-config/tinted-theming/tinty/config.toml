@@ -51,3 +51,11 @@ supported-systems = ["base16", "base24"]
 # themes-dir = "themes-16/iterm2-scripts"
 # hook = "sh %f"
 # supported-systems = ["base16", "base24"]
+
+[[items]]
+path = "https://github.com/tinted-theming/tinted-claude-code"
+name = "tinted-claude-code"
+themes-dir = "scripts"
+theme-file-extension = ".js"
+hook = "mkdir -p ~/.claude/themes && node %f > ~/.claude/themes/tinty.json"
+supported-systems = ["base16", "base24", "tinted8"]
