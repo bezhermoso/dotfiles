@@ -84,6 +84,7 @@ source_config "inc.chpwd.zsh"
 source_config "inc.custom-widgets.zsh"
 source_config "inc.hotkey-insertions.zsh"
 source_config "inc.tmux.zsh"
+source_config "inc.bun.zsh"
 
 source_config "inc.git.zsh"
 source_config "inc.gpg.zsh"
