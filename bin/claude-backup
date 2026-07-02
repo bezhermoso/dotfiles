@@ -1,0 +1,117 @@
+#!/usr/bin/env bash
+#
+# claude-backup — capture ~/.claude sessions, projects & settings into a gzip
+# that can be merge-extracted on a new laptop.
+#
+# Usage:
+#   claude-backup                       # create ~/claude-backup-<host>-<ts>.tgz
+#   claude-backup -o /path/to/out.tgz   # custom output path
+#   claude-backup --list <backup.tgz>   # list archive contents
+#   claude-backup --restore <backup.tgz>  # merge-extract into $HOME
+#
+# Restore is merge-wise: files in the archive overwrite their counterparts,
+# everything else in ~/.claude is left alone. Equivalent to:
+#   tar -xzpf backup.tgz -C "$HOME"
+#
+# Deliberately EXCLUDED: credentials, caches, debug logs, telemetry, plugins
+# (reinstalled from their marketplace/registry source), shell snapshots.
+
+set -euo pipefail
+
+err() { printf 'claude-backup: %s\n' "$*" >&2; }
+die() { err "$@"; exit 1; }
+
+# Allowlist of $HOME-relative paths to capture (only those that exist are taken).
+INCLUDE_PATHS=(
+  # Sessions & per-project state (transcripts, memory, checkpoints)
+  .claude/projects
+  .claude/sessions
+  .claude/session-env
+  .claude/file-history
+  .claude/paste-cache
+  .claude/history.jsonl
+  .claude/todos
+  .claude/tasks
+  .claude/plans
+  # Settings & customization
+  .claude/settings.json
+  .claude/CLAUDE.md
+  .claude/keybindings.json
+  .claude/agents
+  .claude/commands
+  .claude/skills
+  .claude/themes
+  .claude/powerline
+  .claude/claude-powerline.json
+  .claude/statusline.sh
+  .claude/statusline-powerlevel10k.sh
+  # Global config: project trust, MCP servers, per-project settings.
+  # NOTE: may embed MCP env tokens — treat the archive as sensitive.
+  .claude.json
+)
+
+EXCLUDES=(
+  --exclude '.claude/.credentials.json*'
+  --exclude '.claude.json.backup*'
+  --exclude '*/.credentials.json'
+  --exclude '*.lock'
+)
+
+mode=capture
+out=""
+archive=""
+
+while [ $# -gt 0 ]; do
+  case "$1" in
+    -o|--output) out="${2:?missing argument for $1}"; shift 2 ;;
+    --list)      mode=list;    archive="${2:?missing archive for --list}"; shift 2 ;;
+    --restore)   mode=restore; archive="${2:?missing archive for --restore}"; shift 2 ;;
+    -h|--help)   sed -n '2,18p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+    *) die "unknown argument: $1 (see --help)" ;;
+  esac
+done
+
+case "$mode" in
+  list)
+    [ -f "$archive" ] || die "no such file: $archive"
+    tar -tzf "$archive"
+    ;;
+
+  restore)
+    [ -f "$archive" ] || die "no such file: $archive"
+    n=$(tar -tzf "$archive" | wc -l | tr -d ' ')
+    printf 'Merge-extracting %s entries from %s into %s\n' "$n" "$archive" "$HOME"
+    printf 'Existing files with the same paths will be OVERWRITTEN; everything else is kept.\n'
+    printf 'Continue? [y/N] '
+    read -r reply
+    [ "$reply" = y ] || [ "$reply" = Y ] || die "aborted"
+    tar -xzpf "$archive" -C "$HOME"
+    printf 'Done. Restart Claude Code to pick up restored settings/sessions.\n'
+    printf 'Note: plugins are not in the backup — reinstall them, and re-auth (credentials were excluded).\n'
+    ;;
+
+  capture)
+    [ -d "$HOME/.claude" ] || die "no ~/.claude directory found"
+    if [ -z "$out" ]; then
+      out="$HOME/claude-backup-$(hostname -s)-$(date +%Y%m%d-%H%M%S).tgz"
+    fi
+
+    present=()
+    for p in "${INCLUDE_PATHS[@]}"; do
+      [ -e "$HOME/$p" ] && present+=("$p")
+    done
+    [ ${#present[@]} -gt 0 ] || die "nothing to back up"
+
+    printf 'Capturing %d top-level paths from %s ...\n' "${#present[@]}" "$HOME"
+    tar -czf "$out" -C "$HOME" "${EXCLUDES[@]}" "${present[@]}"
+
+    size=$(du -h "$out" | cut -f1 | tr -d ' ')
+    printf 'Wrote %s (%s)\n\n' "$out" "$size"
+    printf 'On the new laptop (same username recommended — session transcripts are keyed by absolute path):\n'
+    printf '  claude-backup --restore %s\n' "$(basename "$out")"
+    printf 'or simply:\n'
+    printf '  tar -xzpf %s -C "$HOME"\n\n' "$(basename "$out")"
+    printf 'Heads-up: the archive includes ~/.claude.json which may contain MCP server env values —\n'
+    printf 'transfer it over a trusted channel (AirDrop / Migration Assistant / corp drive).\n'
+    ;;
+esac

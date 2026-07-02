@@ -1,0 +1,468 @@
+#!/usr/bin/env bash
+#
+# repo-state — snapshot & restore git repo worktree/branch/stack state across laptops.
+#
+# Usage:
+#   repo-state snapshot [-o out.tgz] [--no-push] [--yes] <repo-dir>...
+#       e.g. repo-state snapshot ~/Development/java ~/Development/ios-register ~/Development/android-register
+#   repo-state restore <snapshot.tgz> [--dry-run] [--force-branches]
+#   repo-state list <snapshot.tgz>
+#
+# snapshot, per repo:
+#   - records origin URL, default branch, all local branches (+upstreams)
+#   - records every worktree: path, branch/detached SHA
+#   - pushes local branches to origin (fast-forward pushes after one confirmation;
+#     diverged branches individually confirmed as --force-with-lease; the default
+#     branch is never pushed). --no-push skips pushing, --yes auto-confirms.
+#   - creates a git bundle of any commits NOT on origin (safety net if pushes
+#     are declined or fail)
+#   - saves Graphite stack metadata (refs/branch-metadata/* blobs)
+#   - tars uncommitted state per worktree: modified + staged + untracked files,
+#     plus gitignored-but-precious paths (thoughts/, .claude/, CLAUDE.local.md),
+#     and records staged paths & pending deletions so they replay exactly
+#
+# restore, per repo (paths are stored ~-relative and re-expanded on the new machine):
+#   - clones from origin if the main clone is missing
+#   - recreates local branches at their recorded SHAs (objects come from origin
+#     or the bundle), restores upstreams and Graphite metadata refs
+#   - re-adds each worktree at its original path on its recorded branch
+#   - unpacks uncommitted changes, replays deletions, re-stages staged paths
+
+set -uo pipefail
+
+err()  { printf 'repo-state: %s\n' "$*" >&2; }
+die()  { err "$@"; exit 1; }
+note() { printf '  %s\n' "$*"; }
+head1() { printf '\n== %s\n' "$*"; }
+
+confirm() { # confirm <prompt> ; honors $ASSUME_YES
+  [ "${ASSUME_YES:-0}" = 1 ] && return 0
+  printf '%s [y/N] ' "$1"
+  read -r reply </dev/tty || return 1
+  [ "$reply" = y ] || [ "$reply" = Y ]
+}
+
+# Encode/decode paths relative to $HOME so they re-materialize under the new home.
+enc_path() { case "$1" in "$HOME"/*) printf '~/%s' "${1#"$HOME"/}" ;; *) printf '%s' "$1" ;; esac; }
+dec_path() { case "$1" in '~/'*) printf '%s/%s' "$HOME" "${1#\~/}" ;; *) printf '%s' "$1" ;; esac; }
+
+slugify() { # unique dir name per repo: basename + short path hash
+  local base hash
+  base=$(basename "$1")
+  hash=$(printf '%s' "$1" | shasum | cut -c1-8)
+  printf '%s-%s' "$base" "$hash"
+}
+
+# ---------------------------------------------------------------------------
+# snapshot
+# ---------------------------------------------------------------------------
+
+snapshot_worktree() { # snapshot_worktree <wt-path> <wt-dir-in-snapshot>
+  local wt="$1" dir="$2" listfile f
+  mkdir -p "$dir"
+  enc_path "$wt" > "$dir/path"
+
+  local branch sha
+  sha=$(git -C "$wt" rev-parse HEAD)
+  printf '%s\n' "$sha" > "$dir/sha"
+  if branch=$(git -C "$wt" symbolic-ref --quiet --short HEAD); then
+    printf 'branch %s\n' "$branch" > "$dir/head"
+  else
+    printf 'detached\n' > "$dir/head"
+  fi
+
+  # Staged paths (to re-stage on restore) and pending deletions (tar can't carry those).
+  git -C "$wt" diff --cached --name-only > "$dir/staged.list"
+  { git -C "$wt" ls-files --deleted
+    git -C "$wt" diff --cached --name-only --diff-filter=D
+  } | sort -u > "$dir/deleted.list"
+
+  # Dirty files that exist on disk: modified (staged or not) + untracked,
+  # plus gitignored knowledge artifacts worth carrying.
+  listfile="$dir/dirty.list"
+  { git -C "$wt" diff --name-only
+    git -C "$wt" diff --cached --name-only
+    git -C "$wt" ls-files --others --exclude-standard
+    for f in thoughts .claude CLAUDE.local.md; do [ -e "$wt/$f" ] && printf '%s\n' "$f"; done
+  } | sort -u | while IFS= read -r f; do
+      [ -e "$wt/$f" ] && printf '%s\n' "$f"
+    done > "$listfile"
+
+  if [ -s "$listfile" ]; then
+    tar -czf "$dir/dirty.tgz" -C "$wt" -T "$listfile" 2> "$dir/.tar-warnings" || true
+    [ -s "$dir/.tar-warnings" ] && sed 's/^/    tar: /' "$dir/.tar-warnings" >&2
+    rm -f "$dir/.tar-warnings"
+    note "worktree $(enc_path "$wt"): $(wc -l < "$listfile" | tr -d ' ') dirty/untracked file(s) captured ($(du -h "$dir/dirty.tgz" | cut -f1 | tr -d ' '))"
+  else
+    note "worktree $(enc_path "$wt"): clean"
+  fi
+}
+
+push_branches() { # push_branches <repo> <report-file>
+  local repo="$1" report="$2"
+  local br sha upstream remote_sha
+  local -a ff_pushes=() force_pushes=()
+
+  while IFS=$'\t' read -r br sha upstream; do
+    [ "$br" = "$DEFAULT_BRANCH" ] && continue
+    remote_sha=$(git -C "$repo" rev-parse -q --verify "refs/remotes/origin/$br" 2>/dev/null) || remote_sha=""
+    if [ -z "$remote_sha" ]; then
+      ff_pushes+=("$br")                     # not on origin yet
+    elif [ "$remote_sha" = "$sha" ]; then
+      printf 'up-to-date\t%s\n' "$br" >> "$report"
+    elif git -C "$repo" merge-base --is-ancestor "$remote_sha" "$sha"; then
+      ff_pushes+=("$br")                     # fast-forward
+    else
+      force_pushes+=("$br")                  # diverged (or behind) — needs lease
+    fi
+  done < "$SNAP_REPO_DIR/branches.tsv"
+
+  if [ ${#ff_pushes[@]} -gt 0 ]; then
+    printf '  %d branch(es) to push (new or fast-forward):\n' "${#ff_pushes[@]}"
+    printf '    %s\n' "${ff_pushes[@]}"
+    if confirm "  Push these to origin?"; then
+      for br in "${ff_pushes[@]}"; do
+        if git -C "$repo" push origin "refs/heads/$br:refs/heads/$br" >/dev/null 2>&1; then
+          printf 'pushed\t%s\n' "$br" >> "$report"
+        else
+          printf 'push-failed\t%s\n' "$br" >> "$report"
+          err "push failed for $br (kept in bundle)"
+        fi
+      done
+    else
+      printf 'push-declined\t%s\n' "${ff_pushes[@]}" >> "$report"
+    fi
+  fi
+
+  for br in ${force_pushes[@]+"${force_pushes[@]}"}; do
+    printf '  %s has DIVERGED from origin/%s\n' "$br" "$br"
+    git -C "$repo" log --oneline "origin/$br..$br" | sed 's/^/      local-only: /' | head -5
+    git -C "$repo" log --oneline "$br..origin/$br" | sed 's/^/      remote-only: /' | head -5
+    if confirm "  Force-push $br with --force-with-lease?"; then
+      if git -C "$repo" push --force-with-lease origin "refs/heads/$br:refs/heads/$br" >/dev/null 2>&1; then
+        printf 'force-pushed\t%s\n' "$br" >> "$report"
+      else
+        printf 'force-push-failed\t%s\n' "$br" >> "$report"
+        err "force-push failed for $br (lease rejected? kept in bundle)"
+      fi
+    else
+      printf 'force-declined\t%s\n' "$br" >> "$report"
+    fi
+  done
+}
+
+snapshot_repo() { # snapshot_repo <main-clone-path>
+  local repo slug
+  repo=$(cd "$1" 2>/dev/null && pwd) || { err "skipping $1: not a directory"; return 1; }
+  git -C "$repo" rev-parse --is-inside-work-tree >/dev/null 2>&1 || { err "skipping $repo: not a git repo"; return 1; }
+
+  # Must be the main clone, not a linked worktree.
+  local common gitdir
+  common=$(git -C "$repo" rev-parse --path-format=absolute --git-common-dir)
+  gitdir=$(git -C "$repo" rev-parse --path-format=absolute --git-dir)
+  [ "$common" = "$gitdir" ] || { err "skipping $repo: linked worktree — pass its main clone instead"; return 1; }
+
+  head1 "$(enc_path "$repo")"
+  slug=$(slugify "$repo")
+  SNAP_REPO_DIR="$SNAP_DIR/repos/$slug"
+  mkdir -p "$SNAP_REPO_DIR"
+
+  enc_path "$repo" > "$SNAP_REPO_DIR/path"
+  git -C "$repo" remote get-url origin > "$SNAP_REPO_DIR/origin-url" 2>/dev/null \
+    || err "warning: $repo has no 'origin' remote — restore will need an existing clone"
+
+  DEFAULT_BRANCH=$(git -C "$repo" symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null | sed 's|^origin/||') || true
+  [ -n "${DEFAULT_BRANCH:-}" ] || DEFAULT_BRANCH=main
+  printf '%s\n' "$DEFAULT_BRANCH" > "$SNAP_REPO_DIR/default-branch"
+
+  git -C "$repo" for-each-ref refs/heads \
+    --format='%(refname:short)%09%(objectname)%09%(upstream:short)' > "$SNAP_REPO_DIR/branches.tsv"
+  note "$(wc -l < "$SNAP_REPO_DIR/branches.tsv" | tr -d ' ') local branch(es)"
+
+  # Graphite stack metadata: refs/branch-metadata/* point at blobs.
+  git -C "$repo" for-each-ref refs/branch-metadata \
+    --format='%(refname)%09%(objectname)' > "$SNAP_REPO_DIR/metadata-refs.tsv"
+  if [ -s "$SNAP_REPO_DIR/metadata-refs.tsv" ]; then
+    mkdir -p "$SNAP_REPO_DIR/metadata-blobs"
+    local mref msha
+    while IFS=$'\t' read -r mref msha; do
+      git -C "$repo" cat-file blob "$msha" > "$SNAP_REPO_DIR/metadata-blobs/$msha"
+    done < "$SNAP_REPO_DIR/metadata-refs.tsv"
+    note "$(wc -l < "$SNAP_REPO_DIR/metadata-refs.tsv" | tr -d ' ') Graphite metadata ref(s)"
+  fi
+
+  # Push local state to origin.
+  : > "$SNAP_REPO_DIR/push-report.tsv"
+  if [ "${NO_PUSH:-0}" = 1 ]; then
+    note "skipping pushes (--no-push)"
+  else
+    git -C "$repo" fetch origin --quiet 2>/dev/null || err "warning: fetch failed; push decisions use stale remote refs"
+    push_branches "$repo" "$SNAP_REPO_DIR/push-report.tsv"
+  fi
+
+  # Worktrees (skip prunable/missing ones), and collect detached SHAs for the bundle.
+  local -a wt_paths=() detached_shas=()
+  local wpath=""
+  while IFS= read -r line; do
+    case "$line" in
+      worktree\ *) wpath="${line#worktree }" ;;
+      prunable*)   wpath="" ;;
+      "") if [ -n "$wpath" ] && [ -d "$wpath" ]; then wt_paths+=("$wpath"); fi; wpath="" ;;
+    esac
+  done < <(git -C "$repo" worktree list --porcelain; echo)
+
+  local i=0 wt
+  for wt in "${wt_paths[@]}"; do
+    snapshot_worktree "$wt" "$SNAP_REPO_DIR/worktrees/$i"
+    if grep -q '^detached$' "$SNAP_REPO_DIR/worktrees/$i/head"; then
+      detached_shas+=("$(cat "$SNAP_REPO_DIR/worktrees/$i/sha")")
+    fi
+    i=$((i + 1))
+  done
+
+  # Bundle everything not on origin (branches + detached HEADs) as a safety net.
+  # bundle create only accepts refs, so detached SHAs get temporary refs.
+  local -a bundle_revs=() tmp_refs=()
+  local n=0 dsha
+  while IFS=$'\t' read -r br sha upstream; do bundle_revs+=("refs/heads/$br"); done < "$SNAP_REPO_DIR/branches.tsv"
+  for dsha in ${detached_shas[@]+"${detached_shas[@]}"}; do
+    git -C "$repo" update-ref "refs/repo-state-tmp/$n" "$dsha"
+    tmp_refs+=("refs/repo-state-tmp/$n")
+    n=$((n + 1))
+  done
+  bundle_revs+=(${tmp_refs[@]+"${tmp_refs[@]}"})
+  if [ ${#bundle_revs[@]} -gt 0 ]; then
+    if git -C "$repo" bundle create "$SNAP_REPO_DIR/repo.bundle" \
+         "${bundle_revs[@]}" --not --remotes=origin >/dev/null 2>&1; then
+      note "bundle of not-on-origin commits: $(du -h "$SNAP_REPO_DIR/repo.bundle" | cut -f1 | tr -d ' ')"
+    else
+      rm -f "$SNAP_REPO_DIR/repo.bundle"
+      note "no commits missing from origin — no bundle needed"
+    fi
+  fi
+  for dsha in ${tmp_refs[@]+"${tmp_refs[@]}"}; do
+    git -C "$repo" update-ref -d "$dsha"
+  done
+}
+
+cmd_snapshot() {
+  local out="" repos=()
+  while [ $# -gt 0 ]; do
+    case "$1" in
+      -o|--output) out="${2:?missing argument for $1}"; shift 2 ;;
+      --no-push)   NO_PUSH=1; shift ;;
+      --yes|-y)    ASSUME_YES=1; shift ;;
+      -*)          die "unknown snapshot option: $1" ;;
+      *)           repos+=("$1"); shift ;;
+    esac
+  done
+  [ ${#repos[@]} -gt 0 ] || die "usage: repo-state snapshot [-o out.tgz] [--no-push] [--yes] <repo-dir>..."
+  [ -n "$out" ] || out="$HOME/repo-state-$(hostname -s)-$(date +%Y%m%d-%H%M%S).tgz"
+
+  SNAP_DIR=$(mktemp -d "${TMPDIR:-/tmp}/repo-state.XXXXXX")
+  trap 'rm -rf "$SNAP_DIR"' EXIT
+  mkdir -p "$SNAP_DIR/repos"
+  { printf 'created\t%s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+    printf 'host\t%s\n' "$(hostname -s)"
+    printf 'home\t%s\n' "$HOME"
+  } > "$SNAP_DIR/meta"
+
+  local r ok=0
+  for r in "${repos[@]}"; do
+    snapshot_repo "$r" && ok=$((ok + 1))
+  done
+  [ "$ok" -gt 0 ] || die "no repos were snapshotted"
+
+  tar -czf "$out" -C "$SNAP_DIR" .
+  head1 "done"
+  note "snapshot of $ok repo(s): $out ($(du -h "$out" | cut -f1 | tr -d ' '))"
+  note "restore on the new laptop with: repo-state restore $(basename "$out")"
+}
+
+# ---------------------------------------------------------------------------
+# restore
+# ---------------------------------------------------------------------------
+
+run() { # run <cmd...> ; honors $DRY_RUN
+  if [ "${DRY_RUN:-0}" = 1 ]; then note "[dry-run] $*"; else "$@"; fi
+}
+
+restore_worktree() { # restore_worktree <repo> <wt-snapshot-dir> <is-main:0|1>
+  local repo="$1" dir="$2" is_main="$3"
+  local wt head sha branch
+  wt=$(dec_path "$(cat "$dir/path")")
+  head=$(cat "$dir/head")
+  sha=$(cat "$dir/sha")
+
+  if [ "$is_main" = 1 ]; then
+    : # main clone already exists; just check out the right branch below
+  elif [ -d "$wt" ]; then
+    if git -C "$wt" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+      note "worktree $(enc_path "$wt") already exists — leaving checkout as-is"
+    else
+      err "$(enc_path "$wt") exists but is not a worktree — skipping"
+      return 1
+    fi
+  else
+    run mkdir -p "$(dirname "$wt")"
+    case "$head" in
+      branch\ *) run git -C "$repo" worktree add "$wt" "${head#branch }" || return 1 ;;
+      detached)  run git -C "$repo" worktree add --detach "$wt" "$sha" || return 1 ;;
+    esac
+  fi
+
+  if [ "$is_main" = 1 ] && [ "${DRY_RUN:-0}" != 1 ]; then
+    case "$head" in
+      branch\ *)
+        branch="${head#branch }"
+        if [ "$(git -C "$repo" symbolic-ref --quiet --short HEAD || true)" != "$branch" ]; then
+          if [ -n "$(git -C "$repo" status --porcelain)" ]; then
+            err "main clone is dirty — not switching to $branch; check out manually"
+          else
+            git -C "$repo" checkout --quiet "$branch" || err "could not check out $branch in main clone"
+          fi
+        fi ;;
+      detached)
+        git -C "$repo" checkout --quiet --detach "$sha" 2>/dev/null || err "could not detach main clone at $sha" ;;
+    esac
+  fi
+
+  if [ -f "$dir/dirty.tgz" ]; then
+    note "restoring $(wc -l < "$dir/dirty.list" | tr -d ' ') dirty/untracked file(s) into $(enc_path "$wt")"
+    run tar -xzpf "$dir/dirty.tgz" -C "$wt"
+  fi
+  if [ -s "$dir/deleted.list" ]; then
+    local f
+    while IFS= read -r f; do run rm -f "$wt/$f"; done < "$dir/deleted.list"
+  fi
+  if [ -s "$dir/staged.list" ]; then
+    local f
+    while IFS= read -r f; do
+      run git -C "$wt" add -A -- "$f" 2>/dev/null || err "could not re-stage $f in $(enc_path "$wt")"
+    done < "$dir/staged.list"
+  fi
+}
+
+restore_repo() { # restore_repo <repo-snapshot-dir>
+  local dir="$1" repo origin
+  repo=$(dec_path "$(cat "$dir/path")")
+  head1 "$(enc_path "$repo")"
+
+  if [ -d "$repo/.git" ] || [ -f "$repo/.git" ]; then
+    origin=$(git -C "$repo" remote get-url origin 2>/dev/null || true)
+    if [ -f "$dir/origin-url" ] && [ "$origin" != "$(cat "$dir/origin-url")" ]; then
+      err "existing repo at $(enc_path "$repo") has origin '$origin', snapshot expects '$(cat "$dir/origin-url")' — skipping"
+      return 1
+    fi
+    note "using existing clone"
+  elif [ -f "$dir/origin-url" ]; then
+    note "cloning $(cat "$dir/origin-url") (this can take a while for monorepos)"
+    run mkdir -p "$(dirname "$repo")"
+    run git clone "$(cat "$dir/origin-url")" "$repo" || { err "clone failed"; return 1; }
+  else
+    err "no clone at $(enc_path "$repo") and snapshot has no origin URL — skipping"
+    return 1
+  fi
+
+  [ "${DRY_RUN:-0}" = 1 ] || git -C "$repo" fetch origin --quiet --prune || err "warning: fetch failed"
+
+  # Objects for anything that never made it to origin.
+  if [ -f "$dir/repo.bundle" ]; then
+    note "unbundling not-on-origin commits"
+    run git -C "$repo" bundle unbundle "$dir/repo.bundle" >/dev/null || err "warning: bundle unbundle failed"
+  fi
+
+  # Recreate local branches at recorded SHAs (+ upstreams).
+  local br sha upstream cur
+  while IFS=$'\t' read -r br sha upstream; do
+    cur=$(git -C "$repo" rev-parse -q --verify "refs/heads/$br" 2>/dev/null) || cur=""
+    if [ -n "$cur" ] && [ "$cur" != "$sha" ] && [ "${FORCE_BRANCHES:-0}" != 1 ]; then
+      err "branch $br exists at a different commit — leaving it (use --force-branches to overwrite)"
+    elif [ "$cur" = "$sha" ]; then
+      :
+    elif [ "$(git -C "$repo" symbolic-ref --quiet --short HEAD || true)" = "$br" ]; then
+      run git -C "$repo" reset --hard "$sha" >/dev/null || err "could not reset checked-out branch $br"
+    else
+      run git -C "$repo" branch -f "$br" "$sha" 2>/dev/null || err "could not create branch $br at $sha (object missing?)"
+    fi
+    if [ -n "$upstream" ]; then
+      run git -C "$repo" branch --set-upstream-to="$upstream" "$br" 2>/dev/null || true
+    fi
+  done < "$dir/branches.tsv"
+  note "$(wc -l < "$dir/branches.tsv" | tr -d ' ') branch(es) processed"
+
+  # Graphite stack metadata.
+  if [ -s "$dir/metadata-refs.tsv" ]; then
+    local mref msha newsha
+    while IFS=$'\t' read -r mref msha; do
+      if [ "${DRY_RUN:-0}" = 1 ]; then note "[dry-run] restore $mref"; continue; fi
+      newsha=$(git -C "$repo" hash-object -w "$dir/metadata-blobs/$msha")
+      git -C "$repo" update-ref "$mref" "$newsha"
+    done < "$dir/metadata-refs.tsv"
+    note "$(wc -l < "$dir/metadata-refs.tsv" | tr -d ' ') Graphite metadata ref(s) restored"
+  fi
+
+  # Worktrees: main clone (index 0 is whichever has path == repo) then linked ones.
+  local w wpath
+  for w in "$dir"/worktrees/*/; do
+    [ -d "$w" ] || continue
+    wpath=$(dec_path "$(cat "$w/path")")
+    if [ "$wpath" = "$repo" ]; then restore_worktree "$repo" "$w" 1; fi
+  done
+  for w in "$dir"/worktrees/*/; do
+    [ -d "$w" ] || continue
+    wpath=$(dec_path "$(cat "$w/path")")
+    if [ "$wpath" != "$repo" ]; then restore_worktree "$repo" "$w" 0; fi
+  done
+}
+
+cmd_restore() {
+  local archive=""
+  while [ $# -gt 0 ]; do
+    case "$1" in
+      --dry-run)        DRY_RUN=1; shift ;;
+      --force-branches) FORCE_BRANCHES=1; shift ;;
+      -*)               die "unknown restore option: $1" ;;
+      *)                archive="$1"; shift ;;
+    esac
+  done
+  [ -f "${archive:-}" ] || die "usage: repo-state restore <snapshot.tgz> [--dry-run] [--force-branches]"
+
+  SNAP_DIR=$(mktemp -d "${TMPDIR:-/tmp}/repo-state.XXXXXX")
+  trap 'rm -rf "$SNAP_DIR"' EXIT
+  tar -xzf "$archive" -C "$SNAP_DIR"
+  [ -d "$SNAP_DIR/repos" ] || die "not a repo-state snapshot: $archive"
+
+  local dir
+  for dir in "$SNAP_DIR"/repos/*/; do
+    restore_repo "$dir" || err "restore incomplete for $(cat "$dir/path" 2>/dev/null || echo "$dir")"
+  done
+  head1 "done"
+  note "run 'gt log' in each repo to confirm Graphite stacks; 'git worktree list' to confirm worktrees"
+}
+
+cmd_list() {
+  local archive="${1:-}"
+  [ -f "$archive" ] || die "usage: repo-state list <snapshot.tgz>"
+  SNAP_DIR=$(mktemp -d "${TMPDIR:-/tmp}/repo-state.XXXXXX")
+  trap 'rm -rf "$SNAP_DIR"' EXIT
+  tar -xzf "$archive" -C "$SNAP_DIR"
+  sed 's/^/  /' "$SNAP_DIR/meta" 2>/dev/null || true
+  local dir w
+  for dir in "$SNAP_DIR"/repos/*/; do
+    head1 "$(cat "$dir/path")  ($(cat "$dir/origin-url" 2>/dev/null || echo 'no origin'))"
+    note "branches: $(wc -l < "$dir/branches.tsv" | tr -d ' '), graphite refs: $(wc -l < "$dir/metadata-refs.tsv" 2>/dev/null | tr -d ' ' || echo 0), bundle: $([ -f "$dir/repo.bundle" ] && du -h "$dir/repo.bundle" | cut -f1 | tr -d ' ' || echo none)"
+    for w in "$dir"/worktrees/*/; do
+      [ -d "$w" ] || continue
+      note "worktree $(cat "$w/path") [$(cat "$w/head")] dirty: $([ -f "$w/dirty.list" ] && wc -l < "$w/dirty.list" | tr -d ' ' || echo 0) file(s)"
+    done
+  done
+}
+
+case "${1:-}" in
+  snapshot) shift; cmd_snapshot "$@" ;;
+  restore)  shift; cmd_restore "$@" ;;
+  list)     shift; cmd_list "$@" ;;
+  -h|--help|'') sed -n '2,33p' "$0" | sed 's/^# \{0,1\}//' ;;
+  *) die "unknown command: $1 (snapshot | restore | list)" ;;
+esac
