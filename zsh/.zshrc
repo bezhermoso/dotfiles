@@ -107,10 +107,4 @@ fi
 unset current_dir
 unset -f source_config
 
-# export WT_MAIN_REPO_ROOT="$HOME/dev/java-monorepo"
-# export WT_WORKTREES_BASE="$HOME/dev/java-monorepo-wts"
-# export WT_IDEA_FILES_BASE="$HOME/dev/java-monorepo-ide-files"
-# export WT_ACTIVE_WORKTREE="$HOME/dev/java"
-# export WT_BASE_BRANCH=master
-#
 [[ -f "$HOME/.wt/wt.sh" ]] && source "$HOME/.wt/wt.sh"
