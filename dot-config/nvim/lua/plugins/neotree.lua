@@ -31,9 +31,11 @@ return {
             "nvim-tree/nvim-web-devicons",
             "MunifTanjim/nui.nvim",
             "3rd/image.nvim", -- Optional image support in preview window: See `# Preview Mode` for more information
+            { "bezhermoso/neoplans.nvim", dev = true },
         },
         keys = {
-            { "<leader>n", ":Neotree reveal<CR>", desc = "Neo-tree: reveal", silent = true },
+            { "<leader>nn", ":Neotree reveal<CR>", desc = "Neo-tree: reveal", silent = true },
+            { "<leader>np", ":Neotree plans<CR>", desc = "Neo-tree: plans", silent = true },
             { "\\",        ":Neotree reveal<CR>", desc = "Neo-tree: reveal", silent = true }
         },
         config = function()
@@ -43,10 +45,11 @@ return {
                 sources = {
                     "filesystem",
                     "buffers",
-                    "git_status",
-                    "document_symbols",
+                    "neoplans",
+                    -- "git_status",
+                    -- "document_symbols",
                 },
-                 -- when opening files, do not use windows containing these filetypes or buftypes
+                -- when opening files, do not use windows containing these filetypes or buftypes
                 open_files_do_not_replace_types = {
                     "terminal", "Trouble", "qf", "edgy",
                     "aerial",
@@ -73,6 +76,10 @@ return {
                         {
                             source = "document_symbols",
                             display_name = "  Symbols ",
+                        },
+                        {
+                            source = "plans",
+                            display_name = "  Plans ",
                         },
                     },
                 },
@@ -107,6 +114,10 @@ return {
                         ["vd"] = {
                             function() vim.api.nvim_exec2("Neotree focus document_symbols", {}) end,
                             desc = "show document symbols",
+                        },
+                        ["vp"] = {
+                            function() vim.api.nvim_exec2("Neotree focus plans", {}) end,
+                            desc = "show plans",
                         },
                         -- ]]]
                         ["i"] = {
