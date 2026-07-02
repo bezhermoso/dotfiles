@@ -1,8 +1,8 @@
 # Smart Work Configuration Management
 # Auto-decrypts work configs on work machines, tracks changes, prompts for re-encryption
-
+#
 # Configuration
-WORK_HOSTNAME_PATTERN="^block-.*"
+WORK_HOSTNAME_PATTERN="^BLK*"
 WORK_GPG_RECIPIENT="bezalelhermoso@gmail.com"
 WORK_CONFIG_DIR="${HOME}/.local/share/dotfiles/work"
 WORK_CONFIG_SYNC_MARKER="${WORK_CONFIG_DIR}/.last-sync"
@@ -52,7 +52,7 @@ _check_work_config_sync() {
   # Both files must exist
   [[ ! -f "$encrypted" ]] && return 1
   [[ ! -f "$decrypted" ]] && return 1
-
+  
   # Check if >= 3 days since last sync check
   if [[ -f "$WORK_CONFIG_SYNC_MARKER" ]]; then
     local last_sync=$(stat -f "%m" "$WORK_CONFIG_SYNC_MARKER" 2>/dev/null || echo 0)
@@ -66,7 +66,7 @@ _check_work_config_sync() {
 
   # Compare decrypted file with encrypted version
   local temp_decrypt=$(mktemp)
-  if gpg --decrypt "$encrypted" > "$temp_decrypt" 2>/dev/null; then
+  if gpg --decrypt "$encrypted" >! "$temp_decrypt" 2>/dev/null; then
     if ! diff -q "$decrypted" "$temp_decrypt" >/dev/null 2>&1; then
       rm -f "$temp_decrypt"
       return 0  # Changes detected
@@ -153,3 +153,4 @@ fi
 
 # Note: Post-config needs to be loaded later in .zshrc (after zprezto)
 # See .zshrc for work_config_post loading
+[ -f "$HOME/Development/bzf/bz.plugin.zsh" ] && source "$HOME/Development/bzf/bz.plugin.zsh"
