@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "enabledPlugins": {
+    "me2@squareup-me2": true,
+    "gopls-lsp@claude-plugins-official": true
+  },
+  "extraKnownMarketplaces": {
+    "squareup-me2": {
+      "source": {
+        "source": "git",
+        "url": "https://github.com/squareup/me2.git"
+      }
+    }
+  }
+}
