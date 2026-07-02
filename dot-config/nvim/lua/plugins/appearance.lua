@@ -268,8 +268,19 @@ return {
         opts = {},
     },
     {
-        "brenoprata10/nvim-highlight-colors",
-        opts = {},
+        'brenoprata10/nvim-highlight-colors',
+        opts = {
+            exclude_buffer = function (bufnr)
+                local allowed = {
+                    ["md"] = true,
+                    ["css"] = true,
+                    ["ghostty"] = true,
+                    ["lua"] = true,
+                }
+                local ft = vim.bo[bufnr].filetype
+                return not allowed[ft]
+            end
+        }
     },
     {
         "sphamba/smear-cursor.nvim",
