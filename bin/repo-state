@@ -55,6 +55,12 @@ confirm() { # confirm <prompt> ; honors $ASSUME_YES
   [ "$reply" = y ] || [ "$reply" = Y ]
 }
 
+confirm_hard() { # confirm_hard <prompt> ; NEVER auto-confirmed by --yes — for destructive choices
+  printf '%s [y/N] ' "$1"
+  read -r reply </dev/tty 2>/dev/null || return 1
+  [ "$reply" = y ] || [ "$reply" = Y ]
+}
+
 # Encode/decode paths relative to $HOME so they re-materialize under the new home.
 enc_path() { case "$1" in "$HOME"/*) printf '~/%s' "${1#"$HOME"/}" ;; *) printf '%s' "$1" ;; esac; }
 dec_path() { case "$1" in '~/'*) printf '%s/%s' "$HOME" "${1#\~/}" ;; *) printf '%s' "$1" ;; esac; }
@@ -342,12 +348,14 @@ push_branches() { # push_branches <repo> <report-file>
     printf '  %d branch(es) to push (new or fast-forward):\n' "${#ff_pushes[@]}"
     printf '    %s\n' "${ff_pushes[@]}"
     if confirm "  Push these to origin?"; then
+      local pushout
       for br in "${ff_pushes[@]}"; do
-        if git -C "$repo" push origin "refs/heads/$br:refs/heads/$br" >/dev/null 2>&1; then
+        if pushout=$(git -C "$repo" push origin "refs/heads/$br:refs/heads/$br" 2>&1); then
           printf 'pushed\t%s\n' "$br" >> "$report"
         else
           printf 'push-failed\t%s\n' "$br" >> "$report"
-          err "push failed for $br (kept in bundle)"
+          err "push failed for $br (kept in bundle):"
+          printf '%s\n' "$pushout" | grep -Ev '^(remote:\s*$|hint:)' | tail -4 | sed 's/^/      /' >&2
         fi
       done
     else
@@ -360,11 +368,50 @@ push_branches() { # push_branches <repo> <report-file>
     git -C "$repo" log --oneline "origin/$br..$br" | sed 's/^/      local-only: /' | head -5
     git -C "$repo" log --oneline "$br..origin/$br" | sed 's/^/      remote-only: /' | head -5
     if confirm "  Force-push $br with --force-with-lease?"; then
-      if git -C "$repo" push --force-with-lease origin "refs/heads/$br:refs/heads/$br" >/dev/null 2>&1; then
+      # Pin the lease to the exact remote SHA whose divergence listing was just
+      # shown. Equally safe as an implicit lease, and it sidesteps
+      # push.useForceIfIncludes (which rejects any lease taken from a fetch the
+      # local branch never integrated — git docs: an explicit expected value
+      # makes --force-if-includes a no-op).
+      local expected pushout
+      expected=$(git -C "$repo" rev-parse -q --verify "refs/remotes/origin/$br")
+      if pushout=$(git -C "$repo" push --force-with-lease="refs/heads/$br:$expected" \
+                     origin "refs/heads/$br:refs/heads/$br" 2>&1); then
         printf 'force-pushed\t%s\n' "$br" >> "$report"
       else
-        printf 'force-push-failed\t%s\n' "$br" >> "$report"
-        err "force-push failed for $br (lease rejected? kept in bundle)"
+        # Lease rejected: origin/<br> moved since our fetch (or the push was
+        # blocked). Refresh the ref, show exactly what a forced push would
+        # drop, and offer a re-attempt with a fresh pinned lease — same effect
+        # as --force on the commits shown, but still safe against another push
+        # racing in while the user reads the prompt. --yes never auto-answers.
+        err "force-with-lease rejected for $br:"
+        printf '%s\n' "$pushout" | grep -Ev '^(remote:\s*$|hint:)' | tail -4 | sed 's/^/      /' >&2
+        if git -C "$repo" fetch origin "+refs/heads/$br:refs/remotes/origin/$br" --quiet 2>/dev/null; then
+          local lost
+          lost=$(git -C "$repo" log --oneline "$br..origin/$br" 2>/dev/null | head -20)
+          if [ -n "$lost" ]; then
+            printf '  remote-only commit(s) on origin/%s that a forced push will DROP:\n' "$br"
+            printf '%s\n' "$lost" | sed 's/^/      /'
+          else
+            printf '  (origin/%s has no remote-only commits — nothing would be dropped)\n' "$br"
+          fi
+          if confirm_hard "  Re-attempt force push of $br (drops the commits above)?"; then
+            expected=$(git -C "$repo" rev-parse -q --verify "refs/remotes/origin/$br")
+            if pushout=$(git -C "$repo" push --force-with-lease="refs/heads/$br:$expected" \
+                           origin "refs/heads/$br:refs/heads/$br" 2>&1); then
+              printf 'force-pushed\t%s\n' "$br" >> "$report"
+            else
+              printf 'force-push-failed\t%s\n' "$br" >> "$report"
+              err "force push failed again for $br (kept in bundle):"
+              printf '%s\n' "$pushout" | grep -Ev '^(remote:\s*$|hint:)' | tail -4 | sed 's/^/      /' >&2
+            fi
+          else
+            printf 'force-declined\t%s\n' "$br" >> "$report"
+          fi
+        else
+          printf 'force-push-failed\t%s\n' "$br" >> "$report"
+          err "could not refresh origin/$br to inspect remote state — kept in bundle"
+        fi
       fi
     else
       printf 'force-declined\t%s\n' "$br" >> "$report"
