@@ -30,7 +30,9 @@
 #     plus gitignored-but-precious knowledge artifacts at ANY depth (thoughts/,
 #     .claude/, CLAUDE.local.md, AGENTS.local.md, docs/plans/ — extend via
 #     REPO_STATE_EXTRA_REGEX). .claude/worktrees/ (nested worktree checkouts)
-#     is always excluded. Staged paths & pending deletions replay exactly.
+#     is always excluded, as is any untracked/ignored dir that is itself a git
+#     checkout (nested clone or worktree) at any depth — never tar'd as files.
+#     Staged paths & pending deletions replay exactly.
 #
 # restore, per repo (paths are stored ~-relative and re-expanded on the new machine):
 #   - clones from origin if the main clone is missing
@@ -269,12 +271,36 @@ snapshot_worktree() { # snapshot_worktree <wt-path> <wt-dir-in-snapshot>
     discover_ignored_artifacts "$wt"
   } | sort -u | while IFS= read -r f; do
       [ -e "$wt/$f" ] && printf '%s\n' "$f"
-    done > "$listfile"
+    done > "$listfile.raw"
+
+  # Never tar a git checkout that happens to be untracked/ignored here: nested
+  # clones and worktrees (dirs carrying .git) are dropped outright, and clones
+  # buried deeper inside a captured directory are tar-excluded.
+  local -a nested_excludes=()
+  local p rel
+  : > "$listfile"
+  while IFS= read -r f; do
+    p="$wt/${f%/}"
+    if [ ! -L "$p" ] && [ -d "$p" ]; then
+      if [ -e "$p/.git" ]; then
+        note "    skipping nested git checkout: ${f%/}/"
+        continue
+      fi
+      while IFS= read -r rel; do
+        rel=${rel#"$wt"/}; rel=${rel%/.git}
+        note "    excluding nested git checkout: $rel/"
+        nested_excludes+=(--exclude "$rel" --exclude "$rel/*")
+      done < <(find "$p" -name .git -prune -print 2>/dev/null)
+    fi
+    printf '%s\n' "$f" >> "$listfile"
+  done < "$listfile.raw"
+  rm -f "$listfile.raw"
 
   if [ -s "$listfile" ]; then
     tar -czf "$dir/dirty.tgz" -C "$wt" \
       --exclude '.claude/worktrees' --exclude '.claude/worktrees/*' \
       --exclude '*/.claude/worktrees' --exclude '*/.claude/worktrees/*' \
+      ${nested_excludes[@]+"${nested_excludes[@]}"} \
       -T "$listfile" 2> "$dir/.tar-warnings" || true
     [ -s "$dir/.tar-warnings" ] && sed 's/^/    tar: /' "$dir/.tar-warnings" >&2
     rm -f "$dir/.tar-warnings"
