@@ -6,7 +6,7 @@
 #   repo-state snapshot [-o out.tgz] [--no-push] [--yes] <repo-dir>...
 #       e.g. repo-state snapshot ~/Development/java ~/Development/ios-register ~/Development/android-register
 #   repo-state restore <snapshot.tgz> [--dry-run] [--force-branches]
-#   repo-state list <snapshot.tgz>
+#   repo-state list [--files] <snapshot.tgz>   # --files: show captured file manifest
 #
 # snapshot, per repo:
 #   - records origin URL, default branch, all local branches (+upstreams)
@@ -112,7 +112,8 @@ snapshot_worktree() { # snapshot_worktree <wt-path> <wt-dir-in-snapshot>
       -T "$listfile" 2> "$dir/.tar-warnings" || true
     [ -s "$dir/.tar-warnings" ] && sed 's/^/    tar: /' "$dir/.tar-warnings" >&2
     rm -f "$dir/.tar-warnings"
-    note "worktree $(enc_path "$wt"): $(wc -l < "$listfile" | tr -d ' ') dirty/untracked file(s) captured ($(du -h "$dir/dirty.tgz" | cut -f1 | tr -d ' '))"
+    note "worktree $(enc_path "$wt"): $(wc -l < "$listfile" | tr -d ' ') dirty/untracked path(s) captured ($(du -h "$dir/dirty.tgz" | cut -f1 | tr -d ' '))"
+    tar -tzf "$dir/dirty.tgz" | grep -v '/$' | sed 's/^/      + /'
   else
     note "worktree $(enc_path "$wt"): clean"
   fi
@@ -462,8 +463,15 @@ cmd_restore() {
 }
 
 cmd_list() {
-  local archive="${1:-}"
-  [ -f "$archive" ] || die "usage: repo-state list <snapshot.tgz>"
+  local archive="" show_files=0
+  while [ $# -gt 0 ]; do
+    case "$1" in
+      --files) show_files=1; shift ;;
+      -*)      die "unknown list option: $1" ;;
+      *)       archive="$1"; shift ;;
+    esac
+  done
+  [ -f "${archive:-}" ] || die "usage: repo-state list [--files] <snapshot.tgz>"
   SNAP_DIR=$(mktemp -d "${TMPDIR:-/tmp}/repo-state.XXXXXX")
   trap 'rm -rf "$SNAP_DIR"' EXIT
   tar -xzf "$archive" -C "$SNAP_DIR"
@@ -475,6 +483,7 @@ cmd_list() {
     for w in "$dir"/worktrees/*/; do
       [ -d "$w" ] || continue
       note "worktree $(cat "$w/path") [$(cat "$w/head")] dirty: $([ -f "$w/dirty.list" ] && wc -l < "$w/dirty.list" | tr -d ' ' || echo 0) file(s)"
+      [ "$show_files" = 1 ] && [ -f "$w/dirty.tgz" ] && tar -tzf "$w/dirty.tgz" | grep -v '/$' | sed 's/^/      + /'
     done
   done
 }
