@@ -18,8 +18,10 @@
 #     are declined or fail)
 #   - saves Graphite stack metadata (refs/branch-metadata/* blobs)
 #   - tars uncommitted state per worktree: modified + staged + untracked files,
-#     plus gitignored-but-precious paths (thoughts/, .claude/, CLAUDE.local.md),
-#     and records staged paths & pending deletions so they replay exactly
+#     plus gitignored-but-precious knowledge artifacts at ANY depth (thoughts/,
+#     .claude/, CLAUDE.local.md, AGENTS.local.md, docs/plans/ — extend via
+#     REPO_STATE_EXTRA_REGEX). .claude/worktrees/ (nested worktree checkouts)
+#     is always excluded. Staged paths & pending deletions replay exactly.
 #
 # restore, per repo (paths are stored ~-relative and re-expanded on the new machine):
 #   - clones from origin if the main clone is missing
@@ -57,6 +59,19 @@ slugify() { # unique dir name per repo: basename + short path hash
 # snapshot
 # ---------------------------------------------------------------------------
 
+# Gitignored-but-precious artifacts (knowledge files agents/superpowers leave
+# behind), discovered at ANY depth via git's ignore engine. Collapsed ignored
+# dirs come back as 'path/' and tar recurses into them. Extend the default set
+# with REPO_STATE_EXTRA_REGEX (extended regex matched against repo-relative
+# paths, e.g. REPO_STATE_EXTRA_REGEX='(^|/)scratch/$|(^|/)NOTES\.md$').
+discover_ignored_artifacts() { # discover_ignored_artifacts <worktree>
+  local patterns='(^|/)thoughts/$|(^|/)\.claude/|(^|/)CLAUDE\.local\.md$|(^|/)AGENTS\.local\.md$|(^|/)docs/plans/$'
+  [ -n "${REPO_STATE_EXTRA_REGEX:-}" ] && patterns="$patterns|$REPO_STATE_EXTRA_REGEX"
+  git -C "$1" ls-files --others --ignored --exclude-standard --directory 2>/dev/null \
+    | grep -E "$patterns" \
+    | grep -Ev '(^|/)\.claude/worktrees(/|$)' || true
+}
+
 snapshot_worktree() { # snapshot_worktree <wt-path> <wt-dir-in-snapshot>
   local wt="$1" dir="$2" listfile f
   mkdir -p "$dir"
@@ -78,18 +93,23 @@ snapshot_worktree() { # snapshot_worktree <wt-path> <wt-dir-in-snapshot>
   } | sort -u > "$dir/deleted.list"
 
   # Dirty files that exist on disk: modified (staged or not) + untracked,
-  # plus gitignored knowledge artifacts worth carrying.
+  # plus gitignored knowledge artifacts worth carrying (any depth — monorepos
+  # ignore e.g. **/thoughts/). Never .claude/worktrees: those are full nested
+  # worktree checkouts (gigabytes) and are snapshotted as worktrees anyway.
   listfile="$dir/dirty.list"
   { git -C "$wt" diff --name-only
     git -C "$wt" diff --cached --name-only
     git -C "$wt" ls-files --others --exclude-standard
-    for f in thoughts .claude CLAUDE.local.md; do [ -e "$wt/$f" ] && printf '%s\n' "$f"; done
+    discover_ignored_artifacts "$wt"
   } | sort -u | while IFS= read -r f; do
       [ -e "$wt/$f" ] && printf '%s\n' "$f"
     done > "$listfile"
 
   if [ -s "$listfile" ]; then
-    tar -czf "$dir/dirty.tgz" -C "$wt" -T "$listfile" 2> "$dir/.tar-warnings" || true
+    tar -czf "$dir/dirty.tgz" -C "$wt" \
+      --exclude '.claude/worktrees' --exclude '.claude/worktrees/*' \
+      --exclude '*/.claude/worktrees' --exclude '*/.claude/worktrees/*' \
+      -T "$listfile" 2> "$dir/.tar-warnings" || true
     [ -s "$dir/.tar-warnings" ] && sed 's/^/    tar: /' "$dir/.tar-warnings" >&2
     rm -f "$dir/.tar-warnings"
     note "worktree $(enc_path "$wt"): $(wc -l < "$listfile" | tr -d ' ') dirty/untracked file(s) captured ($(du -h "$dir/dirty.tgz" | cut -f1 | tr -d ' '))"
