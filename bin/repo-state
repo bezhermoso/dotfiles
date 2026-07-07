@@ -7,9 +7,18 @@
 #       e.g. repo-state snapshot ~/Development/java ~/Development/ios-register ~/Development/android-register
 #   repo-state restore <snapshot.tgz> [--dry-run] [--force-branches]
 #   repo-state list [--files] <snapshot.tgz>   # --files: show captured file manifest
+#   repo-state status [--no-fetch] <repo-dir>...
+#       print clone + worktree layout, branch ahead/behind vs origin, and dirty
+#       state (first 25 paths + "more" count) WITHOUT snapshotting anything.
+#       'repo-state snapshot --dry-run <repo-dir>...' is an alias for this.
 #
 # snapshot, per repo:
 #   - records origin URL, default branch, all local branches (+upstreams)
+#   - EXCLUDES merged branches: a branch whose GitHub PR was merged at the
+#     current tip (gh lookup; open PR vetoes) or whose tip is already in
+#     origin/<default> is dropped from the snapshot — its work landed and the
+#     remote branch was deleted; we don't want it on the new laptop. Kept only
+#     if a worktree has it checked out. Names go to merged-branches.list.
 #   - records every worktree: path, branch/detached SHA
 #   - pushes local branches to origin (fast-forward pushes after one confirmation;
 #     diverged branches individually confirmed as --force-with-lease; the default
@@ -58,6 +67,163 @@ slugify() { # unique dir name per repo: basename + short path hash
 # ---------------------------------------------------------------------------
 # snapshot
 # ---------------------------------------------------------------------------
+
+resolve_main_clone() { # resolve_main_clone <dir> — echo abs path of the MAIN clone, or fail
+  local repo common gitdir
+  repo=$(cd "$1" 2>/dev/null && pwd) || { err "skipping $1: not a directory"; return 1; }
+  git -C "$repo" rev-parse --is-inside-work-tree >/dev/null 2>&1 || { err "skipping $repo: not a git repo"; return 1; }
+  common=$(git -C "$repo" rev-parse --path-format=absolute --git-common-dir)
+  gitdir=$(git -C "$repo" rev-parse --path-format=absolute --git-dir)
+  [ "$common" = "$gitdir" ] || { err "skipping $repo: linked worktree — pass its main clone instead"; return 1; }
+  printf '%s\n' "$repo"
+}
+
+list_worktree_paths() { # list_worktree_paths <repo> — one existing worktree path per line, prunable skipped
+  local wpath="" line
+  while IFS= read -r line; do
+    case "$line" in
+      worktree\ *) wpath="${line#worktree }" ;;
+      prunable*)   wpath="" ;;
+      "") [ -n "$wpath" ] && [ -d "$wpath" ] && printf '%s\n' "$wpath"; wpath="" ;;
+    esac
+  done < <(git -C "$1" worktree list --porcelain; echo)
+}
+
+get_default_branch() { # get_default_branch <repo>
+  local db
+  db=$(git -C "$1" symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null | sed 's|^origin/||') || true
+  printf '%s\n' "${db:-main}"
+}
+
+# --- merged-branch detection -----------------------------------------------
+# A branch is "merged" (its work landed; on merge GitHub deletes the remote
+# branch, so remote existence proves nothing) when either:
+#   a) its tip is an ancestor of origin/<default> (merge-commit / ff merges), or
+#   b) a GitHub PR from it was MERGED at exactly the current local tip SHA and
+#      no PR from it is still OPEN (catches squash/rebase merges; the SHA match
+#      keeps branches that gained commits after the merge).
+# compute_merged_branches writes the set to $MERGED_FILE; is_merged tests it.
+MERGED_FILE=""
+
+branch_is_ancestor_merged() { # <repo> <branch> <default-branch>
+  git -C "$1" merge-base --is-ancestor "refs/heads/$2" "refs/remotes/origin/$3" 2>/dev/null
+}
+
+pr_merged_branches() { # pr_merged_branches <repo> <branches-tsv> — echo branches with a merged-at-tip PR and no open PR
+  command -v gh >/dev/null 2>&1 || return 0
+  local origin path owner name
+  origin=$(git -C "$1" remote get-url origin 2>/dev/null) || return 0
+  case "$origin" in *github.com*) ;; *) return 0 ;; esac
+  path=${origin#*github.com}; path=${path#[:/]}; path=${path%.git}
+  owner=${path%%/*}; name=${path#*/}; name=${name%%/*}
+  [ -n "$owner" ] && [ -n "$name" ] || return 0
+
+  local -a brs=() shas=()
+  local br sha upstream
+  while IFS=$'\t' read -r br sha upstream; do
+    brs+=("$br"); shas+=("$sha")
+  done < "$2"
+  [ ${#brs[@]} -gt 0 ] || return 0
+
+  local chunk=50 start=0 i q out alias states
+  while [ "$start" -lt ${#brs[@]} ]; do
+    q="query { repository(owner: \"$owner\", name: \"$name\") {"
+    i="$start"
+    while [ "$i" -lt ${#brs[@]} ] && [ "$i" -lt $((start + chunk)) ]; do
+      q="$q b$i: pullRequests(headRefName: \"${brs[$i]}\", states: [OPEN, MERGED], first: 10) { nodes { state headRefOid } }"
+      i=$((i + 1))
+    done
+    q="$q } }"
+    if ! out=$(gh api graphql -f query="$q" \
+        --jq '.data.repository | to_entries[] | .key + "\t" + ([.value.nodes[] | .state + ":" + .headRefOid] | join(","))' 2>/dev/null); then
+      err "warning: gh PR lookup failed for $owner/$name — merged-PR detection skipped"
+      return 0
+    fi
+    while IFS=$'\t' read -r alias states; do
+      [ -n "$alias" ] || continue
+      i=${alias#b}
+      case "$states" in
+        *OPEN:*) ;;                                     # open PR — branch is live
+        *"MERGED:${shas[$i]}"*) printf '%s\n' "${brs[$i]}" ;;
+      esac
+    done <<< "$out"
+    start=$((start + chunk))
+  done
+}
+
+compute_merged_branches() { # compute_merged_branches <repo> <branches-tsv> <out-file> — sets MERGED_FILE
+  local repo="$1" tsv="$2" db br sha upstream
+  MERGED_FILE="$3"
+  db=$(get_default_branch "$repo")
+  { while IFS=$'\t' read -r br sha upstream; do
+      [ "$br" = "$db" ] && continue
+      branch_is_ancestor_merged "$repo" "$br" "$db" && printf '%s\n' "$br"
+    done < "$tsv"
+    pr_merged_branches "$repo" "$tsv"
+  } | grep -vx "$db" | sort -u > "$MERGED_FILE" || true
+}
+
+is_merged() { # is_merged <branch>
+  [ -n "$MERGED_FILE" ] && [ -f "$MERGED_FILE" ] && grep -qxF "$1" "$MERGED_FILE"
+}
+
+branch_ab() { # branch_ab <repo> <branch> — describe state vs origin/<branch>
+  local counts ahead behind
+  if ! git -C "$1" rev-parse -q --verify "refs/remotes/origin/$2" >/dev/null 2>&1; then
+    printf 'not on origin'; return
+  fi
+  counts=$(git -C "$1" rev-list --left-right --count "refs/heads/$2...refs/remotes/origin/$2" 2>/dev/null) \
+    || { printf '?'; return; }
+  ahead=${counts%%$'\t'*}; behind=${counts##*$'\t'}
+  if [ "$ahead" = 0 ] && [ "$behind" = 0 ]; then printf 'in sync'
+  else printf 'ahead %s, behind %s' "$ahead" "$behind"; fi
+}
+
+print_branch_table() { # print_branch_table <repo>  (compute_merged_branches must have run)
+  local br sha upstream db merged=0
+  db=$(get_default_branch "$1")
+  printf '  local branches:\n'
+  while IFS=$'\t' read -r br sha upstream; do
+    if is_merged "$br"; then merged=$((merged + 1)); continue; fi
+    printf '    %-55s %s  %s\n' "$br" "$(git -C "$1" rev-parse --short "$sha")" "$(branch_ab "$1" "$br")"
+  done < <(git -C "$1" for-each-ref refs/heads --format='%(refname:short)%09%(objectname)%09%(upstream:short)')
+  [ "$merged" -gt 0 ] && note "  ($merged branch(es) with merged PRs / already in origin/$db — not shown)"
+  return 0
+}
+
+DIRTY_LIST_CAP=25
+
+print_worktree_layout() { # print_worktree_layout <wt> <show-files:0|1>
+  local wt="$1" show="${2:-0}" branch desc
+  if branch=$(git -C "$wt" symbolic-ref --quiet --short HEAD); then
+    if is_merged "$branch"; then
+      desc="[$branch] — MERGED (worktree can be cleaned up)"
+    else
+      desc="[$branch] — $(branch_ab "$wt" "$branch")"
+    fi
+  else
+    desc="[detached $(git -C "$wt" rev-parse --short HEAD)]"
+  fi
+  note "$(enc_path "$wt") $desc"
+  local m s u
+  m=$(git -C "$wt" diff --name-only | wc -l | tr -d ' ')
+  s=$(git -C "$wt" diff --cached --name-only | wc -l | tr -d ' ')
+  u=$(git -C "$wt" ls-files --others --exclude-standard | wc -l | tr -d ' ')
+  note "    $m modified, $s staged, $u untracked"
+  if [ "$show" = 1 ]; then
+    local listtmp total
+    listtmp=$(mktemp "${TMPDIR:-/tmp}/repo-state-wt.XXXXXX")
+    { git -C "$wt" diff --name-only
+      git -C "$wt" diff --cached --name-only
+      git -C "$wt" ls-files --others --exclude-standard
+      discover_ignored_artifacts "$wt"
+    } | sort -u | grep . > "$listtmp" || true
+    total=$(wc -l < "$listtmp" | tr -d ' ')
+    head -"$DIRTY_LIST_CAP" "$listtmp" | sed 's/^/      + /'
+    [ "$total" -gt "$DIRTY_LIST_CAP" ] && note "      … $((total - DIRTY_LIST_CAP)) more path(s)"
+    rm -f "$listtmp"
+  fi
+}
 
 # Gitignored-but-precious artifacts (knowledge files agents/superpowers leave
 # behind), discovered at ANY depth via git's ignore engine. Collapsed ignored
@@ -112,10 +278,14 @@ snapshot_worktree() { # snapshot_worktree <wt-path> <wt-dir-in-snapshot>
       -T "$listfile" 2> "$dir/.tar-warnings" || true
     [ -s "$dir/.tar-warnings" ] && sed 's/^/    tar: /' "$dir/.tar-warnings" >&2
     rm -f "$dir/.tar-warnings"
-    note "worktree $(enc_path "$wt"): $(wc -l < "$listfile" | tr -d ' ') dirty/untracked path(s) captured ($(du -h "$dir/dirty.tgz" | cut -f1 | tr -d ' '))"
-    tar -tzf "$dir/dirty.tgz" | grep -v '/$' | sed 's/^/      + /'
+    local total
+    total=$(tar -tzf "$dir/dirty.tgz" | grep -cv '/$')
+    note "    captured: $total file(s), $(du -h "$dir/dirty.tgz" | cut -f1 | tr -d ' ')"
+    tar -tzf "$dir/dirty.tgz" | grep -v '/$' | head -"$DIRTY_LIST_CAP" | sed 's/^/      + /'
+    [ "$total" -gt "$DIRTY_LIST_CAP" ] \
+      && note "      … $((total - DIRTY_LIST_CAP)) more (full manifest: repo-state list --files)"
   else
-    note "worktree $(enc_path "$wt"): clean"
+    note "    captured: nothing (clean)"
   fi
 }
 
@@ -126,6 +296,10 @@ push_branches() { # push_branches <repo> <report-file>
 
   while IFS=$'\t' read -r br sha upstream; do
     [ "$br" = "$DEFAULT_BRANCH" ] && continue
+    if is_merged "$br"; then
+      printf 'merged\t%s\n' "$br" >> "$report" # PR merged / already in default branch
+      continue
+    fi
     remote_sha=$(git -C "$repo" rev-parse -q --verify "refs/remotes/origin/$br" 2>/dev/null) || remote_sha=""
     if [ -z "$remote_sha" ]; then
       ff_pushes+=("$br")                     # not on origin yet
@@ -174,14 +348,7 @@ push_branches() { # push_branches <repo> <report-file>
 
 snapshot_repo() { # snapshot_repo <main-clone-path>
   local repo slug
-  repo=$(cd "$1" 2>/dev/null && pwd) || { err "skipping $1: not a directory"; return 1; }
-  git -C "$repo" rev-parse --is-inside-work-tree >/dev/null 2>&1 || { err "skipping $repo: not a git repo"; return 1; }
-
-  # Must be the main clone, not a linked worktree.
-  local common gitdir
-  common=$(git -C "$repo" rev-parse --path-format=absolute --git-common-dir)
-  gitdir=$(git -C "$repo" rev-parse --path-format=absolute --git-dir)
-  [ "$common" = "$gitdir" ] || { err "skipping $repo: linked worktree — pass its main clone instead"; return 1; }
+  repo=$(resolve_main_clone "$1") || return 1
 
   head1 "$(enc_path "$repo")"
   slug=$(slugify "$repo")
@@ -198,11 +365,58 @@ snapshot_repo() { # snapshot_repo <main-clone-path>
 
   git -C "$repo" for-each-ref refs/heads \
     --format='%(refname:short)%09%(objectname)%09%(upstream:short)' > "$SNAP_REPO_DIR/branches.tsv"
-  note "$(wc -l < "$SNAP_REPO_DIR/branches.tsv" | tr -d ' ') local branch(es)"
+
+  git -C "$repo" fetch origin --quiet 2>/dev/null \
+    || err "warning: fetch failed; remote comparisons and push decisions may be stale"
+
+  # Worktrees first — their checked-out branches must survive merged filtering.
+  local -a wt_paths=() detached_shas=()
+  local wpath wt
+  while IFS= read -r wpath; do wt_paths+=("$wpath"); done < <(list_worktree_paths "$repo")
+  local wt_branch_file="$SNAP_REPO_DIR/.wt-branches"
+  : > "$wt_branch_file"
+  for wt in "${wt_paths[@]}"; do
+    git -C "$wt" symbolic-ref --quiet --short HEAD >> "$wt_branch_file" || true
+  done
+
+  compute_merged_branches "$repo" "$SNAP_REPO_DIR/branches.tsv" "$SNAP_REPO_DIR/merged-branches.list"
+
+  # Drop merged branches from the snapshot: their work landed and GitHub
+  # deleted the remote branch — we don't want them back on the new laptop.
+  # Exception: a merged branch checked out in a worktree is kept so that
+  # worktree can be re-materialized (clean it up with your worktree sweeper).
+  if [ -s "$SNAP_REPO_DIR/merged-branches.list" ]; then
+    local dropped=0 kept="" filtered="$SNAP_REPO_DIR/.branches.filtered"
+    : > "$filtered"
+    while IFS=$'\t' read -r br sha upstream; do
+      if is_merged "$br"; then
+        if grep -qxF "$br" "$wt_branch_file"; then
+          kept="$kept $br"
+          printf '%s\t%s\t%s\n' "$br" "$sha" "$upstream" >> "$filtered"
+        else
+          dropped=$((dropped + 1))
+        fi
+      else
+        printf '%s\t%s\t%s\n' "$br" "$sha" "$upstream" >> "$filtered"
+      fi
+    done < "$SNAP_REPO_DIR/branches.tsv"
+    mv "$filtered" "$SNAP_REPO_DIR/branches.tsv"
+    [ "$dropped" -gt 0 ] && note "excluding $dropped merged branch(es) from snapshot (merged-branches.list in archive has names)"
+    [ -n "$kept" ] && note "keeping merged branch(es) still checked out in a worktree:$kept"
+  fi
+  rm -f "$wt_branch_file"
+
+  print_branch_table "$repo"
 
   # Graphite stack metadata: refs/branch-metadata/* point at blobs.
+  # Only for branches that survived merged filtering.
   git -C "$repo" for-each-ref refs/branch-metadata \
-    --format='%(refname)%09%(objectname)' > "$SNAP_REPO_DIR/metadata-refs.tsv"
+    --format='%(refname)%09%(objectname)' \
+    | while IFS=$'\t' read -r mref msha; do
+        if cut -f1 "$SNAP_REPO_DIR/branches.tsv" | grep -qxF "${mref#refs/branch-metadata/}"; then
+          printf '%s\t%s\n' "$mref" "$msha"
+        fi
+      done > "$SNAP_REPO_DIR/metadata-refs.tsv"
   if [ -s "$SNAP_REPO_DIR/metadata-refs.tsv" ]; then
     mkdir -p "$SNAP_REPO_DIR/metadata-blobs"
     local mref msha
@@ -217,23 +431,13 @@ snapshot_repo() { # snapshot_repo <main-clone-path>
   if [ "${NO_PUSH:-0}" = 1 ]; then
     note "skipping pushes (--no-push)"
   else
-    git -C "$repo" fetch origin --quiet 2>/dev/null || err "warning: fetch failed; push decisions use stale remote refs"
     push_branches "$repo" "$SNAP_REPO_DIR/push-report.tsv"
   fi
 
-  # Worktrees (skip prunable/missing ones), and collect detached SHAs for the bundle.
-  local -a wt_paths=() detached_shas=()
-  local wpath=""
-  while IFS= read -r line; do
-    case "$line" in
-      worktree\ *) wpath="${line#worktree }" ;;
-      prunable*)   wpath="" ;;
-      "") if [ -n "$wpath" ] && [ -d "$wpath" ]; then wt_paths+=("$wpath"); fi; wpath="" ;;
-    esac
-  done < <(git -C "$repo" worktree list --porcelain; echo)
-
-  local i=0 wt
+  local i=0
+  printf '  worktree layout:\n'
   for wt in "${wt_paths[@]}"; do
+    print_worktree_layout "$wt" 0
     snapshot_worktree "$wt" "$SNAP_REPO_DIR/worktrees/$i"
     if grep -q '^detached$' "$SNAP_REPO_DIR/worktrees/$i/head"; then
       detached_shas+=("$(cat "$SNAP_REPO_DIR/worktrees/$i/sha")")
@@ -266,18 +470,52 @@ snapshot_repo() { # snapshot_repo <main-clone-path>
   done
 }
 
+cmd_status() {
+  local repos=() no_fetch=0 repo r
+  while [ $# -gt 0 ]; do
+    case "$1" in
+      --no-fetch) no_fetch=1; shift ;;
+      -*)         die "unknown status option: $1" ;;
+      *)          repos+=("$1"); shift ;;
+    esac
+  done
+  [ ${#repos[@]} -gt 0 ] || die "usage: repo-state status [--no-fetch] <repo-dir>..."
+  for r in "${repos[@]}"; do
+    repo=$(resolve_main_clone "$r") || continue
+    head1 "$(enc_path "$repo")"
+    note "origin: $(git -C "$repo" remote get-url origin 2>/dev/null || echo '(none)')"
+    if [ "$no_fetch" = 1 ]; then
+      note "(--no-fetch: remote comparisons may be stale)"
+    else
+      git -C "$repo" fetch origin --quiet 2>/dev/null || err "warning: fetch failed; remote comparisons may be stale"
+    fi
+    local btsv
+    btsv=$(mktemp "${TMPDIR:-/tmp}/repo-state-status.XXXXXX")
+    git -C "$repo" for-each-ref refs/heads \
+      --format='%(refname:short)%09%(objectname)%09%(upstream:short)' > "$btsv"
+    compute_merged_branches "$repo" "$btsv" "$btsv.merged"
+    print_branch_table "$repo"
+    printf '  worktrees:\n'
+    local wt
+    while IFS= read -r wt; do print_worktree_layout "$wt" 1; done < <(list_worktree_paths "$repo")
+    rm -f "$btsv" "$btsv.merged"
+  done
+}
+
 cmd_snapshot() {
-  local out="" repos=()
+  local out="" repos=() dry=0
   while [ $# -gt 0 ]; do
     case "$1" in
       -o|--output) out="${2:?missing argument for $1}"; shift 2 ;;
       --no-push)   NO_PUSH=1; shift ;;
       --yes|-y)    ASSUME_YES=1; shift ;;
+      --dry-run)   dry=1; shift ;;
       -*)          die "unknown snapshot option: $1" ;;
       *)           repos+=("$1"); shift ;;
     esac
   done
-  [ ${#repos[@]} -gt 0 ] || die "usage: repo-state snapshot [-o out.tgz] [--no-push] [--yes] <repo-dir>..."
+  [ ${#repos[@]} -gt 0 ] || die "usage: repo-state snapshot [-o out.tgz] [--no-push] [--yes] [--dry-run] <repo-dir>..."
+  if [ "$dry" = 1 ]; then cmd_status "${repos[@]}"; return; fi
   [ -n "$out" ] || out="$HOME/repo-state-$(hostname -s)-$(date +%Y%m%d-%H%M%S).tgz"
 
   SNAP_DIR=$(mktemp -d "${TMPDIR:-/tmp}/repo-state.XXXXXX")
@@ -492,6 +730,7 @@ case "${1:-}" in
   snapshot) shift; cmd_snapshot "$@" ;;
   restore)  shift; cmd_restore "$@" ;;
   list)     shift; cmd_list "$@" ;;
-  -h|--help|'') sed -n '2,33p' "$0" | sed 's/^# \{0,1\}//' ;;
+  status)   shift; cmd_status "$@" ;;
+  -h|--help|'') sed -n '2,35p' "$0" | sed 's/^# \{0,1\}//' ;;
   *) die "unknown command: $1 (snapshot | restore | list)" ;;
 esac
