@@ -3,17 +3,21 @@
 # Every fixture is a throwaway GNUPGHOME with passphraseless keys, so no test
 # can ever trigger pinentry.
 
-typeset -g TESTS_RUN=0 TESTS_FAILED=0 CURRENT_TEST="" CURRENT_FAILED=0
+typeset -g TESTS_RUN=0 TESTS_FAILED=0 CURRENT_TEST="" CURRENT_FAILED=0 CURRENT_OPEN=0
 typeset -g WORKCFG_BIN="${WORKCFG_BIN:-${0:a:h}/../../bin/workcfg}"
 typeset -gA SNAPSHOTS
 
 it() {
+  _finalize_current
   CURRENT_TEST="$1"
   CURRENT_FAILED=0
+  CURRENT_OPEN=1
   (( TESTS_RUN++ ))
 }
 
-_pass_or_fail() {
+_finalize_current() {
+  (( CURRENT_OPEN )) || return 0
+  CURRENT_OPEN=0
   if (( CURRENT_FAILED )); then
     (( TESTS_FAILED++ ))
     print -u2 "  ✗ $CURRENT_TEST"
@@ -21,6 +25,8 @@ _pass_or_fail() {
     print "  ✓ $CURRENT_TEST"
   fi
 }
+
+_pass_or_fail() { _finalize_current }
 
 fail() {
   print -u2 "      $*"
@@ -90,6 +96,7 @@ fixture_setup() {
 }
 
 fixture_teardown() {
+  _finalize_current
   [[ -n "$FIXTURE_ROOT" && "$FIXTURE_ROOT" == */workcfg-test.* ]] && rm -rf "$FIXTURE_ROOT"
 }
 

@@ -9,6 +9,7 @@ for f in test_*.zsh; do
   print "── ${f}"
   TESTS_RUN=0 TESTS_FAILED=0
   source "./$f"
+  _finalize_current
   (( total_run += TESTS_RUN, total_failed += TESTS_FAILED ))
 done
 

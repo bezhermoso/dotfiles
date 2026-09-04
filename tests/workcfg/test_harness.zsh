@@ -1,3 +1,4 @@
+#!/usr/bin/env zsh
 fixture_setup
 
 it "fixture generates a usable encryption key"
