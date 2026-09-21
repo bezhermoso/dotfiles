@@ -163,6 +163,44 @@ wc_status_class() {
   esac
 }
 
+wc_pull() {
+  local force=0
+  [[ "${1:-}" == "--force" ]] && { force=1; shift }
+  local name="$1" ct="$(wc_ct_path $1)" pt="$(wc_pt_path $1)"
+
+  [[ -f "$ct" ]] || { print -u2 "workcfg: no ciphertext for $name"; return 1 }
+
+  local st="$(wc_status $name)"
+  if [[ "$st" == CONFLICT ]] && (( ! force )); then
+    print -u2 "workcfg: $name has local edits AND upstream changes."
+    print -u2 "  inspect: workcfg diff $name"
+    print -u2 "  keep upstream: workcfg pull --force $name"
+    print -u2 "  keep local:    workcfg push --force $name"
+    return 3
+  fi
+
+  wc_ensure_perms
+  local tmp="${pt}.pull.$$" err
+  err="$(gpg --batch --quiet --yes --output "$tmp" --decrypt "$ct" 2>&1)"
+  local rc=$?
+  if (( rc != 0 )) || [[ ! -s "$tmp" ]]; then
+    rm -f "$tmp"
+    print -u2 "workcfg: failed to decrypt $name"
+    [[ -n "$err" ]] && print -u2 "$err"
+    (( rc == 0 )) && print -u2 "workcfg: gpg succeeded but produced no output"
+    return 1
+  fi
+
+  chmod 600 "$tmp"
+  mv -f "$tmp" "$pt"
+  wc_record_baseline "$name"
+  wc_state_set "$name" \
+    recipient="$(wc_recipient_of $ct)" \
+    armored="$(wc_is_armored $ct && print 1 || print 0)"
+  print "✓ pulled $name"
+  return 0
+}
+
 # --- dispatch ---------------------------------------------------------------
 cmd="${1:-status}"; shift 2>/dev/null || true
 case "$cmd" in
@@ -176,5 +214,11 @@ case "$cmd" in
   status)
     if [[ "${1:-}" == "--porcelain-one" ]]; then wc_status "$2"; exit 0; fi
     local n; for n in $WORKCFG_NAMES; do print -r -- "$n $(wc_status $n)"; done ;;
+  pull)
+    local force="" rc=0
+    [[ "${1:-}" == "--force" ]] && { force="--force"; shift }
+    local targets=(${@:-$WORKCFG_NAMES}) n
+    for n in $targets; do wc_pull $force "$n" || rc=$? ; done
+    exit $rc ;;
   *) print -u2 "workcfg: unknown command '$cmd'"; exit 2 ;;
 esac
