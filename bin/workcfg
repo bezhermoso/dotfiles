@@ -271,8 +271,18 @@ wc_push() {
 
 wc_dismiss() {
   local name="$1" ct="$(wc_ct_path $1)" pt="$(wc_pt_path $1)"
-  [[ -s "$pt" && -f "$ct" ]] || { print -u2 "workcfg: nothing to dismiss for $name"; return 1 }
+  # Dismissible = any status with real drift. CLEAN has nothing to silence;
+  # MISSING/UNMANAGED/UNTRACKED can't even have both hashes computed. This
+  # check is status-driven (not just file existence) so an explicit request
+  # against a CLEAN file fails loudly instead of writing an inert dismissal.
+  local st="$(wc_status $name)"
+  [[ "$st" == (DRIFTED|CONFLICT|STALE|DISMISSED) ]] || {
+    print -u2 "workcfg: nothing to dismiss for $name (status: $st)"
+    return 1
+  }
   # Records BOTH hashes, so the dismissal expires if either side moves.
+  # Re-dismissing an already-DISMISSED file is harmless and refreshes
+  # dismissed_at — there is no separate "already dismissed" branch.
   wc_state_set "$name" \
     dismissed_sha="$(wc_sha256 $pt)" \
     dismissed_ciphertext_sha="$(wc_sha256 $ct)" \
@@ -281,8 +291,13 @@ wc_dismiss() {
 }
 
 wc_undismiss() {
-  wc_state_clear "$1" dismissed_sha dismissed_ciphertext_sha dismissed_at
-  print "✓ undismissed $1"
+  local name="$1"
+  if [[ -n "$(wc_state_get $name dismissed_sha)" ]]; then
+    wc_state_clear "$name" dismissed_sha dismissed_ciphertext_sha dismissed_at
+    print "✓ undismissed $name"
+  else
+    print "workcfg: $name was not dismissed"
+  fi
 }
 
 # --- dispatch ---------------------------------------------------------------
@@ -298,10 +313,22 @@ case "$cmd" in
   status)
     if [[ "${1:-}" == "--porcelain-one" ]]; then wc_status "$2"; exit 0; fi
     local n; for n in $WORKCFG_NAMES; do print -r -- "$n $(wc_status $n)"; done ;;
-  dismiss)   local n; for n in ${@:-$WORKCFG_NAMES}; do
-               [[ "$(wc_status $n)" == (DRIFTED|CONFLICT|DISMISSED) ]] && wc_dismiss "$n"
-             done ;;
-  undismiss) local n; for n in ${@:-$WORKCFG_NAMES}; do wc_undismiss "$n"; done ;;
+  dismiss)
+    local -i explicit=$# rc=0
+    # Only pre-filter when falling back to the default target list. An
+    # explicitly named target must always reach wc_dismiss so its own
+    # "nothing to dismiss" error (and exit 1) surfaces instead of a silent
+    # no-op — mirrors wc_push's dispatch above.
+    local targets=(${@:-$WORKCFG_NAMES}) n
+    for n in $targets; do
+      (( explicit )) || [[ "$(wc_status $n)" == (DRIFTED|CONFLICT|STALE|DISMISSED) ]] || continue
+      wc_dismiss "$n" || rc=$?
+    done
+    exit $rc ;;
+  undismiss)
+    local -i rc=0
+    local n; for n in ${@:-$WORKCFG_NAMES}; do wc_undismiss "$n" || rc=$?; done
+    exit $rc ;;
   pull)
     local force="" rc=0
     [[ "${1:-}" == "--force" ]] && { force="--force"; shift }
