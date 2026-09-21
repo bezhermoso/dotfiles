@@ -136,19 +136,25 @@ if _is_work_machine; then
   #   source "$WORK_CONFIG_DECRYPTED_PRE"
   # fi
 
-  # Check for changes and prompt for re-encryption (in background, non-blocking)
-  # This runs after shell startup to avoid slowing down prompt
-  {
-    sleep 5  # Brief delay to let shell fully initialize
-
-    if _check_work_config_sync "$WORK_CONFIG_ENCRYPTED_PRE" "$WORK_CONFIG_DECRYPTED_PRE"; then
-      _prompt_reencrypt_work_config "$WORK_CONFIG_DECRYPTED_PRE" "$WORK_CONFIG_ENCRYPTED_PRE"
-    fi
-
-    if _check_work_config_sync "$WORK_CONFIG_ENCRYPTED_POST" "$WORK_CONFIG_DECRYPTED_POST"; then
-      _prompt_reencrypt_work_config "$WORK_CONFIG_DECRYPTED_POST" "$WORK_CONFIG_ENCRYPTED_POST"
-    fi
-  } &!
+  # DISABLED: the background drift check used to run here as `{ sleep 5; ... } &!`.
+  #
+  # It was the TTY thief. The subshell was forked at .zshrc:48, which is BEFORE
+  # inc.gpg.zsh exported GPG_TTY, so five seconds later _check_work_config_sync
+  # ran `gpg --decrypt` (it decrypted purely to diff) with no GPG_TTY set —
+  # and pinentry-curses fell back to seizing the controlling terminal, on top of
+  # whatever was running by then. Detached background jobs also take SIGTTIN when
+  # they read the terminal, and every new tab forked another one.
+  #
+  # Nothing of value is lost by removing it: its only purpose was to offer
+  # re-encryption, and re-encryption could never succeed on this machine anyway.
+  # WORK_GPG_RECIPIENT (bezalelhermoso@gmail.com) matches no key in the keyring —
+  # the ciphertext is encrypted to FA3B676DB3CF2F56 — and the key that IS ours
+  # carries no ownertrust, so gpg rejects it as "Unusable public key" without
+  # --trust-model always. Both failures were swallowed by `2>/dev/null`.
+  #
+  # Drift detection returns in `bin/workcfg`, where it is a sha256 comparison
+  # against a recorded baseline and needs neither GPG nor a terminal.
+  # See docs/superpowers/plans/2026-09-03-work-config-gpg-workflow.md (Task 10).
 fi
 
 # Note: Post-config needs to be loaded later in .zshrc (after zprezto)
