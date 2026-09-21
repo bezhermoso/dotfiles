@@ -116,6 +116,53 @@ wc_recipient_of() {
     | awk -F'keyid ' '/pubkey enc packet/ {print $2; exit}'
 }
 
+wc_record_baseline() {
+  local name="$1" ct="$(wc_ct_path $1)" pt="$(wc_pt_path $1)"
+  wc_state_set "$name" \
+    plaintext_sha="$(wc_sha256 $pt)" \
+    plaintext_mtime="$(wc_mtime $pt)" \
+    plaintext_size="$(wc_size $pt)" \
+    ciphertext_sha="$(wc_sha256 $ct)" \
+    ciphertext_mtime="$(wc_mtime $ct)" \
+    ciphertext_size="$(wc_size $ct)" \
+    synced_at="$(date +%s)"
+  wc_state_clear "$name" dismissed_sha dismissed_ciphertext_sha dismissed_at
+}
+
+_wc_is_dismissed() {          # <name> <c_now> <p_now>
+  [[ "$3" == "$(wc_state_get $1 dismissed_sha)" \
+  && "$2" == "$(wc_state_get $1 dismissed_ciphertext_sha)" ]]
+}
+
+# Rows are evaluated top-down; first match wins.
+wc_status() {
+  local name="$1" ct="$(wc_ct_path $1)" pt="$(wc_pt_path $1)" st="$(wc_state_path $1)"
+  [[ -f "$ct" ]] || { print UNMANAGED; return }
+  [[ -s "$pt" ]] || { print MISSING;   return }
+  [[ -f "$st" ]] || { print UNTRACKED; return }
+
+  local c_now="$(wc_sha256 $ct)" p_now="$(wc_sha256 $pt)"
+  local -i c_drift=0 p_drift=0
+  [[ "$c_now" != "$(wc_state_get $name ciphertext_sha)" ]] && c_drift=1
+  [[ "$p_now" != "$(wc_state_get $name plaintext_sha)"  ]] && p_drift=1
+
+  if (( c_drift || p_drift )) && _wc_is_dismissed "$name" "$c_now" "$p_now"; then
+    print DISMISSED; return
+  fi
+  (( c_drift && p_drift )) && { print CONFLICT; return }
+  (( c_drift ))            && { print STALE;    return }
+  (( p_drift ))            && { print DRIFTED;  return }
+  print CLEAN
+}
+
+wc_status_class() {
+  case "$1" in
+    MISSING|STALE)              print prompt ;;
+    UNTRACKED|DRIFTED|CONFLICT) print notice ;;
+    *)                          print silent ;;
+  esac
+}
+
 # --- dispatch ---------------------------------------------------------------
 cmd="${1:-status}"; shift 2>/dev/null || true
 case "$cmd" in
@@ -124,5 +171,10 @@ case "$cmd" in
   _test_state_clear) wc_state_clear "$@" ;;
   _test_recipient)   wc_recipient_of "$(wc_ct_path $1)" ;;
   _test_armored)     wc_is_armored "$(wc_ct_path $1)" && print 1 || print 0 ;;
+  _test_baseline)    wc_record_baseline "$1" ;;
+  _test_class)       wc_status_class "$1" ;;
+  status)
+    if [[ "${1:-}" == "--porcelain-one" ]]; then wc_status "$2"; exit 0; fi
+    local n; for n in $WORKCFG_NAMES; do print -r -- "$n $(wc_status $n)"; done ;;
   *) print -u2 "workcfg: unknown command '$cmd'"; exit 2 ;;
 esac
