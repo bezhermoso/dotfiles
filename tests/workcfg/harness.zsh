@@ -47,9 +47,13 @@ assert_file_sha() { assert_eq "$2" "$(sha_of "$1")" "sha($1): " }
 snapshot_file() { SNAPSHOTS[$1]="$(sha_of "$1")" }
 
 assert_unchanged() {
-  local path="$1"
-  [[ -n "${SNAPSHOTS[$path]}" ]] || { fail "no snapshot for $path"; return 1 }
-  assert_eq "${SNAPSHOTS[$path]}" "$(sha_of "$path")" "$path was modified: "
+  # Named "p", not "path" — zsh ties the special parameter $path to $PATH.
+  # A local scalar named "path" shadows that tie for the rest of this
+  # function's dynamic scope, so `sha_of`'s pipeline below would fail to
+  # find `shasum`/`cut` on PATH after any earlier command substitution ran.
+  local p="$1"
+  [[ -n "${SNAPSHOTS[$p]}" ]] || { fail "no snapshot for $p"; return 1 }
+  assert_eq "${SNAPSHOTS[$p]}" "$(sha_of "$p")" "$p was modified: "
 }
 
 assert_status() { assert_eq "$2" "$($WORKCFG_BIN status --porcelain-one "$1")" "status($1): " }
