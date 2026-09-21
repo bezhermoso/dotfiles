@@ -1,0 +1,128 @@
+#!/usr/bin/env zsh
+#
+# workcfg — manage GPG-encrypted work shell configs.
+#
+# Usage:
+#   workcfg status [--json|--porcelain|--porcelain-one <name>]
+#   workcfg pull   [--force] [name...]     decrypt ciphertext -> plaintext
+#   workcfg push   [--force] [name...]     encrypt plaintext -> ciphertext
+#   workcfg diff   [name]                  plaintext vs decrypted ciphertext
+#   workcfg dismiss [name...] | undismiss [name...]
+#   workcfg edit   <name>                  $EDITOR on plaintext, then offer push
+#   workcfg adopt  [name...]               one-time migration: set a truthful baseline
+#   workcfg doctor                         diagnose gpg / key / trust / tty / perms
+#
+# Drift detection never invokes GPG: it compares sha256 against a baseline
+# recorded in $WORKCFG_DATA_DIR/.state/. Only pull, push, diff and adopt need
+# the private key, and all four are user-initiated.
+#
+# See docs/superpowers/specs/2026-09-03-work-config-gpg-workflow-design.md
+
+emulate -L zsh
+set -u
+
+: ${WORKCFG_REPO_DIR:=$HOME/.dotfiles/zsh}
+: ${WORKCFG_DATA_DIR:=$HOME/.local/share/dotfiles/work}
+: ${WORKCFG_HOST_PATTERN:=^BLK}
+WORKCFG_STATE_DIR="$WORKCFG_DATA_DIR/.state"
+typeset -ga WORKCFG_NAMES=(work-entrypoint.sh work-entrypoint.post.sh)
+
+# gpg needs a terminal for pinentry; this script may run from anywhere.
+export GPG_TTY="${GPG_TTY:-$(tty 2>/dev/null || true)}"
+
+wc_ct_path()    { print -r -- "$WORKCFG_REPO_DIR/$1.gpg" }
+wc_pt_path()    { print -r -- "$WORKCFG_DATA_DIR/$1" }
+wc_state_path() { print -r -- "$WORKCFG_STATE_DIR/$1.state" }
+
+wc_sha256() { shasum -a 256 "$1" | cut -d' ' -f1 }
+wc_mtime()  { stat -f '%m' "$1" 2>/dev/null || print 0 }
+wc_size()   { stat -f '%z' "$1" 2>/dev/null || print 0 }
+
+wc_ensure_perms() {
+  [[ -d "$WORKCFG_DATA_DIR"  ]] || mkdir -p "$WORKCFG_DATA_DIR"
+  [[ -d "$WORKCFG_STATE_DIR" ]] || mkdir -p "$WORKCFG_STATE_DIR"
+  chmod 700 "$WORKCFG_DATA_DIR" "$WORKCFG_STATE_DIR"
+  local n
+  for n in $WORKCFG_NAMES; do
+    [[ -f "$(wc_pt_path $n)" ]] && chmod 600 "$(wc_pt_path $n)"
+  done
+  return 0
+}
+
+wc_state_get() {
+  local sfile="$(wc_state_path $1)" key="$2" line
+  [[ -f "$sfile" ]] || return 0
+  while IFS= read -r line; do
+    [[ "$line" == "$key="* ]] && { print -r -- "${line#*=}"; return 0 }
+  done < "$sfile"
+  return 0
+}
+
+_wc_state_write() {           # _wc_state_write <name> <assoc-name>
+  local name="$1" sfile="$(wc_state_path $1)"
+  # Named "acc", not "kv": callers pass the literal name "kv" as $2, and a
+  # local here named "kv" would shadow it, so the P-indirection below would
+  # resolve to this function's own (empty) local instead of the caller's.
+  local -A acc
+  # The quoted (@…) form is required: a bare ${(Pkv)2} drops empty values,
+  # leaving an odd element count and "bad set of key/value pairs".
+  set -A acc "${(@Pkv)2}"
+  wc_ensure_perms
+  local tmp="${sfile}.tmp.$$"
+  : > "$tmp"; chmod 600 "$tmp"
+  local k
+  for k in ${(ko)acc}; do print -r -- "$k=${acc[$k]}" >> "$tmp"; done
+  mv -f "$tmp" "$sfile"
+}
+
+_wc_state_load() {            # _wc_state_load <name> <assoc-name>
+  local sfile="$(wc_state_path $1)" line
+  # Named "acc", not "kv" — see _wc_state_write for why: the caller's target
+  # var is named "kv", and a same-named local here would shadow it so the
+  # indirect assignment below would write back into this function's own copy.
+  local -A acc
+  if [[ -f "$sfile" ]]; then
+    while IFS= read -r line; do
+      [[ "$line" == *=* ]] || continue
+      acc[${line%%=*}]="${line#*=}"
+    done < "$sfile"
+  fi
+  set -A $2 "${(@kv)acc}"
+}
+
+wc_state_set() {
+  local name="$1"; shift
+  local -A kv; _wc_state_load "$name" kv
+  local pair
+  for pair in "$@"; do kv[${pair%%=*}]="${pair#*=}"; done
+  _wc_state_write "$name" kv
+}
+
+wc_state_clear() {
+  local name="$1"; shift
+  local -A kv; _wc_state_load "$name" kv
+  local k
+  for k in "$@"; do unset "kv[$k]"; done
+  _wc_state_write "$name" kv
+}
+
+wc_is_armored() {
+  [[ -f "$1" ]] || return 1
+  [[ "$(head -c 27 "$1" 2>/dev/null)" == "-----BEGIN PGP MESSAGE-----" ]]
+}
+
+wc_recipient_of() {
+  gpg --batch --list-packets --list-only "$1" 2>/dev/null \
+    | awk -F'keyid ' '/pubkey enc packet/ {print $2; exit}'
+}
+
+# --- dispatch ---------------------------------------------------------------
+cmd="${1:-status}"; shift 2>/dev/null || true
+case "$cmd" in
+  _test_state_set)   wc_state_set "$@" ;;
+  _test_state_get)   wc_state_get "$@" ;;
+  _test_state_clear) wc_state_clear "$@" ;;
+  _test_recipient)   wc_recipient_of "$(wc_ct_path $1)" ;;
+  _test_armored)     wc_is_armored "$(wc_ct_path $1)" && print 1 || print 0 ;;
+  *) print -u2 "workcfg: unknown command '$cmd'"; exit 2 ;;
+esac
