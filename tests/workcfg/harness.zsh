@@ -90,11 +90,15 @@ fixture_setup() {
   _gen_key "$GNUPGHOME" "workcfg"
   TEST_KEYID="$(_subkey_id "$GNUPGHOME" workcfg)"
 
-  # A second key imported as public-only: present but with no ownertrust,
-  # reproducing spec finding 11.
+  # A second key imported with its secret material but no ownertrust,
+  # reproducing spec finding 11: gpg refuses it for --encrypt ("Unusable
+  # public key") without --trust-model always, exactly like the user's own
+  # real key. It must carry its secret key here (not public-only) or
+  # round-trip verify — decrypting back through this same GNUPGHOME — could
+  # never succeed regardless of how push is implemented.
   _gen_key "$FIXTURE_ROOT/gnupg-other" "untrusted"
   TEST_UNTRUSTED_KEYID="$(_subkey_id "$FIXTURE_ROOT/gnupg-other" untrusted)"
-  GNUPGHOME="$FIXTURE_ROOT/gnupg-other" gpg --batch --armor --export \
+  GNUPGHOME="$FIXTURE_ROOT/gnupg-other" gpg --batch --armor --export-secret-keys \
     untrusted@test.invalid 2>/dev/null | gpg --batch --quiet --import 2>/dev/null
   SNAPSHOTS=()
 }
