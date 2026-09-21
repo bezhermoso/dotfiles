@@ -201,6 +201,68 @@ wc_pull() {
   return 0
 }
 
+wc_push() {
+  local force=0
+  [[ "${1:-}" == "--force" ]] && { force=1; shift }
+  local name="$1" ct="$(wc_ct_path $1)" pt="$(wc_pt_path $1)"
+
+  [[ -s "$pt" ]] || { print -u2 "workcfg: no plaintext for $name"; return 1 }
+
+  local st="$(wc_status $name)"
+  if [[ "$st" == CONFLICT ]] && (( ! force )); then
+    print -u2 "workcfg: $name has local edits AND upstream changes."
+    print -u2 "  inspect: workcfg diff $name"
+    print -u2 "  keep local: workcfg push --force $name"
+    return 3
+  fi
+
+  local recipient="${WORKCFG_RECIPIENT:-$(wc_state_get $name recipient)}"
+  if [[ -z "$recipient" ]]; then
+    recipient="$(wc_recipient_of $ct)"
+    [[ -z "$recipient" ]] && {
+      print -u2 "workcfg: cannot determine recipient for $name — run: workcfg doctor"
+      return 1
+    }
+  fi
+
+  local armor=()
+  [[ "$(wc_state_get $name armored)" == 1 ]] && armor=(--armor)
+
+  wc_ensure_perms
+  local tmp="${ct}.push.$$" vtmp="${ct}.verify.$$" err rc
+  # --trust-model always: the user's own key carries no ownertrust, and gpg
+  # rejects it as "Unusable public key" without this. See spec finding 11.
+  err="$(gpg --batch --quiet --yes --trust-model always $armor \
+             --encrypt --recipient "0x$recipient" \
+             --output "$tmp" "$pt" 2>&1)"
+  rc=$?
+  if (( rc != 0 )) || [[ ! -s "$tmp" ]]; then
+    rm -f "$tmp"
+    print -u2 "workcfg: failed to encrypt $name"
+    [[ -n "$err" ]] && print -u2 "$err"
+    return 1
+  fi
+
+  # Round-trip verification: never replace the only ciphertext with something
+  # we have not proven decrypts back to the exact source.
+  err="$(gpg --batch --quiet --yes --output "$vtmp" --decrypt "$tmp" 2>&1)"
+  rc=$?
+  if (( rc != 0 )) || [[ "$(wc_sha256 $vtmp)" != "$(wc_sha256 $pt)" ]]; then
+    rm -f "$tmp" "$vtmp"
+    print -u2 "workcfg: round-trip verification failed for $name — ciphertext left untouched"
+    [[ -n "$err" ]] && print -u2 "$err"
+    return 1
+  fi
+  rm -f "$vtmp"
+
+  mv -f "$tmp" "$ct"
+  wc_record_baseline "$name"
+  wc_state_set "$name" recipient="$recipient" \
+    armored="$(wc_is_armored $ct && print 1 || print 0)"
+  print "✓ pushed $name"
+  return 0
+}
+
 # --- dispatch ---------------------------------------------------------------
 cmd="${1:-status}"; shift 2>/dev/null || true
 case "$cmd" in
@@ -219,6 +281,15 @@ case "$cmd" in
     [[ "${1:-}" == "--force" ]] && { force="--force"; shift }
     local targets=(${@:-$WORKCFG_NAMES}) n
     for n in $targets; do wc_pull $force "$n" || rc=$? ; done
+    exit $rc ;;
+  push)
+    local force="" rc=0
+    [[ "${1:-}" == "--force" ]] && { force="--force"; shift }
+    local targets=(${@:-$WORKCFG_NAMES}) n
+    for n in $targets; do
+      [[ -s "$(wc_pt_path $n)" ]] || continue
+      wc_push $force "$n" || rc=$?
+    done
     exit $rc ;;
   *) print -u2 "workcfg: unknown command '$cmd'"; exit 2 ;;
 esac
