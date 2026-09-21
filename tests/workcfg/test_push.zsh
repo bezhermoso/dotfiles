@@ -49,10 +49,19 @@ it "a push to an unusable recipient leaves the ciphertext untouched"
 snapshot_file "$WORKCFG_REPO_DIR/work-entrypoint.sh.gpg"
 $WORKCFG_BIN _test_state_set work-entrypoint.sh recipient=DEADBEEFDEADBEEF
 print -rn -- "export A=4" > "$WORKCFG_DATA_DIR/work-entrypoint.sh"
-if $WORKCFG_BIN push work-entrypoint.sh >/dev/null 2>&1; then
-  fail "push should have failed for an unknown recipient"
-fi
+$WORKCFG_BIN push work-entrypoint.sh >/dev/null 2>&1
+rc=$?
+assert_eq "1" "$rc" "exit code: "
 assert_unchanged "$WORKCFG_REPO_DIR/work-entrypoint.sh.gpg"
+_pass_or_fail
+
+it "an explicitly named target with no local plaintext fails loudly, not silently"
+rm -f "$WORKCFG_DATA_DIR/work-entrypoint.post.sh"
+out="$($WORKCFG_BIN push work-entrypoint.post.sh 2>&1)"
+rc=$?
+assert_eq "1" "$rc" "exit code: "
+[[ "$out" == *"no plaintext for work-entrypoint.post.sh"* ]] \
+  || fail "expected 'no plaintext' error, got: $out"
 _pass_or_fail
 
 it "push refuses a CONFLICT without --force"

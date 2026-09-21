@@ -229,7 +229,12 @@ wc_push() {
   [[ "$(wc_state_get $name armored)" == 1 ]] && armor=(--armor)
 
   wc_ensure_perms
-  local tmp="${ct}.push.$$" vtmp="${ct}.verify.$$" err rc
+  # vtmp holds decrypted plaintext during verification, so it MUST live under
+  # $WORKCFG_DATA_DIR (private, 0600, gitignored) — never under $ct's repo
+  # directory, which is git-tracked and holds ciphertext only. A leftover
+  # file there from a process that died mid-verify would be an untracked
+  # plaintext one `git add -A` away from being committed.
+  local tmp="${ct}.push.$$" vtmp="${pt}.push.verify.$$" err rc
   # --trust-model always: the user's own key carries no ownertrust, and gpg
   # rejects it as "Unusable public key" without this. See spec finding 11.
   err="$(gpg --batch --quiet --yes --trust-model always $armor \
@@ -247,6 +252,7 @@ wc_push() {
   # we have not proven decrypts back to the exact source.
   err="$(gpg --batch --quiet --yes --output "$vtmp" --decrypt "$tmp" 2>&1)"
   rc=$?
+  chmod 600 "$vtmp" 2>/dev/null
   if (( rc != 0 )) || [[ "$(wc_sha256 $vtmp)" != "$(wc_sha256 $pt)" ]]; then
     rm -f "$tmp" "$vtmp"
     print -u2 "workcfg: round-trip verification failed for $name — ciphertext left untouched"
@@ -285,9 +291,14 @@ case "$cmd" in
   push)
     local force="" rc=0
     [[ "${1:-}" == "--force" ]] && { force="--force"; shift }
+    # Only pre-filter when falling back to the default target list. An
+    # explicitly named target must always reach wc_push so its own "no
+    # plaintext for $name" error (and exit 1) surfaces instead of a silent
+    # no-op — see wc_pull's dispatch above, which has no such pre-filter.
+    local -i explicit=$#
     local targets=(${@:-$WORKCFG_NAMES}) n
     for n in $targets; do
-      [[ -s "$(wc_pt_path $n)" ]] || continue
+      (( explicit )) || [[ -s "$(wc_pt_path $n)" ]] || continue
       wc_push $force "$n" || rc=$?
     done
     exit $rc ;;

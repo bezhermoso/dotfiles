@@ -76,7 +76,7 @@ EOF
 }
 
 _subkey_id() {
-  GNUPGHOME="$1" gpg --batch --with-colons --list-keys "$2@test.invalid" \
+  GNUPGHOME="$1" gpg --batch --with-colons --list-keys "$2@test.invalid" 2>/dev/null \
     | awk -F: '/^sub:/ {print $5; exit}'
 }
 

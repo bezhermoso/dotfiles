@@ -12,6 +12,11 @@ pgcli/history
 pgcli/log
 work-entrypoint.sh
 work-entrypoint.post.sh
+# workcfg push/pull temp artifacts: defense in depth against an interrupted
+# run leaving a decrypted-plaintext or partial-ciphertext file that would
+# otherwise be an untracked file away from `git add -A`.
+work-entrypoint*.gpg.push.*
+work-entrypoint*.push.verify.*
 zsh/.zsh_sessions
 bin/fleet
 bin/idea
