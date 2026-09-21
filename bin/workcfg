@@ -321,7 +321,13 @@ wc_adopt() {
   [[ -s "$pt" ]] || { print -u2 "workcfg: no plaintext for $name — use: workcfg pull $name"; return 1 }
 
   local recipient="$(wc_recipient_of $ct)"
-  local armored; wc_is_armored "$ct" && armored=1 || armored=0
+  local armored="$(wc_is_armored $ct && print 1 || print 0)"
+
+  # adopt is the one command guaranteed to run against a still-legacy
+  # install — $WORKCFG_DATA_DIR pre-existing at 0755 with 0644 plaintext
+  # (spec finding 8) — so it, more than pull/push, must not skip hardening
+  # before writing a decrypted copy under it. Mirrors wc_pull exactly.
+  wc_ensure_perms
 
   # vtmp holds decrypted plaintext only transiently, purely to compute a
   # hash for comparison, and lives under $WORKCFG_DATA_DIR (private, never
@@ -335,6 +341,7 @@ wc_adopt() {
     [[ -n "$err" ]] && print -u2 "$err"
     return 1
   fi
+  chmod 600 "$vtmp"
   local -i same=0
   [[ "$(wc_sha256 $vtmp)" == "$(wc_sha256 $pt)" ]] && same=1
   rm -f "$vtmp"
