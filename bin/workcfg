@@ -383,6 +383,101 @@ wc_adopt() {
   esac
 }
 
+typeset -gi WC_DOCTOR_FAILS=0
+
+_dr_ok()   { print "  ✓ $1" }
+_dr_warn() { print "  ! $1"; [[ -n "${2:-}" ]] && print "      → $2" }
+_dr_bad()  { print -u2 "  ✗ $1"; [[ -n "${2:-}" ]] && print -u2 "      → $2"; (( WC_DOCTOR_FAILS++ )) }
+
+# doctor is read-only: it never writes plaintext/ciphertext, never modifies
+# state, and never changes permissions, even when it finds them wrong — it
+# only reports the fix (workcfg status/adopt already do the writing). Every
+# gpg invocation here passes --batch so a misconfigured setup fails loudly
+# instead of blocking on a pinentry prompt.
+wc_doctor() {
+  print "workcfg doctor"
+  print ""
+  print "environment"
+  if (( $+commands[gpg] )); then _dr_ok "gpg: $(gpg --version | head -1)"
+  else _dr_bad "gpg not found" "brew install gnupg"; fi
+
+  if [[ -n "${GPG_TTY:-}" ]]; then _dr_ok "GPG_TTY=$GPG_TTY"
+  else _dr_bad "GPG_TTY is unset" "inc.gpg.zsh must be sourced before inc.work-config.zsh in .zshrc"; fi
+
+  local prog="$(awk '/^pinentry-program/{print $2}' "${GNUPGHOME:-$HOME/.gnupg}/gpg-agent.conf" 2>/dev/null)"
+  if [[ -n "$prog" ]]; then _dr_ok "pinentry-program: $prog"
+  else _dr_warn "no pinentry-program set; gpg-agent will use its default" \
+                "default resolves to pinentry-curses, which needs a working TTY. Consider pinentry-mac."; fi
+
+  print ""
+  print "storage"
+  local dperm="$(stat -f '%OLp' "$WORKCFG_DATA_DIR" 2>/dev/null)"
+  if [[ "$dperm" == 700 ]]; then _dr_ok "$WORKCFG_DATA_DIR is 0700"
+  else _dr_bad "$WORKCFG_DATA_DIR is 0$dperm, expected 0700" "workcfg status will fix this"; fi
+
+  local n
+  for n in $WORKCFG_NAMES; do
+    local pt="$(wc_pt_path $n)"
+    [[ -f "$pt" ]] || continue
+    local fperm="$(stat -f '%OLp' "$pt")"
+    if [[ "$fperm" == 600 ]]; then _dr_ok "$n plaintext is 0600"
+    else _dr_bad "$n plaintext is 0$fperm, expected 0600" "workcfg status will fix this"; fi
+  done
+
+  print ""
+  print "keys"
+  for n in $WORKCFG_NAMES; do
+    local ct="$(wc_ct_path $n)"
+    [[ -f "$ct" ]] || continue
+    local r="${WORKCFG_RECIPIENT:-$(wc_state_get $n recipient)}"
+    [[ -z "$r" ]] && r="$(wc_recipient_of $ct)"
+    if [[ -z "$r" ]]; then
+      _dr_bad "$n: cannot determine a recipient" "workcfg adopt $n"
+      continue
+    fi
+    if gpg --batch --list-keys "0x$r" >/dev/null 2>&1; then
+      _dr_ok "$n: recipient $r is in the keyring"
+    else
+      _dr_bad "$n: recipient $r is NOT in the keyring" \
+              "the ciphertext was encrypted to a key you do not have; check gpg --list-keys"
+      # Deliberately no `continue` here: a missing public key and an
+      # untrusted-but-present one are different failures (findings 9 vs 11),
+      # and the trial encrypt below is the only check that catches the
+      # latter. Gating it on the keyring lookup above would have hidden
+      # finding 11 behind finding 9 whenever both happened to be tested
+      # together, and a doctor that skips checks after the first failure is
+      # exactly the kind of silence this command exists to end.
+    fi
+    # Trial encrypt: catches an untrusted key, which gpg rejects as
+    # "Unusable public key" unless --trust-model always is used. This is the
+    # one check that actually exercises encryption rather than just
+    # inspecting the keyring, so it is never skipped once we have an $r.
+    if print -n x | gpg --batch --quiet --trust-model always --encrypt \
+         --recipient "0x$r" --output /dev/null 2>/dev/null; then
+      _dr_ok "$n: trial encrypt to $r succeeded"
+    else
+      _dr_bad "$n: trial encrypt to $r FAILED" "gpg --edit-key $r trust  → set ultimate"
+    fi
+    if gpg --batch --list-secret-keys "0x$r" >/dev/null 2>&1; then
+      _dr_ok "$n: secret key present (pull will work)"
+    else
+      _dr_warn "$n: no secret key for $r" "you can push but not pull on this machine"
+    fi
+  done
+
+  print ""
+  print "status"
+  for n in $WORKCFG_NAMES; do print "  $n: $(wc_status $n)"; done
+
+  print ""
+  if (( WC_DOCTOR_FAILS )); then
+    print -u2 "$WC_DOCTOR_FAILS problem(s) found."
+    return 1
+  fi
+  print "All checks passed."
+  return 0
+}
+
 # --- dispatch ---------------------------------------------------------------
 cmd="${1:-status}"; shift 2>/dev/null || true
 case "$cmd" in
@@ -446,5 +541,10 @@ case "$cmd" in
       wc_push $force "$n" || rc=$?
     done
     exit $rc ;;
+  # No wc_ensure_perms here: doctor is read-only with respect to user data
+  # and must not silently fix the very permission faults it exists to
+  # report (see spec finding 8). Calling it first would also make the
+  # storage-permission checks below unable to ever fire.
+  doctor) wc_doctor; exit $? ;;
   *) print -u2 "workcfg: unknown command '$cmd'"; exit 2 ;;
 esac
