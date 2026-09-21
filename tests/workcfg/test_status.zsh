@@ -41,7 +41,22 @@ print -rn -- "export A=3" > "$WORKCFG_DATA_DIR/work-entrypoint.sh"
 assert_status work-entrypoint.sh CONFLICT
 _pass_or_fail
 
-it "status classes route prompts away from CONFLICT"
+it "DISMISSED once a recorded dismissal matches the current drift"
+$WORKCFG_BIN _test_baseline work-entrypoint.sh
+print -rn -- "export A=5" > "$WORKCFG_DATA_DIR/work-entrypoint.sh"
+DISMISS_P_SHA="$(sha_of "$WORKCFG_DATA_DIR/work-entrypoint.sh")"
+DISMISS_C_SHA="$(sha_of "$WORKCFG_REPO_DIR/work-entrypoint.sh.gpg")"
+$WORKCFG_BIN _test_state_set work-entrypoint.sh \
+  dismissed_sha="$DISMISS_P_SHA" dismissed_ciphertext_sha="$DISMISS_C_SHA"
+assert_status work-entrypoint.sh DISMISSED
+_pass_or_fail
+
+it "returns to DRIFTED once the plaintext changes again after a dismissal"
+print -rn -- "export A=6" > "$WORKCFG_DATA_DIR/work-entrypoint.sh"
+assert_status work-entrypoint.sh DRIFTED
+_pass_or_fail
+
+it "wc_status_class maps each status to its prompt/notice/silent bucket"
 assert_eq "prompt" "$($WORKCFG_BIN _test_class MISSING)"
 assert_eq "prompt" "$($WORKCFG_BIN _test_class STALE)"
 assert_eq "notice" "$($WORKCFG_BIN _test_class CONFLICT)"
@@ -59,6 +74,14 @@ assert_eq "$(stat -f '%z' "$WORKCFG_DATA_DIR/work-entrypoint.post.sh")" \
           "$($WORKCFG_BIN _test_state_get work-entrypoint.post.sh plaintext_size)"
 [[ -n "$($WORKCFG_BIN _test_state_get work-entrypoint.post.sh plaintext_mtime)" ]] \
   || fail "plaintext_mtime not recorded"
+assert_eq "$(sha_of "$WORKCFG_REPO_DIR/work-entrypoint.post.sh.gpg")" \
+          "$($WORKCFG_BIN _test_state_get work-entrypoint.post.sh ciphertext_sha)"
+assert_eq "$(stat -f '%z' "$WORKCFG_REPO_DIR/work-entrypoint.post.sh.gpg")" \
+          "$($WORKCFG_BIN _test_state_get work-entrypoint.post.sh ciphertext_size)"
+[[ -n "$($WORKCFG_BIN _test_state_get work-entrypoint.post.sh ciphertext_mtime)" ]] \
+  || fail "ciphertext_mtime not recorded"
+[[ -n "$($WORKCFG_BIN _test_state_get work-entrypoint.post.sh synced_at)" ]] \
+  || fail "synced_at not recorded"
 _pass_or_fail
 
 fixture_teardown
