@@ -30,7 +30,7 @@ _pass_or_fail
 it "a failed decrypt does not overwrite existing good plaintext"
 seed_encrypted work-entrypoint.sh "export GOOD=1"
 rm -f "$WORKCFG_DATA_DIR/work-entrypoint.sh"
-$WORKCFG_BIN pull work-entrypoint.sh >/dev/null 2>&1
+$WORKCFG_BIN pull work-entrypoint.sh >/dev/null 2>&1 || fail "setup pull exited non-zero"
 snapshot_file "$WORKCFG_DATA_DIR/work-entrypoint.sh"
 print -rn -- "garbage" > "$WORKCFG_REPO_DIR/work-entrypoint.sh.gpg"
 $WORKCFG_BIN pull work-entrypoint.sh >/dev/null 2>&1
