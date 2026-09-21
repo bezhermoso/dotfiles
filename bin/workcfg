@@ -9,7 +9,8 @@
 #   workcfg diff   [name]                  plaintext vs decrypted ciphertext
 #   workcfg dismiss [name...] | undismiss [name...]
 #   workcfg edit   <name>                  $EDITOR on plaintext, then offer push
-#   workcfg adopt  [name...]               one-time migration: set a truthful baseline
+#   workcfg adopt  [--assume=local|upstream] [name...]
+#                                           one-time migration: set a truthful baseline
 #   workcfg doctor                         diagnose gpg / key / trust / tty / perms
 #
 # Drift detection never invokes GPG: it compares sha256 against a baseline
@@ -300,6 +301,81 @@ wc_undismiss() {
   fi
 }
 
+# One-time migration: an existing install has plaintext but no state at all.
+# Recording a baseline from whatever happens to be on disk, without knowing
+# whether the two sides actually agree, would silently bless any pre-existing
+# drift as CLEAN — exactly the failure this whole plan exists to prevent. So
+# adopt performs the one sanctioned, user-initiated decrypt whose sole purpose
+# is to detect agreement; it is never used to pick a winner. When the two
+# genuinely disagree, resolution is always deferred to an explicit
+# --assume=local|upstream, or refused outright (exit 4) if neither is given.
+# recipient/armored are always detected from the ciphertext via packet
+# introspection (wc_recipient_of / wc_is_armored) — never assumed or
+# hardcoded.
+wc_adopt() {
+  local assume=""
+  [[ "${1:-}" == --assume=* ]] && { assume="${1#--assume=}"; shift }
+  local name="$1" ct="$(wc_ct_path $1)" pt="$(wc_pt_path $1)"
+
+  [[ -f "$ct" ]] || { print -u2 "workcfg: no ciphertext for $name"; return 1 }
+  [[ -s "$pt" ]] || { print -u2 "workcfg: no plaintext for $name — use: workcfg pull $name"; return 1 }
+
+  local recipient="$(wc_recipient_of $ct)"
+  local armored; wc_is_armored "$ct" && armored=1 || armored=0
+
+  # vtmp holds decrypted plaintext only transiently, purely to compute a
+  # hash for comparison, and lives under $WORKCFG_DATA_DIR (private, never
+  # the git-tracked repo dir) — removed immediately after use either way.
+  local vtmp="${pt}.adopt.$$" err rc
+  err="$(gpg --batch --quiet --yes --output "$vtmp" --decrypt "$ct" 2>&1)"
+  rc=$?
+  if (( rc != 0 )) || [[ ! -s "$vtmp" ]]; then
+    rm -f "$vtmp"
+    print -u2 "workcfg: cannot decrypt $name to establish a baseline"
+    [[ -n "$err" ]] && print -u2 "$err"
+    return 1
+  fi
+  local -i same=0
+  [[ "$(wc_sha256 $vtmp)" == "$(wc_sha256 $pt)" ]] && same=1
+  rm -f "$vtmp"
+
+  if (( same )); then
+    wc_record_baseline "$name"
+    wc_state_set "$name" recipient="$recipient" armored="$armored"
+    print "✓ adopted $name (in sync)"
+    return 0
+  fi
+
+  case "$assume" in
+    local)
+      # Baseline the ciphertext only; plaintext stays unrecorded (a sentinel
+      # that can never match a real sha256) so it reads as DRIFTED and you
+      # are reminded to push it. Never touches the plaintext file itself.
+      wc_state_set "$name" \
+        ciphertext_sha="$(wc_sha256 $ct)" \
+        ciphertext_mtime="$(wc_mtime $ct)" \
+        ciphertext_size="$(wc_size $ct)" \
+        plaintext_sha="adopted-local-unpushed" \
+        plaintext_mtime=0 plaintext_size=0 \
+        recipient="$recipient" armored="$armored" \
+        synced_at="$(date +%s)"
+      wc_state_clear "$name" dismissed_sha dismissed_ciphertext_sha dismissed_at
+      print "✓ adopted $name keeping local edits — now DRIFTED; run: workcfg push $name"
+      return 0 ;;
+    upstream)
+      # Re-pull for real: this is the ordinary, already-verified pull path,
+      # not a second ad hoc decrypt — it overwrites plaintext with upstream
+      # and records a truthful CLEAN baseline from the result.
+      wc_pull --force "$name" ;;
+    *)
+      print -u2 "workcfg: $name differs from its encrypted version."
+      print -u2 "  inspect:      workcfg diff $name"
+      print -u2 "  keep local:   workcfg adopt --assume=local $name"
+      print -u2 "  take upstream:workcfg adopt --assume=upstream $name"
+      return 4 ;;
+  esac
+}
+
 # --- dispatch ---------------------------------------------------------------
 cmd="${1:-status}"; shift 2>/dev/null || true
 case "$cmd" in
@@ -328,6 +404,20 @@ case "$cmd" in
   undismiss)
     local -i rc=0
     local n; for n in ${@:-$WORKCFG_NAMES}; do wc_undismiss "$n" || rc=$?; done
+    exit $rc ;;
+  adopt)
+    local assume=""
+    [[ "${1:-}" == --assume=* ]] && { assume="$1"; shift }
+    # Only pre-filter when falling back to the default target list. An
+    # explicitly named target must always reach wc_adopt so its own error
+    # (or refuse-to-guess exit 4) surfaces instead of a silent no-op — see
+    # wc_push's dispatch above.
+    local -i explicit=$#
+    local targets=(${@:-$WORKCFG_NAMES}) n rc=0
+    for n in $targets; do
+      (( explicit )) || [[ -f "$(wc_ct_path $n)" ]] || continue
+      wc_adopt $assume "$n" || rc=$?
+    done
     exit $rc ;;
   pull)
     local force="" rc=0
