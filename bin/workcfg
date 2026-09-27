@@ -7,7 +7,10 @@
 #   workcfg pull   [--force] [name...]     decrypt ciphertext -> plaintext
 #   workcfg push   [--force] [name...]     encrypt plaintext -> ciphertext
 #   workcfg diff   [name]                  plaintext vs decrypted ciphertext
+#   workcfg defer  [name...]               MISSING/STALE -> DEFERRED: a reminder
+#                                           each shell instead of a prompt
 #   workcfg dismiss [name...] | undismiss [name...]
+#                                           undismiss also clears a deferral
 #   workcfg edit   <name>                  $EDITOR on plaintext, then offer push
 #   workcfg adopt  [--assume=local|upstream] [name...]
 #                                           one-time migration: set a truthful baseline
@@ -34,6 +37,7 @@ export GPG_TTY="${GPG_TTY:-$(tty 2>/dev/null || true)}"
 wc_ct_path()    { print -r -- "$WORKCFG_REPO_DIR/$1.gpg" }
 wc_pt_path()    { print -r -- "$WORKCFG_DATA_DIR/$1" }
 wc_state_path() { print -r -- "$WORKCFG_STATE_DIR/$1.state" }
+wc_defer_path() { print -r -- "$WORKCFG_STATE_DIR/$1.deferred" }
 
 wc_sha256() { shasum -a 256 "$1" | cut -d' ' -f1 }
 wc_mtime()  { stat -f '%m' "$1" 2>/dev/null || print 0 }
@@ -128,6 +132,10 @@ wc_record_baseline() {
     ciphertext_size="$(wc_size $ct)" \
     synced_at="$(date +%s)"
   wc_state_clear "$name" dismissed_sha dismissed_ciphertext_sha dismissed_at
+  # A truthful baseline means both sides now agree, which answers whatever
+  # prompt was deferred. Leaving it would quietly downgrade a later MISSING
+  # at this same ciphertext to DEFERRED instead of prompting afresh.
+  rm -f "$(wc_defer_path $name)"
 }
 
 _wc_is_dismissed() {          # <name> <c_now> <p_now>
@@ -135,11 +143,21 @@ _wc_is_dismissed() {          # <name> <c_now> <p_now>
   && "$2" == "$(wc_state_get $1 dismissed_ciphertext_sha)" ]]
 }
 
+# A deferral is keyed on the ciphertext sha alone, so it lapses the moment
+# upstream changes and the user is prompted about the new version.
+_wc_is_deferred() {           # <name> <c_now>
+  local dfile="$(wc_defer_path $1)"
+  [[ -f "$dfile" && "$2" == "$(<$dfile)" ]]
+}
+
 # Rows are evaluated top-down; first match wins.
 wc_status() {
   local name="$1" ct="$(wc_ct_path $1)" pt="$(wc_pt_path $1)" st="$(wc_state_path $1)"
   [[ -f "$ct" ]] || { print UNMANAGED; return }
-  [[ -s "$pt" ]] || { print MISSING;   return }
+  if [[ ! -s "$pt" ]]; then
+    _wc_is_deferred "$name" "$(wc_sha256 $ct)" && print DEFERRED || print MISSING
+    return 0
+  fi
   [[ -f "$st" ]] || { print UNTRACKED; return }
 
   local c_now="$(wc_sha256 $ct)" p_now="$(wc_sha256 $pt)"
@@ -151,16 +169,19 @@ wc_status() {
     print DISMISSED; return
   fi
   (( c_drift && p_drift )) && { print CONFLICT; return }
-  (( c_drift ))            && { print STALE;    return }
+  if (( c_drift )); then
+    _wc_is_deferred "$name" "$c_now" && print DEFERRED || print STALE
+    return 0
+  fi
   (( p_drift ))            && { print DRIFTED;  return }
   print CLEAN
 }
 
 wc_status_class() {
   case "$1" in
-    MISSING|STALE)              print prompt ;;
-    UNTRACKED|DRIFTED|CONFLICT) print notice ;;
-    *)                          print silent ;;
+    MISSING|STALE)                       print prompt ;;
+    UNTRACKED|DRIFTED|CONFLICT|DEFERRED) print notice ;;
+    *)                                   print silent ;;
   esac
 }
 
@@ -270,14 +291,22 @@ wc_push() {
   return 0
 }
 
+# Dismissible = any status with real drift. CLEAN has nothing to silence;
+# MISSING/UNMANAGED/UNTRACKED can't even have both hashes computed. DEFERRED
+# counts only with a plaintext present, i.e. a deferred STALE: a deferred
+# MISSING has nothing to hash, and a missing plaintext must never be silenced.
+_wc_dismissible() {           # <name> <status>
+  [[ "$2" == (DRIFTED|CONFLICT|STALE|DISMISSED) ]] \
+    || [[ "$2" == DEFERRED && -s "$(wc_pt_path $1)" ]]
+}
+
 wc_dismiss() {
   local name="$1" ct="$(wc_ct_path $1)" pt="$(wc_pt_path $1)"
-  # Dismissible = any status with real drift. CLEAN has nothing to silence;
-  # MISSING/UNMANAGED/UNTRACKED can't even have both hashes computed. This
-  # check is status-driven (not just file existence) so an explicit request
-  # against a CLEAN file fails loudly instead of writing an inert dismissal.
+  # This check is status-driven (not just file existence) so an explicit
+  # request against a CLEAN file fails loudly instead of writing an inert
+  # dismissal.
   local st="$(wc_status $name)"
-  [[ "$st" == (DRIFTED|CONFLICT|STALE|DISMISSED) ]] || {
+  _wc_dismissible "$name" "$st" || {
     print -u2 "workcfg: nothing to dismiss for $name (status: $st)"
     return 1
   }
@@ -291,13 +320,41 @@ wc_dismiss() {
   print "✓ dismissed $name (silent until either side changes)"
 }
 
+# Declining a prompt downgrades it to a notice, never to silent: that is
+# the difference from dismiss. The deferral lives in its own file rather than
+# in .state, because wc_status reads "a .state exists" as "a baseline exists";
+# deferring a MISSING file on a fresh machine must not invent one, or a
+# plaintext that later appears by hand would read CONFLICT, not UNTRACKED.
+# Never invokes gpg.
+wc_defer() {
+  local name="$1" ct="$(wc_ct_path $1)"
+  # Re-deferring an already-DEFERRED file is harmless and refreshes it.
+  local st="$(wc_status $name)"
+  [[ "$st" == (MISSING|STALE|DEFERRED) ]] || {
+    print -u2 "workcfg: nothing to defer for $name (status: $st)"
+    return 1
+  }
+  wc_ensure_perms
+  local dfile="$(wc_defer_path $name)"
+  local tmp="${dfile}.tmp.$$"
+  : > "$tmp"; chmod 600 "$tmp"
+  print -r -- "$(wc_sha256 $ct)" > "$tmp"
+  mv -f "$tmp" "$dfile"
+  print "✓ deferred $name — you'll see a reminder each shell until you run: workcfg pull $name"
+}
+
 wc_undismiss() {
-  local name="$1"
+  local name="$1" dfile="$(wc_defer_path $1)"
+  local cleared=()
   if [[ -n "$(wc_state_get $name dismissed_sha)" ]]; then
     wc_state_clear "$name" dismissed_sha dismissed_ciphertext_sha dismissed_at
-    print "✓ undismissed $name"
+    cleared+=(dismissal)
+  fi
+  [[ -f "$dfile" ]] && { rm -f "$dfile"; cleared+=(deferral) }
+  if (( $#cleared )); then
+    print "✓ undismissed $name (cleared ${(j: and :)cleared})"
   else
-    print "workcfg: $name was not dismissed"
+    print "workcfg: $name was not dismissed or deferred"
   fi
 }
 
@@ -500,8 +557,19 @@ case "$cmd" in
     # no-op — mirrors wc_push's dispatch above.
     local targets=(${@:-$WORKCFG_NAMES}) n
     for n in $targets; do
-      (( explicit )) || [[ "$(wc_status $n)" == (DRIFTED|CONFLICT|STALE|DISMISSED) ]] || continue
+      (( explicit )) || _wc_dismissible "$n" "$(wc_status $n)" || continue
       wc_dismiss "$n" || rc=$?
+    done
+    exit $rc ;;
+  defer)
+    local -i explicit=$# rc=0
+    # Only pre-filter when falling back to the default target list. An
+    # explicitly named target must always reach wc_defer so its own
+    # "nothing to defer" error (and exit 1) surfaces — mirrors dismiss above.
+    local targets=(${@:-$WORKCFG_NAMES}) n
+    for n in $targets; do
+      (( explicit )) || [[ "$(wc_status $n)" == (MISSING|STALE|DEFERRED) ]] || continue
+      wc_defer "$n" || rc=$?
     done
     exit $rc ;;
   undismiss)
