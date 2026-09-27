@@ -391,14 +391,14 @@ _dr_bad()  { print -u2 "  ✗ $1"; [[ -n "${2:-}" ]] && print -u2 "      → $2"
 
 # doctor is read-only: it never writes plaintext/ciphertext, never modifies
 # state, and never changes permissions, even when it finds them wrong — it
-# only reports the fix (workcfg status/adopt already do the writing). Every
+# only reports the fix, as a literal command that actually works. Every
 # gpg invocation here passes --batch so a misconfigured setup fails loudly
 # instead of blocking on a pinentry prompt.
 wc_doctor() {
   print "workcfg doctor"
   print ""
   print "environment"
-  if (( $+commands[gpg] )); then _dr_ok "gpg: $(gpg --version | head -1)"
+  if (( $+commands[gpg] )); then _dr_ok "gpg: $(gpg --batch --version | head -1)"
   else _dr_bad "gpg not found" "brew install gnupg"; fi
 
   if [[ -n "${GPG_TTY:-}" ]]; then _dr_ok "GPG_TTY=$GPG_TTY"
@@ -413,7 +413,7 @@ wc_doctor() {
   print "storage"
   local dperm="$(stat -f '%OLp' "$WORKCFG_DATA_DIR" 2>/dev/null)"
   if [[ "$dperm" == 700 ]]; then _dr_ok "$WORKCFG_DATA_DIR is 0700"
-  else _dr_bad "$WORKCFG_DATA_DIR is 0$dperm, expected 0700" "workcfg status will fix this"; fi
+  else _dr_bad "$WORKCFG_DATA_DIR is 0$dperm, expected 0700" "chmod 700 $WORKCFG_DATA_DIR"; fi
 
   local n
   for n in $WORKCFG_NAMES; do
@@ -421,7 +421,7 @@ wc_doctor() {
     [[ -f "$pt" ]] || continue
     local fperm="$(stat -f '%OLp' "$pt")"
     if [[ "$fperm" == 600 ]]; then _dr_ok "$n plaintext is 0600"
-    else _dr_bad "$n plaintext is 0$fperm, expected 0600" "workcfg status will fix this"; fi
+    else _dr_bad "$n plaintext is 0$fperm, expected 0600" "chmod 600 $pt"; fi
   done
 
   print ""
@@ -432,7 +432,8 @@ wc_doctor() {
     local r="${WORKCFG_RECIPIENT:-$(wc_state_get $n recipient)}"
     [[ -z "$r" ]] && r="$(wc_recipient_of $ct)"
     if [[ -z "$r" ]]; then
-      _dr_bad "$n: cannot determine a recipient" "workcfg adopt $n"
+      _dr_bad "$n: cannot determine a recipient — ciphertext may be corrupt or not public-key encrypted" \
+              "inspect: gpg --batch --list-packets --list-only $ct"
       continue
     fi
     if gpg --batch --list-keys "0x$r" >/dev/null 2>&1; then

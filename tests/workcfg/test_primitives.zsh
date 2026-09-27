@@ -101,4 +101,23 @@ dr_out3="$($WORKCFG_BIN doctor 2>&1)"; dr_rc3=$?
   fail "doctor did not report the trial-encrypt failure for a non-encrypting key: $dr_out3"
 _pass_or_fail
 
+it "doctor names a literal, working fix for bad permissions and does not apply it"
+# Regression: the remedy used to read "workcfg status will fix this", but
+# status never touches permissions. doctor must name a command that actually
+# fixes the fault, and must stay read-only (the mode is unchanged afterwards).
+seed_encrypted work-entrypoint.sh "export A=1"
+chmod 755 "$WORKCFG_DATA_DIR"
+chmod 644 "$WORKCFG_DATA_DIR/work-entrypoint.sh"
+local dr_out4
+dr_out4="$($WORKCFG_BIN doctor 2>&1)"
+[[ "$dr_out4" == *"chmod 700 $WORKCFG_DATA_DIR"* ]] \
+  || fail "doctor did not name chmod 700 for the data dir: $dr_out4"
+[[ "$dr_out4" == *"chmod 600 $WORKCFG_DATA_DIR/work-entrypoint.sh"* ]] \
+  || fail "doctor did not name chmod 600 for the plaintext: $dr_out4"
+[[ "$dr_out4" != *"workcfg status will fix"* ]] \
+  || fail "doctor still names status as the permission fix"
+assert_eq 755 "$(stat -f '%OLp' "$WORKCFG_DATA_DIR")" "doctor changed data dir mode: "
+assert_eq 644 "$(stat -f '%OLp' "$WORKCFG_DATA_DIR/work-entrypoint.sh")" "doctor changed plaintext mode: "
+_pass_or_fail
+
 fixture_teardown
