@@ -44,9 +44,8 @@ zi snippet PZTM::completion
 # NOTE: Load this before fpath needs to be finalized.
 source_config "inc.options.zsh"
 
-# GPG_TTY must be exported before anything can invoke gpg: pinentry-curses needs
-# a real terminal, and without GPG_TTY it seizes the controlling one instead.
-# Keep this above inc.work-config.zsh.
+# GPG_TTY must be exported before anything can invoke gpg, so keep this above
+# inc.work-config.zsh.
 source_config "inc.gpg.zsh"
 
 # Manages $WORK configuration system (handles decryption & populates env vars)
