@@ -84,4 +84,44 @@ assert_eq "$(stat -f '%z' "$WORKCFG_REPO_DIR/work-entrypoint.post.sh.gpg")" \
   || fail "synced_at not recorded"
 _pass_or_fail
 
+it "status exits 0 when everything is CLEAN"
+rm -rf "$WORKCFG_REPO_DIR" "$WORKCFG_DATA_DIR"
+mkdir -p "$WORKCFG_REPO_DIR" "$WORKCFG_DATA_DIR"
+seed_encrypted work-entrypoint.sh "export A=1"
+seed_encrypted work-entrypoint.post.sh "export B=1"
+$WORKCFG_BIN adopt >/dev/null 2>&1 </dev/null
+$WORKCFG_BIN status >/dev/null 2>&1 </dev/null
+assert_eq "0" "$?"
+_pass_or_fail
+
+it "status exits 1 when something needs action"
+print -rn -- "edited" > "$WORKCFG_DATA_DIR/work-entrypoint.sh"
+$WORKCFG_BIN status >/dev/null 2>&1 </dev/null
+assert_eq "1" "$?"
+_pass_or_fail
+
+it "status exits 0 when the only change is dismissed"
+$WORKCFG_BIN dismiss work-entrypoint.sh >/dev/null 2>&1 </dev/null
+$WORKCFG_BIN status >/dev/null 2>&1 </dev/null
+assert_eq "0" "$?"
+_pass_or_fail
+
+it "porcelain emits one '<name> <STATUS>' line per file"
+plines=("${(@f)$($WORKCFG_BIN status --porcelain </dev/null)}")
+assert_eq "2" "${#plines}"
+assert_eq "work-entrypoint.sh DISMISSED" "${plines[1]}"
+assert_eq "work-entrypoint.post.sh CLEAN" "${plines[2]}"
+_pass_or_fail
+
+it "json output is parseable and carries every status"
+js="$($WORKCFG_BIN status --json </dev/null)"
+[[ "$js" == *'"name":"work-entrypoint.sh"'* ]]      || fail "json missing name: $js"
+[[ "$js" == *'"status":"DISMISSED"'* ]]             || fail "json missing status: $js"
+[[ "$js" == *'"name":"work-entrypoint.post.sh"'* ]] || fail "json missing second name: $js"
+[[ "$js" == *'"status":"CLEAN"'* ]]                 || fail "json missing CLEAN: $js"
+# JSON::PP ships with the system perl, so this needs no extra dependency.
+print -r -- "$js" | perl -MJSON::PP -e 'exit(@{decode_json(join "", <STDIN>)} == 2 ? 0 : 1)' \
+  2>/dev/null || fail "json does not parse as a 2-element array: $js"
+_pass_or_fail
+
 fixture_teardown

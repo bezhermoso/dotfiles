@@ -4,9 +4,10 @@
 #
 # Usage:
 #   workcfg status [--json|--porcelain|--porcelain-one <name>]
+#                                           exits 1 when any file needs action
 #   workcfg pull   [--force] [name...]     decrypt ciphertext -> plaintext
 #   workcfg push   [--force] [name...]     encrypt plaintext -> ciphertext
-#   workcfg diff   [name]                  plaintext vs decrypted ciphertext
+#   workcfg diff   <name>                  decrypted ciphertext vs plaintext
 #   workcfg defer  [name...]               MISSING/STALE -> DEFERRED: a reminder
 #                                           each shell instead of a prompt
 #   workcfg dismiss [name...] | undismiss [name...]
@@ -15,6 +16,7 @@
 #   workcfg adopt  [--assume=local|upstream] [name...]
 #                                           one-time migration: set a truthful baseline
 #   workcfg doctor                         diagnose gpg / key / trust / tty / perms
+#   workcfg help                           this text
 #
 # Drift detection never invokes GPG: it compares sha256 against a baseline
 # recorded in $WORKCFG_DATA_DIR/.state/. Only pull, push, diff and adopt need
@@ -546,9 +548,118 @@ case "$cmd" in
   _test_armored)     wc_is_armored "$(wc_ct_path $1)" && print 1 || print 0 ;;
   _test_baseline)    wc_record_baseline "$1" ;;
   _test_class)       wc_status_class "$1" ;;
+  # No wc_ensure_perms here: status is read-only, like doctor. Permission
+  # faults are doctor's to report; every write path hardens them itself.
   status)
-    if [[ "${1:-}" == "--porcelain-one" ]]; then wc_status "$2"; exit 0; fi
-    local n; for n in $WORKCFG_NAMES; do print -r -- "$n $(wc_status $n)"; done ;;
+    local mode=human
+    case "${1:-}" in
+      "")          ;;
+      --json)      mode=json ;;
+      --porcelain) mode=porcelain ;;
+      --porcelain-one)
+        (( $# == 2 )) || { print -u2 "workcfg: status --porcelain-one needs exactly one name"; exit 2 }
+        wc_status "$2"; exit 0 ;;
+      *) print -u2 "workcfg: unknown status flag '$1' — see: workcfg help"; exit 2 ;;
+    esac
+    (( $# <= 1 )) || { print -u2 "workcfg: status takes at most one flag — see: workcfg help"; exit 2 }
+
+    # Each status is computed once, so every output mode and the exit code
+    # agree even if a file changes mid-run.
+    local -i needs_action=0
+    local -A sts
+    local n st sync hint
+    for n in $WORKCFG_NAMES; do
+      sts[$n]="$(wc_status $n)"
+      [[ "$(wc_status_class ${sts[$n]})" != silent ]] && needs_action=1
+    done
+    case "$mode" in
+      porcelain)
+        for n in $WORKCFG_NAMES; do print -r -- "$n ${sts[$n]}"; done ;;
+      json)
+        local out="[" sep=""
+        for n in $WORKCFG_NAMES; do
+          st="${sts[$n]}"; sync="$(wc_state_get $n synced_at)"
+          out+="$sep{\"name\":\"$n\",\"status\":\"$st\",\"class\":\"$(wc_status_class $st)\",\"synced_at\":${sync:-null}}"
+          sep=","
+        done
+        print -r -- "$out]" ;;
+      human)
+        for n in $WORKCFG_NAMES; do
+          st="${sts[$n]}"; sync="$(wc_state_get $n synced_at)"
+          case "$st" in
+            CLEAN)     hint="in sync" ;;
+            MISSING)   hint="run: workcfg pull $n" ;;
+            STALE)     hint="upstream changed — run: workcfg pull $n" ;;
+            DRIFTED)   hint="local edits — run: workcfg push $n" ;;
+            CONFLICT)  hint="both changed — run: workcfg diff $n" ;;
+            DEFERRED)  hint="decrypt deferred — run: workcfg pull $n" ;;
+            DISMISSED) hint="silenced until either side changes" ;;
+            UNTRACKED) hint="run: workcfg adopt $n" ;;
+            UNMANAGED) hint="no encrypted file in $WORKCFG_REPO_DIR" ;;
+            # Never reuse the previous row's hint for a status added later.
+            *)         hint="" ;;
+          esac
+          printf '  %-26s %-10s %s\n' "$n" "$st" "$hint"
+          [[ -n "$sync" ]] && printf '  %-26s %s\n' "" \
+            "last sync: $(date -r $sync '+%Y-%m-%d %H:%M')"
+        done ;;
+    esac
+    exit $needs_action ;;
+  diff)
+    (( $# == 1 )) || { print -u2 "workcfg: diff needs a file name — see: workcfg help"; exit 2 }
+    local name="$1" ct="$(wc_ct_path $1)" pt="$(wc_pt_path $1)"
+    # Checked before any gpg call: with no plaintext there is nothing to
+    # compare, and a decrypt would only cost a pinentry prompt.
+    [[ -s "$pt" ]] || { print -u2 "workcfg: no plaintext for $name — run: workcfg pull $name"; exit 1 }
+    [[ -f "$ct" ]] || { print -u2 "workcfg: no ciphertext for $name"; exit 1 }
+
+    wc_ensure_perms
+    # The decrypted copy is plaintext, so it lives beside the real one under
+    # $WORKCFG_DATA_DIR (private, 0700) and never under $TMPDIR, which is
+    # shared and outlives us. It is created 0600 before gpg writes into it,
+    # and the EXIT trap removes it on every path, including ^C at pinentry.
+    local vtmp="${pt}.diff.$$" err rc
+    trap 'rm -f -- "$vtmp"' EXIT
+    trap 'exit 130' INT TERM HUP
+    : > "$vtmp"; chmod 600 "$vtmp"
+    err="$(umask 077; gpg --batch --quiet --yes --output "$vtmp" --decrypt "$ct" 2>&1)"
+    rc=$?
+    if (( rc != 0 )); then
+      print -u2 "workcfg: cannot decrypt $name"
+      [[ -n "$err" ]] && print -u2 "$err"
+      exit 1
+    fi
+    chmod 600 "$vtmp"
+    diff -u --label "encrypted/$name" "$vtmp" --label "local/$name" "$pt"
+    exit $? ;;
+  edit)
+    (( $# == 1 )) || { print -u2 "workcfg: edit needs a file name — see: workcfg help"; exit 2 }
+    local name="$1" pt="$(wc_pt_path $1)" rc
+    [[ -s "$pt" ]] || { print -u2 "workcfg: no plaintext for $name — run: workcfg pull $name"; exit 1 }
+    wc_ensure_perms
+    # ${=…} word-splits, so an EDITOR with arguments (e.g. "nvim -f") works.
+    ${=EDITOR:-vi} "$pt"
+    rc=$?
+    # Editors that save by rename (vim's backupcopy=no) recreate the file at
+    # the ambient umask, so re-harden it whatever the editor did.
+    chmod 600 "$pt"
+    (( rc == 0 )) || { print -u2 "workcfg: editor exited $rc — not offering to push $name"; exit 1 }
+    if [[ "$(wc_status $name)" == (DRIFTED|CONFLICT) ]]; then
+      # read -q reads the controlling terminal even when stdin is redirected,
+      # so it is asked only when stdin is a terminal. Otherwise the answer is
+      # the [y/N] default, and the file stays unencrypted: the safe side.
+      if [[ -t 0 ]] && read -q "?Re-encrypt $name now? [y/N] "; then
+        print ""; wc_push "$name"; exit $?
+      fi
+      [[ -t 0 ]] && print ""
+      print "Left unencrypted. Run: workcfg push $name"
+    fi
+    exit 0 ;;
+  help|-h|--help)
+    # The usage text is the leading comment block: line 3 up to the first
+    # line that is not a comment, with its "# " prefix stripped.
+    awk 'NR < 3 { next } !/^#/ { exit } { sub(/^# ?/, ""); print }' "$0"
+    exit 0 ;;
   dismiss)
     local -i explicit=$# rc=0
     # Only pre-filter when falling back to the default target list. An
@@ -615,5 +726,5 @@ case "$cmd" in
   # report (see spec finding 8). Calling it first would also make the
   # storage-permission checks below unable to ever fire.
   doctor) wc_doctor; exit $? ;;
-  *) print -u2 "workcfg: unknown command '$cmd'"; exit 2 ;;
+  *) print -u2 "workcfg: unknown command '$cmd' — see: workcfg help"; exit 2 ;;
 esac
