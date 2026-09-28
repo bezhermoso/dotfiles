@@ -205,7 +205,7 @@ wc_pull() {
 
   wc_ensure_perms
   local tmp="${pt}.pull.$$" err
-  err="$(gpg --batch --quiet --yes --output "$tmp" --decrypt "$ct" 2>&1)"
+  err="$(umask 077; gpg --batch --quiet --yes --output "$tmp" --decrypt "$ct" 2>&1)"
   local rc=$?
   if (( rc != 0 )) || [[ ! -s "$tmp" ]]; then
     rm -f "$tmp"
@@ -274,7 +274,7 @@ wc_push() {
 
   # Round-trip verification: never replace the only ciphertext with something
   # we have not proven decrypts back to the exact source.
-  err="$(gpg --batch --quiet --yes --output "$vtmp" --decrypt "$tmp" 2>&1)"
+  err="$(umask 077; gpg --batch --quiet --yes --output "$vtmp" --decrypt "$tmp" 2>&1)"
   rc=$?
   chmod 600 "$vtmp" 2>/dev/null
   if (( rc != 0 )) || [[ "$(wc_sha256 $vtmp)" != "$(wc_sha256 $pt)" ]]; then
@@ -392,7 +392,7 @@ wc_adopt() {
   # hash for comparison, and lives under $WORKCFG_DATA_DIR (private, never
   # the git-tracked repo dir) — removed immediately after use either way.
   local vtmp="${pt}.adopt.$$" err rc
-  err="$(gpg --batch --quiet --yes --output "$vtmp" --decrypt "$ct" 2>&1)"
+  err="$(umask 077; gpg --batch --quiet --yes --output "$vtmp" --decrypt "$ct" 2>&1)"
   rc=$?
   if (( rc != 0 )) || [[ ! -s "$vtmp" ]]; then
     rm -f "$vtmp"
