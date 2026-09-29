@@ -53,6 +53,10 @@ source_config "inc.work-config.zsh"
 
 [[ -f "${WORK_CONFIG_DECRYPTED_PRE}" ]] && source "${WORK_CONFIG_DECRYPTED_PRE}"
 
+# Square's config_files aliases `gum` to a git branch reset, shadowing the
+# charmbracelet/gum binary; `grum` depends on it. Drop both.
+for _a in gum grum; do (( $+aliases[$_a] )) && unalias $_a; done; unset _a
+
 
 source_config "inc.bat.zsh"
 source_config "inc.direnv.zsh"
