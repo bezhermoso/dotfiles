@@ -1,0 +1,730 @@
+#!/usr/bin/env zsh
+#
+# workcfg — manage GPG-encrypted work shell configs.
+#
+# Usage:
+#   workcfg status [--json|--porcelain|--porcelain-one <name>]
+#                                           exits 1 when any file needs action
+#   workcfg pull   [--force] [name...]     decrypt ciphertext -> plaintext
+#   workcfg push   [--force] [name...]     encrypt plaintext -> ciphertext
+#   workcfg diff   <name>                  decrypted ciphertext vs plaintext
+#   workcfg defer  [name...]               MISSING/STALE -> DEFERRED: a reminder
+#                                           each shell instead of a prompt
+#   workcfg dismiss [name...] | undismiss [name...]
+#                                           undismiss also clears a deferral
+#   workcfg edit   <name>                  $EDITOR on plaintext, then offer push
+#   workcfg adopt  [--assume=local|upstream] [name...]
+#                                           one-time migration: set a truthful baseline
+#   workcfg doctor                         diagnose gpg / key / trust / tty / perms
+#   workcfg help                           this text
+#
+# Drift detection never invokes GPG: it compares sha256 against a baseline
+# recorded in $WORKCFG_DATA_DIR/.state/. Only pull, push, diff and adopt need
+# the private key, and all four are user-initiated.
+#
+# See docs/superpowers/specs/2026-09-03-work-config-gpg-workflow-design.md
+
+emulate -L zsh
+set -u
+
+: ${WORKCFG_REPO_DIR:=$HOME/.dotfiles/zsh}
+: ${WORKCFG_DATA_DIR:=$HOME/.local/share/dotfiles/work}
+: ${WORKCFG_HOST_PATTERN:=^BLK}
+WORKCFG_STATE_DIR="$WORKCFG_DATA_DIR/.state"
+typeset -ga WORKCFG_NAMES=(work-entrypoint.sh work-entrypoint.post.sh)
+
+# gpg needs a terminal for pinentry; this script may run from anywhere.
+export GPG_TTY="${GPG_TTY:-$(tty 2>/dev/null || true)}"
+
+wc_ct_path()    { print -r -- "$WORKCFG_REPO_DIR/$1.gpg" }
+wc_pt_path()    { print -r -- "$WORKCFG_DATA_DIR/$1" }
+wc_state_path() { print -r -- "$WORKCFG_STATE_DIR/$1.state" }
+wc_defer_path() { print -r -- "$WORKCFG_STATE_DIR/$1.deferred" }
+
+wc_sha256() { shasum -a 256 "$1" | cut -d' ' -f1 }
+wc_mtime()  { stat -f '%m' "$1" 2>/dev/null || print 0 }
+wc_size()   { stat -f '%z' "$1" 2>/dev/null || print 0 }
+
+wc_ensure_perms() {
+  [[ -d "$WORKCFG_DATA_DIR"  ]] || mkdir -p "$WORKCFG_DATA_DIR"
+  [[ -d "$WORKCFG_STATE_DIR" ]] || mkdir -p "$WORKCFG_STATE_DIR"
+  chmod 700 "$WORKCFG_DATA_DIR" "$WORKCFG_STATE_DIR"
+  local n
+  for n in $WORKCFG_NAMES; do
+    [[ -f "$(wc_pt_path $n)" ]] && chmod 600 "$(wc_pt_path $n)"
+  done
+  return 0
+}
+
+wc_state_get() {
+  local sfile="$(wc_state_path $1)" key="$2" line
+  [[ -f "$sfile" ]] || return 0
+  while IFS= read -r line; do
+    [[ "$line" == "$key="* ]] && { print -r -- "${line#*=}"; return 0 }
+  done < "$sfile"
+  return 0
+}
+
+_wc_state_write() {           # _wc_state_write <name> <assoc-name>
+  local name="$1" sfile="$(wc_state_path $1)"
+  # Named "acc", not "kv": callers pass the literal name "kv" as $2, and a
+  # local here named "kv" would shadow it, so the P-indirection below would
+  # resolve to this function's own (empty) local instead of the caller's.
+  local -A acc
+  # The quoted (@…) form is required: a bare ${(Pkv)2} drops empty values,
+  # leaving an odd element count and "bad set of key/value pairs".
+  set -A acc "${(@Pkv)2}"
+  wc_ensure_perms
+  local tmp="${sfile}.tmp.$$"
+  : > "$tmp"; chmod 600 "$tmp"
+  local k
+  for k in ${(ko)acc}; do print -r -- "$k=${acc[$k]}" >> "$tmp"; done
+  mv -f "$tmp" "$sfile"
+}
+
+_wc_state_load() {            # _wc_state_load <name> <assoc-name>
+  local sfile="$(wc_state_path $1)" line
+  # Named "acc", not "kv" — see _wc_state_write for why: the caller's target
+  # var is named "kv", and a same-named local here would shadow it so the
+  # indirect assignment below would write back into this function's own copy.
+  local -A acc
+  if [[ -f "$sfile" ]]; then
+    while IFS= read -r line; do
+      [[ "$line" == *=* ]] || continue
+      acc[${line%%=*}]="${line#*=}"
+    done < "$sfile"
+  fi
+  set -A $2 "${(@kv)acc}"
+}
+
+wc_state_set() {
+  local name="$1"; shift
+  local -A kv; _wc_state_load "$name" kv
+  local pair
+  for pair in "$@"; do kv[${pair%%=*}]="${pair#*=}"; done
+  _wc_state_write "$name" kv
+}
+
+wc_state_clear() {
+  local name="$1"; shift
+  local -A kv; _wc_state_load "$name" kv
+  local k
+  for k in "$@"; do unset "kv[$k]"; done
+  _wc_state_write "$name" kv
+}
+
+wc_is_armored() {
+  [[ -f "$1" ]] || return 1
+  [[ "$(head -c 27 "$1" 2>/dev/null)" == "-----BEGIN PGP MESSAGE-----" ]]
+}
+
+wc_recipient_of() {
+  gpg --batch --list-packets --list-only "$1" 2>/dev/null \
+    | awk -F'keyid ' '/pubkey enc packet/ {print $2; exit}'
+}
+
+wc_record_baseline() {
+  local name="$1" ct="$(wc_ct_path $1)" pt="$(wc_pt_path $1)"
+  wc_state_set "$name" \
+    plaintext_sha="$(wc_sha256 $pt)" \
+    plaintext_mtime="$(wc_mtime $pt)" \
+    plaintext_size="$(wc_size $pt)" \
+    ciphertext_sha="$(wc_sha256 $ct)" \
+    ciphertext_mtime="$(wc_mtime $ct)" \
+    ciphertext_size="$(wc_size $ct)" \
+    synced_at="$(date +%s)"
+  wc_state_clear "$name" dismissed_sha dismissed_ciphertext_sha dismissed_at
+  # A truthful baseline means both sides now agree, which answers whatever
+  # prompt was deferred. Leaving it would quietly downgrade a later MISSING
+  # at this same ciphertext to DEFERRED instead of prompting afresh.
+  rm -f "$(wc_defer_path $name)"
+}
+
+_wc_is_dismissed() {          # <name> <c_now> <p_now>
+  [[ "$3" == "$(wc_state_get $1 dismissed_sha)" \
+  && "$2" == "$(wc_state_get $1 dismissed_ciphertext_sha)" ]]
+}
+
+# A deferral is keyed on the ciphertext sha alone, so it lapses the moment
+# upstream changes and the user is prompted about the new version.
+_wc_is_deferred() {           # <name> <c_now>
+  local dfile="$(wc_defer_path $1)"
+  [[ -f "$dfile" && "$2" == "$(<$dfile)" ]]
+}
+
+# Rows are evaluated top-down; first match wins.
+wc_status() {
+  local name="$1" ct="$(wc_ct_path $1)" pt="$(wc_pt_path $1)" st="$(wc_state_path $1)"
+  [[ -f "$ct" ]] || { print UNMANAGED; return }
+  if [[ ! -s "$pt" ]]; then
+    _wc_is_deferred "$name" "$(wc_sha256 $ct)" && print DEFERRED || print MISSING
+    return 0
+  fi
+  [[ -f "$st" ]] || { print UNTRACKED; return }
+
+  local c_now="$(wc_sha256 $ct)" p_now="$(wc_sha256 $pt)"
+  local -i c_drift=0 p_drift=0
+  [[ "$c_now" != "$(wc_state_get $name ciphertext_sha)" ]] && c_drift=1
+  [[ "$p_now" != "$(wc_state_get $name plaintext_sha)"  ]] && p_drift=1
+
+  if (( c_drift || p_drift )) && _wc_is_dismissed "$name" "$c_now" "$p_now"; then
+    print DISMISSED; return
+  fi
+  (( c_drift && p_drift )) && { print CONFLICT; return }
+  if (( c_drift )); then
+    _wc_is_deferred "$name" "$c_now" && print DEFERRED || print STALE
+    return 0
+  fi
+  (( p_drift ))            && { print DRIFTED;  return }
+  print CLEAN
+}
+
+wc_status_class() {
+  case "$1" in
+    MISSING|STALE)                       print prompt ;;
+    UNTRACKED|DRIFTED|CONFLICT|DEFERRED) print notice ;;
+    *)                                   print silent ;;
+  esac
+}
+
+wc_pull() {
+  local force=0
+  [[ "${1:-}" == "--force" ]] && { force=1; shift }
+  local name="$1" ct="$(wc_ct_path $1)" pt="$(wc_pt_path $1)"
+
+  [[ -f "$ct" ]] || { print -u2 "workcfg: no ciphertext for $name"; return 1 }
+
+  local st="$(wc_status $name)"
+  if [[ "$st" == CONFLICT ]] && (( ! force )); then
+    print -u2 "workcfg: $name has local edits AND upstream changes."
+    print -u2 "  inspect: workcfg diff $name"
+    print -u2 "  keep upstream: workcfg pull --force $name"
+    print -u2 "  keep local:    workcfg push --force $name"
+    return 3
+  fi
+
+  wc_ensure_perms
+  local tmp="${pt}.pull.$$" err
+  err="$(umask 077; gpg --batch --quiet --yes --output "$tmp" --decrypt "$ct" 2>&1)"
+  local rc=$?
+  if (( rc != 0 )) || [[ ! -s "$tmp" ]]; then
+    rm -f "$tmp"
+    print -u2 "workcfg: failed to decrypt $name"
+    [[ -n "$err" ]] && print -u2 "$err"
+    (( rc == 0 )) && print -u2 "workcfg: gpg succeeded but produced no output"
+    return 1
+  fi
+
+  chmod 600 "$tmp"
+  mv -f "$tmp" "$pt"
+  wc_record_baseline "$name"
+  wc_state_set "$name" \
+    recipient="$(wc_recipient_of $ct)" \
+    armored="$(wc_is_armored $ct && print 1 || print 0)"
+  print "✓ pulled $name"
+  return 0
+}
+
+wc_push() {
+  local force=0
+  [[ "${1:-}" == "--force" ]] && { force=1; shift }
+  local name="$1" ct="$(wc_ct_path $1)" pt="$(wc_pt_path $1)"
+
+  [[ -s "$pt" ]] || { print -u2 "workcfg: no plaintext for $name"; return 1 }
+
+  local st="$(wc_status $name)"
+  if [[ "$st" == CONFLICT ]] && (( ! force )); then
+    print -u2 "workcfg: $name has local edits AND upstream changes."
+    print -u2 "  inspect: workcfg diff $name"
+    print -u2 "  keep local: workcfg push --force $name"
+    return 3
+  fi
+
+  local recipient="${WORKCFG_RECIPIENT:-$(wc_state_get $name recipient)}"
+  if [[ -z "$recipient" ]]; then
+    recipient="$(wc_recipient_of $ct)"
+    [[ -z "$recipient" ]] && {
+      print -u2 "workcfg: cannot determine recipient for $name — run: workcfg doctor"
+      return 1
+    }
+  fi
+
+  local armor=()
+  [[ "$(wc_state_get $name armored)" == 1 ]] && armor=(--armor)
+
+  wc_ensure_perms
+  # vtmp holds decrypted plaintext during verification, so it MUST live under
+  # $WORKCFG_DATA_DIR (private, 0600, gitignored) — never under $ct's repo
+  # directory, which is git-tracked and holds ciphertext only. A leftover
+  # file there from a process that died mid-verify would be an untracked
+  # plaintext one `git add -A` away from being committed.
+  local tmp="${ct}.push.$$" vtmp="${pt}.push.verify.$$" err rc
+  # --trust-model always: the user's own key carries no ownertrust, and gpg
+  # rejects it as "Unusable public key" without this. See spec finding 11.
+  err="$(gpg --batch --quiet --yes --trust-model always $armor \
+             --encrypt --recipient "0x$recipient" \
+             --output "$tmp" "$pt" 2>&1)"
+  rc=$?
+  if (( rc != 0 )) || [[ ! -s "$tmp" ]]; then
+    rm -f "$tmp"
+    print -u2 "workcfg: failed to encrypt $name"
+    [[ -n "$err" ]] && print -u2 "$err"
+    return 1
+  fi
+
+  # Round-trip verification: never replace the only ciphertext with something
+  # we have not proven decrypts back to the exact source.
+  err="$(umask 077; gpg --batch --quiet --yes --output "$vtmp" --decrypt "$tmp" 2>&1)"
+  rc=$?
+  chmod 600 "$vtmp" 2>/dev/null
+  if (( rc != 0 )) || [[ "$(wc_sha256 $vtmp)" != "$(wc_sha256 $pt)" ]]; then
+    rm -f "$tmp" "$vtmp"
+    print -u2 "workcfg: round-trip verification failed for $name — ciphertext left untouched"
+    [[ -n "$err" ]] && print -u2 "$err"
+    return 1
+  fi
+  rm -f "$vtmp"
+
+  mv -f "$tmp" "$ct"
+  wc_record_baseline "$name"
+  wc_state_set "$name" recipient="$recipient" \
+    armored="$(wc_is_armored $ct && print 1 || print 0)"
+  print "✓ pushed $name"
+  return 0
+}
+
+# Dismissible = any status with real drift. CLEAN has nothing to silence;
+# MISSING/UNMANAGED/UNTRACKED can't even have both hashes computed. DEFERRED
+# counts only with a plaintext present, i.e. a deferred STALE: a deferred
+# MISSING has nothing to hash, and a missing plaintext must never be silenced.
+_wc_dismissible() {           # <name> <status>
+  [[ "$2" == (DRIFTED|CONFLICT|STALE|DISMISSED) ]] \
+    || [[ "$2" == DEFERRED && -s "$(wc_pt_path $1)" ]]
+}
+
+wc_dismiss() {
+  local name="$1" ct="$(wc_ct_path $1)" pt="$(wc_pt_path $1)"
+  # This check is status-driven (not just file existence) so an explicit
+  # request against a CLEAN file fails loudly instead of writing an inert
+  # dismissal.
+  local st="$(wc_status $name)"
+  _wc_dismissible "$name" "$st" || {
+    print -u2 "workcfg: nothing to dismiss for $name (status: $st)"
+    return 1
+  }
+  # Records BOTH hashes, so the dismissal expires if either side moves.
+  # Re-dismissing an already-DISMISSED file is harmless and refreshes
+  # dismissed_at — there is no separate "already dismissed" branch.
+  wc_state_set "$name" \
+    dismissed_sha="$(wc_sha256 $pt)" \
+    dismissed_ciphertext_sha="$(wc_sha256 $ct)" \
+    dismissed_at="$(date +%s)"
+  print "✓ dismissed $name (silent until either side changes)"
+}
+
+# Declining a prompt downgrades it to a notice, never to silent: that is
+# the difference from dismiss. The deferral lives in its own file rather than
+# in .state, because wc_status reads "a .state exists" as "a baseline exists";
+# deferring a MISSING file on a fresh machine must not invent one, or a
+# plaintext that later appears by hand would read CONFLICT, not UNTRACKED.
+# Never invokes gpg.
+wc_defer() {
+  local name="$1" ct="$(wc_ct_path $1)"
+  # Re-deferring an already-DEFERRED file is harmless and refreshes it.
+  local st="$(wc_status $name)"
+  [[ "$st" == (MISSING|STALE|DEFERRED) ]] || {
+    print -u2 "workcfg: nothing to defer for $name (status: $st)"
+    return 1
+  }
+  wc_ensure_perms
+  local dfile="$(wc_defer_path $name)"
+  local tmp="${dfile}.tmp.$$"
+  : > "$tmp"; chmod 600 "$tmp"
+  print -r -- "$(wc_sha256 $ct)" > "$tmp"
+  mv -f "$tmp" "$dfile"
+  print "✓ deferred $name — you'll see a reminder each shell until you run: workcfg pull $name"
+}
+
+wc_undismiss() {
+  local name="$1" dfile="$(wc_defer_path $1)"
+  local cleared=()
+  if [[ -n "$(wc_state_get $name dismissed_sha)" ]]; then
+    wc_state_clear "$name" dismissed_sha dismissed_ciphertext_sha dismissed_at
+    cleared+=(dismissal)
+  fi
+  [[ -f "$dfile" ]] && { rm -f "$dfile"; cleared+=(deferral) }
+  if (( $#cleared )); then
+    print "✓ undismissed $name (cleared ${(j: and :)cleared})"
+  else
+    print "workcfg: $name was not dismissed or deferred"
+  fi
+}
+
+# One-time migration: an existing install has plaintext but no state at all.
+# Recording a baseline from whatever happens to be on disk, without knowing
+# whether the two sides actually agree, would silently bless any pre-existing
+# drift as CLEAN — exactly the failure this whole plan exists to prevent. So
+# adopt performs the one sanctioned, user-initiated decrypt whose sole purpose
+# is to detect agreement; it is never used to pick a winner. When the two
+# genuinely disagree, resolution is always deferred to an explicit
+# --assume=local|upstream, or refused outright (exit 4) if neither is given.
+# recipient/armored are always detected from the ciphertext via packet
+# introspection (wc_recipient_of / wc_is_armored) — never assumed or
+# hardcoded.
+wc_adopt() {
+  local assume=""
+  [[ "${1:-}" == --assume=* ]] && { assume="${1#--assume=}"; shift }
+  local name="$1" ct="$(wc_ct_path $1)" pt="$(wc_pt_path $1)"
+
+  [[ -f "$ct" ]] || { print -u2 "workcfg: no ciphertext for $name"; return 1 }
+  [[ -s "$pt" ]] || { print -u2 "workcfg: no plaintext for $name — use: workcfg pull $name"; return 1 }
+
+  local recipient="$(wc_recipient_of $ct)"
+  local armored="$(wc_is_armored $ct && print 1 || print 0)"
+
+  # adopt is the one command guaranteed to run against a still-legacy
+  # install — $WORKCFG_DATA_DIR pre-existing at 0755 with 0644 plaintext
+  # (spec finding 8) — so it, more than pull/push, must not skip hardening
+  # before writing a decrypted copy under it. Mirrors wc_pull exactly.
+  wc_ensure_perms
+
+  # vtmp holds decrypted plaintext only transiently, purely to compute a
+  # hash for comparison, and lives under $WORKCFG_DATA_DIR (private, never
+  # the git-tracked repo dir) — removed immediately after use either way.
+  local vtmp="${pt}.adopt.$$" err rc
+  err="$(umask 077; gpg --batch --quiet --yes --output "$vtmp" --decrypt "$ct" 2>&1)"
+  rc=$?
+  if (( rc != 0 )) || [[ ! -s "$vtmp" ]]; then
+    rm -f "$vtmp"
+    print -u2 "workcfg: cannot decrypt $name to establish a baseline"
+    [[ -n "$err" ]] && print -u2 "$err"
+    return 1
+  fi
+  chmod 600 "$vtmp"
+  local -i same=0
+  [[ "$(wc_sha256 $vtmp)" == "$(wc_sha256 $pt)" ]] && same=1
+  rm -f "$vtmp"
+
+  if (( same )); then
+    wc_record_baseline "$name"
+    wc_state_set "$name" recipient="$recipient" armored="$armored"
+    print "✓ adopted $name (in sync)"
+    return 0
+  fi
+
+  case "$assume" in
+    local)
+      # Baseline the ciphertext only; plaintext stays unrecorded (a sentinel
+      # that can never match a real sha256) so it reads as DRIFTED and you
+      # are reminded to push it. Never touches the plaintext file itself.
+      wc_state_set "$name" \
+        ciphertext_sha="$(wc_sha256 $ct)" \
+        ciphertext_mtime="$(wc_mtime $ct)" \
+        ciphertext_size="$(wc_size $ct)" \
+        plaintext_sha="adopted-local-unpushed" \
+        plaintext_mtime=0 plaintext_size=0 \
+        recipient="$recipient" armored="$armored" \
+        synced_at="$(date +%s)"
+      wc_state_clear "$name" dismissed_sha dismissed_ciphertext_sha dismissed_at
+      print "✓ adopted $name keeping local edits — now DRIFTED; run: workcfg push $name"
+      return 0 ;;
+    upstream)
+      # Re-pull for real: this is the ordinary, already-verified pull path,
+      # not a second ad hoc decrypt — it overwrites plaintext with upstream
+      # and records a truthful CLEAN baseline from the result.
+      wc_pull --force "$name" ;;
+    *)
+      print -u2 "workcfg: $name differs from its encrypted version."
+      print -u2 "  inspect:      workcfg diff $name"
+      print -u2 "  keep local:   workcfg adopt --assume=local $name"
+      print -u2 "  take upstream:workcfg adopt --assume=upstream $name"
+      return 4 ;;
+  esac
+}
+
+typeset -gi WC_DOCTOR_FAILS=0
+
+_dr_ok()   { print "  ✓ $1" }
+_dr_warn() { print "  ! $1"; [[ -n "${2:-}" ]] && print "      → $2" }
+_dr_bad()  { print -u2 "  ✗ $1"; [[ -n "${2:-}" ]] && print -u2 "      → $2"; (( WC_DOCTOR_FAILS++ )) }
+
+# doctor is read-only: it never writes plaintext/ciphertext, never modifies
+# state, and never changes permissions, even when it finds them wrong — it
+# only reports the fix, as a literal command that actually works. Every
+# gpg invocation here passes --batch so a misconfigured setup fails loudly
+# instead of blocking on a pinentry prompt.
+wc_doctor() {
+  print "workcfg doctor"
+  print ""
+  print "environment"
+  if (( $+commands[gpg] )); then _dr_ok "gpg: $(gpg --batch --version | head -1)"
+  else _dr_bad "gpg not found" "brew install gnupg"; fi
+
+  if [[ -n "${GPG_TTY:-}" ]]; then _dr_ok "GPG_TTY=$GPG_TTY"
+  else _dr_bad "GPG_TTY is unset" "inc.gpg.zsh must be sourced before inc.work-config.zsh in .zshrc"; fi
+
+  local prog="$(awk '/^pinentry-program/{print $2}' "${GNUPGHOME:-$HOME/.gnupg}/gpg-agent.conf" 2>/dev/null)"
+  if [[ -n "$prog" ]]; then _dr_ok "pinentry-program: $prog"
+  else _dr_warn "no pinentry-program set; gpg-agent will use its default" \
+                "default resolves to pinentry-curses, which needs a working TTY. Consider pinentry-mac."; fi
+
+  print ""
+  print "storage"
+  local dperm="$(stat -f '%OLp' "$WORKCFG_DATA_DIR" 2>/dev/null)"
+  if [[ "$dperm" == 700 ]]; then _dr_ok "$WORKCFG_DATA_DIR is 0700"
+  else _dr_bad "$WORKCFG_DATA_DIR is 0$dperm, expected 0700" "chmod 700 $WORKCFG_DATA_DIR"; fi
+
+  local n
+  for n in $WORKCFG_NAMES; do
+    local pt="$(wc_pt_path $n)"
+    [[ -f "$pt" ]] || continue
+    local fperm="$(stat -f '%OLp' "$pt")"
+    if [[ "$fperm" == 600 ]]; then _dr_ok "$n plaintext is 0600"
+    else _dr_bad "$n plaintext is 0$fperm, expected 0600" "chmod 600 $pt"; fi
+  done
+
+  print ""
+  print "keys"
+  for n in $WORKCFG_NAMES; do
+    local ct="$(wc_ct_path $n)"
+    [[ -f "$ct" ]] || continue
+    local r="${WORKCFG_RECIPIENT:-$(wc_state_get $n recipient)}"
+    [[ -z "$r" ]] && r="$(wc_recipient_of $ct)"
+    if [[ -z "$r" ]]; then
+      _dr_bad "$n: cannot determine a recipient — ciphertext may be corrupt or not public-key encrypted" \
+              "inspect: gpg --batch --list-packets --list-only $ct"
+      continue
+    fi
+    if gpg --batch --list-keys "0x$r" >/dev/null 2>&1; then
+      _dr_ok "$n: recipient $r is in the keyring"
+    else
+      _dr_bad "$n: recipient $r is NOT in the keyring" \
+              "the ciphertext was encrypted to a key you do not have; check gpg --list-keys"
+      # Deliberately no `continue` here: a missing public key and an
+      # untrusted-but-present one are different failures (findings 9 vs 11),
+      # and the trial encrypt below is the only check that catches the
+      # latter. Gating it on the keyring lookup above would have hidden
+      # finding 11 behind finding 9 whenever both happened to be tested
+      # together, and a doctor that skips checks after the first failure is
+      # exactly the kind of silence this command exists to end.
+    fi
+    # Trial encrypt: catches an untrusted key, which gpg rejects as
+    # "Unusable public key" unless --trust-model always is used. This is the
+    # one check that actually exercises encryption rather than just
+    # inspecting the keyring, so it is never skipped once we have an $r.
+    if print -n x | gpg --batch --quiet --trust-model always --encrypt \
+         --recipient "0x$r" --output /dev/null 2>/dev/null; then
+      _dr_ok "$n: trial encrypt to $r succeeded"
+    else
+      _dr_bad "$n: trial encrypt to $r FAILED" "gpg --edit-key $r trust  → set ultimate"
+    fi
+    if gpg --batch --list-secret-keys "0x$r" >/dev/null 2>&1; then
+      _dr_ok "$n: secret key present (pull will work)"
+    else
+      _dr_warn "$n: no secret key for $r" "you can push but not pull on this machine"
+    fi
+  done
+
+  print ""
+  print "status"
+  for n in $WORKCFG_NAMES; do print "  $n: $(wc_status $n)"; done
+
+  print ""
+  if (( WC_DOCTOR_FAILS )); then
+    print -u2 "$WC_DOCTOR_FAILS problem(s) found."
+    return 1
+  fi
+  print "All checks passed."
+  return 0
+}
+
+# --- dispatch ---------------------------------------------------------------
+cmd="${1:-status}"; shift 2>/dev/null || true
+case "$cmd" in
+  _test_state_set)   wc_state_set "$@" ;;
+  _test_state_get)   wc_state_get "$@" ;;
+  _test_state_clear) wc_state_clear "$@" ;;
+  _test_recipient)   wc_recipient_of "$(wc_ct_path $1)" ;;
+  _test_armored)     wc_is_armored "$(wc_ct_path $1)" && print 1 || print 0 ;;
+  _test_baseline)    wc_record_baseline "$1" ;;
+  _test_class)       wc_status_class "$1" ;;
+  # No wc_ensure_perms here: status is read-only, like doctor. Permission
+  # faults are doctor's to report; every write path hardens them itself.
+  status)
+    local mode=human
+    case "${1:-}" in
+      "")          ;;
+      --json)      mode=json ;;
+      --porcelain) mode=porcelain ;;
+      --porcelain-one)
+        (( $# == 2 )) || { print -u2 "workcfg: status --porcelain-one needs exactly one name"; exit 2 }
+        wc_status "$2"; exit 0 ;;
+      *) print -u2 "workcfg: unknown status flag '$1' — see: workcfg help"; exit 2 ;;
+    esac
+    (( $# <= 1 )) || { print -u2 "workcfg: status takes at most one flag — see: workcfg help"; exit 2 }
+
+    # Each status is computed once, so every output mode and the exit code
+    # agree even if a file changes mid-run.
+    local -i needs_action=0
+    local -A sts
+    local n st sync hint
+    for n in $WORKCFG_NAMES; do
+      sts[$n]="$(wc_status $n)"
+      [[ "$(wc_status_class ${sts[$n]})" != silent ]] && needs_action=1
+    done
+    case "$mode" in
+      porcelain)
+        for n in $WORKCFG_NAMES; do print -r -- "$n ${sts[$n]}"; done ;;
+      json)
+        local out="[" sep=""
+        for n in $WORKCFG_NAMES; do
+          st="${sts[$n]}"; sync="$(wc_state_get $n synced_at)"
+          out+="$sep{\"name\":\"$n\",\"status\":\"$st\",\"class\":\"$(wc_status_class $st)\",\"synced_at\":${sync:-null}}"
+          sep=","
+        done
+        print -r -- "$out]" ;;
+      human)
+        for n in $WORKCFG_NAMES; do
+          st="${sts[$n]}"; sync="$(wc_state_get $n synced_at)"
+          case "$st" in
+            CLEAN)     hint="in sync" ;;
+            MISSING)   hint="run: workcfg pull $n" ;;
+            STALE)     hint="upstream changed — run: workcfg pull $n" ;;
+            DRIFTED)   hint="local edits — run: workcfg push $n" ;;
+            CONFLICT)  hint="both changed — run: workcfg diff $n" ;;
+            DEFERRED)  hint="decrypt deferred — run: workcfg pull $n" ;;
+            DISMISSED) hint="silenced until either side changes" ;;
+            UNTRACKED) hint="run: workcfg adopt $n" ;;
+            UNMANAGED) hint="no encrypted file in $WORKCFG_REPO_DIR" ;;
+            # Never reuse the previous row's hint for a status added later.
+            *)         hint="" ;;
+          esac
+          printf '  %-26s %-10s %s\n' "$n" "$st" "$hint"
+          [[ -n "$sync" ]] && printf '  %-26s %s\n' "" \
+            "last sync: $(date -r $sync '+%Y-%m-%d %H:%M')"
+        done ;;
+    esac
+    exit $needs_action ;;
+  diff)
+    (( $# == 1 )) || { print -u2 "workcfg: diff needs a file name — see: workcfg help"; exit 2 }
+    local name="$1" ct="$(wc_ct_path $1)" pt="$(wc_pt_path $1)"
+    # Checked before any gpg call: with no plaintext there is nothing to
+    # compare, and a decrypt would only cost a pinentry prompt.
+    [[ -s "$pt" ]] || { print -u2 "workcfg: no plaintext for $name — run: workcfg pull $name"; exit 1 }
+    [[ -f "$ct" ]] || { print -u2 "workcfg: no ciphertext for $name"; exit 1 }
+
+    wc_ensure_perms
+    # The decrypted copy is plaintext, so it lives beside the real one under
+    # $WORKCFG_DATA_DIR (private, 0700) and never under $TMPDIR, which is
+    # shared and outlives us. It is created 0600 before gpg writes into it,
+    # and the EXIT trap removes it on every path, including ^C at pinentry.
+    local vtmp="${pt}.diff.$$" err rc
+    trap 'rm -f -- "$vtmp"' EXIT
+    trap 'exit 130' INT TERM HUP
+    : > "$vtmp"; chmod 600 "$vtmp"
+    err="$(umask 077; gpg --batch --quiet --yes --output "$vtmp" --decrypt "$ct" 2>&1)"
+    rc=$?
+    if (( rc != 0 )); then
+      print -u2 "workcfg: cannot decrypt $name"
+      [[ -n "$err" ]] && print -u2 "$err"
+      exit 1
+    fi
+    chmod 600 "$vtmp"
+    diff -u --label "encrypted/$name" "$vtmp" --label "local/$name" "$pt"
+    exit $? ;;
+  edit)
+    (( $# == 1 )) || { print -u2 "workcfg: edit needs a file name — see: workcfg help"; exit 2 }
+    local name="$1" pt="$(wc_pt_path $1)" rc
+    [[ -s "$pt" ]] || { print -u2 "workcfg: no plaintext for $name — run: workcfg pull $name"; exit 1 }
+    wc_ensure_perms
+    # ${=…} word-splits, so an EDITOR with arguments (e.g. "nvim -f") works.
+    ${=EDITOR:-vi} "$pt"
+    rc=$?
+    # Editors that save by rename (vim's backupcopy=no) recreate the file at
+    # the ambient umask, so re-harden it whatever the editor did.
+    chmod 600 "$pt"
+    (( rc == 0 )) || { print -u2 "workcfg: editor exited $rc — not offering to push $name"; exit 1 }
+    if [[ "$(wc_status $name)" == (DRIFTED|CONFLICT) ]]; then
+      # read -q reads the controlling terminal even when stdin is redirected,
+      # so it is asked only when stdin is a terminal. Otherwise the answer is
+      # the [y/N] default, and the file stays unencrypted: the safe side.
+      if [[ -t 0 ]] && read -q "?Re-encrypt $name now? [y/N] "; then
+        print ""; wc_push "$name"; exit $?
+      fi
+      [[ -t 0 ]] && print ""
+      print "Left unencrypted. Run: workcfg push $name"
+    fi
+    exit 0 ;;
+  help|-h|--help)
+    # The usage text is the leading comment block: line 3 up to the first
+    # line that is not a comment, with its "# " prefix stripped.
+    awk 'NR < 3 { next } !/^#/ { exit } { sub(/^# ?/, ""); print }' "$0"
+    exit 0 ;;
+  dismiss)
+    local -i explicit=$# rc=0
+    # Only pre-filter when falling back to the default target list. An
+    # explicitly named target must always reach wc_dismiss so its own
+    # "nothing to dismiss" error (and exit 1) surfaces instead of a silent
+    # no-op — mirrors wc_push's dispatch above.
+    local targets=(${@:-$WORKCFG_NAMES}) n
+    for n in $targets; do
+      (( explicit )) || _wc_dismissible "$n" "$(wc_status $n)" || continue
+      wc_dismiss "$n" || rc=$?
+    done
+    exit $rc ;;
+  defer)
+    local -i explicit=$# rc=0
+    # Only pre-filter when falling back to the default target list. An
+    # explicitly named target must always reach wc_defer so its own
+    # "nothing to defer" error (and exit 1) surfaces — mirrors dismiss above.
+    local targets=(${@:-$WORKCFG_NAMES}) n
+    for n in $targets; do
+      (( explicit )) || [[ "$(wc_status $n)" == (MISSING|STALE|DEFERRED) ]] || continue
+      wc_defer "$n" || rc=$?
+    done
+    exit $rc ;;
+  undismiss)
+    local -i rc=0
+    local n; for n in ${@:-$WORKCFG_NAMES}; do wc_undismiss "$n" || rc=$?; done
+    exit $rc ;;
+  adopt)
+    local assume=""
+    [[ "${1:-}" == --assume=* ]] && { assume="$1"; shift }
+    # Only pre-filter when falling back to the default target list. An
+    # explicitly named target must always reach wc_adopt so its own error
+    # (or refuse-to-guess exit 4) surfaces instead of a silent no-op — see
+    # wc_push's dispatch above.
+    local -i explicit=$#
+    local targets=(${@:-$WORKCFG_NAMES}) n rc=0
+    for n in $targets; do
+      (( explicit )) || [[ -f "$(wc_ct_path $n)" ]] || continue
+      wc_adopt $assume "$n" || rc=$?
+    done
+    exit $rc ;;
+  pull)
+    local force="" rc=0
+    [[ "${1:-}" == "--force" ]] && { force="--force"; shift }
+    local targets=(${@:-$WORKCFG_NAMES}) n
+    for n in $targets; do wc_pull $force "$n" || rc=$? ; done
+    exit $rc ;;
+  push)
+    local force="" rc=0
+    [[ "${1:-}" == "--force" ]] && { force="--force"; shift }
+    # Only pre-filter when falling back to the default target list. An
+    # explicitly named target must always reach wc_push so its own "no
+    # plaintext for $name" error (and exit 1) surfaces instead of a silent
+    # no-op — see wc_pull's dispatch above, which has no such pre-filter.
+    local -i explicit=$#
+    local targets=(${@:-$WORKCFG_NAMES}) n
+    for n in $targets; do
+      (( explicit )) || [[ -s "$(wc_pt_path $n)" ]] || continue
+      wc_push $force "$n" || rc=$?
+    done
+    exit $rc ;;
+  # No wc_ensure_perms here: doctor is read-only with respect to user data
+  # and must not silently fix the very permission faults it exists to
+  # report (see spec finding 8). Calling it first would also make the
+  # storage-permission checks below unable to ever fire.
+  doctor) wc_doctor; exit $? ;;
+  *) print -u2 "workcfg: unknown command '$cmd' — see: workcfg help"; exit 2 ;;
+esac

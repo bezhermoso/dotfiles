@@ -77,3 +77,7 @@ setup-zsh: compile-zsh install-launchagent install-git-hooks
 	@echo "  • On commit: Git pre-commit hook"
 	@echo ""
 
+.PHONY: test-workcfg
+test-workcfg:
+	@zsh tests/workcfg/run.zsh
+
