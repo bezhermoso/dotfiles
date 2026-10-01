@@ -1,0 +1,29 @@
+#!/usr/bin/env zsh
+#
+# git-agent-sign — gpg.ssh.program for Claude Code sessions (set by the
+# 04-agent-git Claude settings fragment).
+#
+# Signs with this machine's agent key (bin/agent-key-setup) so agents can
+# sign commits while 1Password is locked. Anything else — verification, or
+# a machine without the key — defers to 1Password's op-ssh-sign, same as
+# outside Claude.
+
+local key=~/.ssh/agent_ed25519.pub
+local op_sign=/Applications/1Password.app/Contents/MacOS/op-ssh-sign
+
+if [[ ${1-} == -Y && ${2-} == sign && -f $key ]]; then
+  # After a reboot the key is in the Keychain but not yet in ssh-agent.
+  ssh-add -T $key &>/dev/null || ssh-add -q --apple-load-keychain &>/dev/null
+  if ssh-add -T $key &>/dev/null; then
+    # git passes `-f <file holding user.signingkey>`; swap in the agent key.
+    local -a args=("$@")
+    local i
+    for (( i = 1; i < $#args; i++ )); do
+      [[ ${args[i]} == -f ]] && args[i+1]=$key
+    done
+    exec ssh-keygen "${args[@]}"
+  fi
+fi
+
+[[ -x $op_sign ]] && exec $op_sign "$@"
+exec ssh-keygen "$@"

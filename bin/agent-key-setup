@@ -1,0 +1,68 @@
+#!/usr/bin/env zsh
+#
+# agent-key-setup — Create this machine's SSH key for coding agents and
+# register it on GitHub for both pushing and commit signing.
+#
+# My own pushes and signatures go through 1Password, which needs Touch ID
+# and stalls agents whenever I step away. Claude Code sessions instead use
+# ~/.ssh/agent_ed25519 (see ssh/fallback_config, bin/git-agent-sign and the
+# 04-agent-git Claude settings fragment). The key is per-machine and never
+# synced; zsh/inc.agent-key.zsh nags until this has been run.
+#
+# Idempotent: safe to re-run, e.g. after granting gh the key scopes.
+
+set -euo pipefail
+
+local key=~/.ssh/agent_ed25519
+local title="agent@${HOST%%.*}"
+
+if [[ ! -f $key ]]; then
+  # The passphrase lives only in the macOS Keychain; nobody needs to know it.
+  # If the Keychain entry is lost, delete the key and re-run.
+  local pass askpass
+  pass=$(openssl rand -base64 32)
+  askpass=$(mktemp)
+  trap 'rm -f $askpass' EXIT
+  print -r -- "#!/bin/sh
+printf '%s\n' '$pass'" > $askpass
+  chmod 700 $askpass
+
+  ssh-keygen -q -t ed25519 -C "$title" -N "$pass" -f $key
+  SSH_ASKPASS=$askpass SSH_ASKPASS_REQUIRE=force DISPLAY=${DISPLAY:-:0} \
+    ssh-add -q --apple-use-keychain $key </dev/null
+  print "Created $key ($title); passphrase stored in the Keychain."
+else
+  ssh-add -q --apple-load-keychain 2>/dev/null || true
+  print "Using existing $key."
+fi
+
+ssh-add -T $key.pub || { print -u2 "Key isn't usable from ssh-agent; check the Keychain entry."; exit 1 }
+
+# Register on GitHub as an authentication key and as a signing key.
+local body=${${(s: :)"$(<$key.pub)"}[2]}
+local missing_scope=0
+
+function register() {
+  local type=$1 endpoint=$2
+  if gh api --paginate $endpoint --jq '.[].key' 2>/dev/null | grep -qF -- "$body"; then
+    print "GitHub: already registered as $type key."
+  elif gh ssh-key add $key.pub --type $type --title "$title" >/dev/null 2>&1; then
+    print "GitHub: registered as $type key."
+  else
+    missing_scope=1
+  fi
+}
+
+register authentication user/keys
+register signing user/ssh_signing_keys
+
+if (( missing_scope )); then
+  print -u2 "
+Couldn't register with GitHub (gh probably lacks the key scopes). Either run:
+  gh auth refresh -h github.com -s admin:public_key,admin:ssh_signing_key
+  agent-key-setup
+or add this key at https://github.com/settings/ssh/new twice, as
+Authentication Key and as Signing Key:
+  $(<$key.pub)"
+  exit 1
+fi

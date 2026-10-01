@@ -1,5 +1,18 @@
 # vim: set ft=sshconfig
 
+# UseKeychain is Apple-only; don't choke on it elsewhere.
+IgnoreUnknown UseKeychain
+
+# Claude Code sessions push with this machine's agent key (bin/agent-key-setup)
+# so pushes don't wait on 1Password's Touch ID prompt. Without the key, falls
+# through to 1Password.
+Match host github.com exec "[[ -n $CLAUDECODE && -f ~/.ssh/agent_ed25519 ]]"
+    IdentityAgent SSH_AUTH_SOCK
+    IdentitiesOnly yes
+    IdentityFile ~/.ssh/agent_ed25519
+    AddKeysToAgent yes
+    UseKeychain yes
+
 Match exec "[[ -n $SSH_CONNECTION ]]" Host *
     IdentityAgent SSH_AUTH_SOCK
     IdentitiesOnly yes
