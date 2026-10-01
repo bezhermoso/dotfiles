@@ -15,6 +15,7 @@ path = "https://github.com/tinted-theming/tinted-tmux"
 themes-dir = "colors"
 hook = "tmux run 2> /dev/null && tmux source-file %f"
 supported-systems = ["base16", "base24"]
+allow-dirty-update = true
 
 [[items]]
 path = "https://github.com/tinted-theming/tinted-delta"
@@ -22,6 +23,7 @@ name = "delta"
 themes-dir = "configs"
 hook = "cp -f %f ~/.config/tinted-theming/delta.gitconfig"
 supported-systems = ["base16", "base24"]
+allow-dirty-update = true
 
 [[items]]
 path = "https://github.com/tinted-theming/tinted-fzf"
@@ -29,10 +31,12 @@ name = "fzf"
 themes-dir = "sh"
 hook = "cp -f %f ~/.config/tinted-theming/fzf.sh"
 supported-systems = ["base16", "base24"]
+allow-dirty-update = true
 
 
 [[items]]
-path = "https://github.com/tinted-theming/tinted-terminal"
+# path = "https://github.com/tinted-theming/tinted-terminal"
+path = "~/dev/tinted-terminal"
 name = "tinted-terminal-ghostty"
 themes-dir = "themes/ghostty-scripts"
 hook = '''
@@ -42,7 +46,8 @@ sh %f \
     >! ~/.config/ghostty/themes/tinted-theming \
  && killall -SIGUSR2 ghostty
 '''
-supported-systems = ["base16", "base24"]
+supported-systems = ["base16", "base24", "tinted8"]
+allow-dirty-update = true
 
 # [[items]]
 # path = "https://github.com/tinted-theming/tinted-terminal"
@@ -59,3 +64,4 @@ themes-dir = "scripts"
 theme-file-extension = ".js"
 hook = "mkdir -p ~/.claude/themes && node %f > ~/.claude/themes/tinty.json"
 supported-systems = ["base16", "base24", "tinted8"]
+allow-dirty-update = true
