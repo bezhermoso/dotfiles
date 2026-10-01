@@ -5,6 +5,32 @@ return {
         build = ":TSUpdate",
         branch = "main",
         config = function()
+            vim.api.nvim_create_autocmd("FileType", {
+                pattern = "*", -- Triggers for all filetypes
+                callback = function()
+                    -- Attempt to start Treesitter for the current buffer
+                    pcall(vim.treesitter.start)
+
+                    -- Optional: Auto-enable Treesitter-based indentation
+
+                    local ignore_ts_indent_fts = {
+                        ["go"] = true,
+                    }
+                    
+                    if ignore_ts_indent_fts[vim.bo.filetype] then
+                        return
+                    end
+
+                    local ok, ts_indent = pcall(require, "nvim-treesitter.indent")
+                    if ok then
+                        vim.bo.indentexpr = "v:lua.require'nvim-treesitter.indent'.indentexpr()"
+                    end
+                end,
+            })
+            require("nvim-treesitter").setup({
+                -- Directory to install parsers and queries to (prepended to `runtimepath` to have priority)
+                install_dir = vim.fn.stdpath("data") .. "/site",
+            })
             require("nvim-treesitter").install({
                 "bash",
                 "c",
@@ -14,6 +40,7 @@ return {
                 "csv",
                 "diff",
                 "dockerfile",
+                "elixir",
                 "fish",
                 "git_config",
                 "git_rebase",
@@ -27,6 +54,7 @@ return {
                 "gpg",
                 "graphql",
                 "groovy",
+                "haskell",
                 "hcl",
                 "html",
                 "http",
@@ -34,6 +62,7 @@ return {
                 "javascript",
                 "jq",
                 "json",
+                "kotlin",
                 "latex",
                 "ledger",
                 "lua",
@@ -139,6 +168,6 @@ return {
     {
         "RRethy/nvim-treesitter-textsubjects",
         -- It doesn't yet support nvim-treesitter rewrite
-        cond = false
+        cond = false,
     },
 }
