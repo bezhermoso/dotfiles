@@ -117,4 +117,5 @@ fi
 unset current_dir
 unset -f source_config
 
+export PATH="$HOME/.local/bin:${PATH}"
 [[ -f "$HOME/.wt/wt.sh" ]] && source "$HOME/.wt/wt.sh"
