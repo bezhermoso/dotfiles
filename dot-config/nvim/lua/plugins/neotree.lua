@@ -31,11 +31,9 @@ return {
             "nvim-tree/nvim-web-devicons",
             "MunifTanjim/nui.nvim",
             "3rd/image.nvim", -- Optional image support in preview window: See `# Preview Mode` for more information
-            { "bezhermoso/neoplans.nvim", dev = true },
         },
         keys = {
             { "<leader>nn", ":Neotree reveal<CR>", desc = "Neo-tree: reveal", silent = true },
-            { "<leader>np", ":Neotree plans<CR>", desc = "Neo-tree: plans", silent = true },
             { "\\",        ":Neotree reveal<CR>", desc = "Neo-tree: reveal", silent = true }
         },
         config = function()
@@ -45,9 +43,8 @@ return {
                 sources = {
                     "filesystem",
                     "buffers",
-                    "neoplans",
-                    -- "git_status",
-                    -- "document_symbols",
+                    "git_status",
+                    "document_symbols",
                 },
                 -- when opening files, do not use windows containing these filetypes or buftypes
                 open_files_do_not_replace_types = {
@@ -76,10 +73,6 @@ return {
                         {
                             source = "document_symbols",
                             display_name = "  Symbols ",
-                        },
-                        {
-                            source = "plans",
-                            display_name = "  Plans ",
                         },
                     },
                 },
