@@ -44,7 +44,8 @@ sh %f \
     -g 12 \
     -s 12 \
     >! ~/.config/ghostty/themes/tinted-theming \
- && killall -SIGUSR2 ghostty
+ && (killall -SIGUSR2 ghostty || true) \
+ && (rex do client.theme.import path=~/.config/ghostty/themes/tinted-theming || true)
 '''
 supported-systems = ["base16", "base24", "tinted8"]
 allow-dirty-update = true
