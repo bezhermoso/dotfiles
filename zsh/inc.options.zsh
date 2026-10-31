@@ -77,3 +77,11 @@ autoload -Uz csview manpdf rg fzf git
 # Use Homebrew's directories for compilation
 # export CPPFLAGS="-I$HOMEBREW_PREFIX/include"
 # export LDFLAGS="-L$HOMEBREW_PREFIX/lib"
+
+# Rex clients that tinty's hook should re-theme. Tied to a colon-separated
+# scalar so it survives export into the hook's child processes.
+typeset -gxT TINTY_REX_CLIENTS tinty_rex_clients
+
+if [[ "$HOST" == ithildin* ]]; then
+  tinty_rex_clients+=(ithildin)
+fi

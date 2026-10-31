@@ -44,8 +44,18 @@ sh %f \
     -g 12 \
     -s 12 \
     >! ~/.config/ghostty/themes/tinted-theming \
- && (killall -SIGUSR2 ghostty || true) \
- && (rex do client.theme.import path=~/.config/ghostty/themes/tinted-theming || true)
+ && killall -SIGUSR2 ghostty
+'''
+supported-systems = ["base16", "base24", "tinted8"]
+allow-dirty-update = true
+
+[[items]]
+# path = "https://github.com/tinted-theming/tinted-terminal"
+path = "~/dev/tinted-terminal"
+name = "tinted-terminal-rex"
+themes-dir = "themes/ghostty"
+hook = '''
+zsh ~/.dotfiles/rex/refresh-theme.zsh %f
 '''
 supported-systems = ["base16", "base24", "tinted8"]
 allow-dirty-update = true
