@@ -55,7 +55,7 @@ path = "~/dev/tinted-terminal"
 name = "tinted-terminal-rex"
 themes-dir = "themes/ghostty"
 hook = '''
-zsh ~/.dotfiles/rex/refresh-theme.zsh %f
+zsh ~/.dotfiles/rex/tinty-hook.zsh %f
 '''
 supported-systems = ["base16", "base24", "tinted8"]
 allow-dirty-update = true

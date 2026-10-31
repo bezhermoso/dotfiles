@@ -83,5 +83,5 @@ autoload -Uz csview manpdf rg fzf git
 typeset -gxT TINTY_REX_CLIENTS tinty_rex_clients
 
 if [[ "$HOST" == ithildin* ]]; then
-  tinty_rex_clients+=(ithildin)
+  tinty_rex_clients+=(ithildin telperion)
 fi
