@@ -110,6 +110,45 @@ Install `gh` extensions:
 make gh-extensions
 ```
 
+#### Setup Claude Code
+
+Install [Claude Code](https://code.claude.com) with the native installer, which puts `claude` in `~/.local/bin` (already on `PATH` via the Zsh config):
+
+```sh
+curl -fsSL https://claude.ai/install.sh | bash
+```
+
+**Settings.** `~/.claude/settings.json` is generated from the fragments in `dot-config/claude/fragments/` (stowed to `~/.config/claude/fragments/`) by [`claude-mergerc`](https://github.com/bezhermoso/claude-mergerc), which `zinit` loads automatically. It needs `jq` (in the core Brewfile), plus [`yq`](https://github.com/mikefarah/yq) only if a fragment is written in YAML. Run it, review the diff, and apply:
+
+```sh
+claude-mergerc
+```
+
+**Instructions (`CLAUDE.md`).** Instructions shared across machines live in `dot-config/claude/CLAUDE.md` (i.e. `~/.config/claude/CLAUDE.md`). `~/.claude/CLAUDE.md` is per-machine and untracked: it imports the shared file, then adds anything specific to that machine (e.g. work-only or host-only notes). On a new machine, add this line at the top of `~/.claude/CLAUDE.md`, creating the file if needed (work tooling may already have put content there, so don't overwrite it):
+
+```md
+@~/.config/claude/CLAUDE.md
+```
+
+**Personal skills.** My own skills live in a plugin marketplace, [`bezhermoso/skills`](https://github.com/bezhermoso/skills) (private), as the `bez` plugin; they are invoked as `bez:<skill>`. The machine needs git access to that repo, e.g. via `gh auth login` or an SSH key added to GitHub.
+
+On a machine where I only *use* the skills (e.g. a work computer):
+
+```sh
+claude plugin marketplace add bezhermoso/skills
+claude plugin install bez@bez
+```
+
+On a machine where I *edit* the skills, add the marketplace from a local checkout instead. It is read in place, so edits take effect after `/reload-plugins` without pushing:
+
+```sh
+git clone git@github.com:bezhermoso/skills.git ~/dev/skills
+claude plugin marketplace add ~/dev/skills
+claude plugin install bez@bez
+```
+
+See that repo's README for authoring and validation.
+
 # TODOs
 
 - [x] Done for now
