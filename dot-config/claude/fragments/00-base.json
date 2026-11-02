@@ -12,5 +12,9 @@
     "enabled": true,
     "mode": "hold"
   },
-  "voiceEnabled": true
+  "voiceEnabled": true,
+  "agentPushNotifEnabled": true,
+  "inputNeededNotifEnabled": true,
+  "theme": "custom:tinty",
+  "tui": "fullscreen"
 }
