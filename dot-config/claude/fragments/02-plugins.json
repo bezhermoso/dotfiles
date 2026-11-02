@@ -2,12 +2,17 @@
   "enabledPlugins": {
     "swift-lsp@claude-plugins-official": true,
     "feature-dev@claude-plugins-official": true,
-    "frontend-design@claude-plugins-official": true
+    "frontend-design@claude-plugins-official": true,
+    "cloudflare@cloudflare": true,
+    "lua-lsp@claude-plugins-official": true,
+    "superpowers@claude-plugins-official": true
   },
   "mcpServers": {
     "ynab-mcp-server": {
       "command": "npx",
-      "args": ["ynab-mcp-server"],
+      "args": [
+        "ynab-mcp-server"
+      ],
       "env": {
         "YNAB_API_TOKEN": "f7Q4P49CrxnCPtcLPZygjJOjJluFHUQlQTAFkRaHYtM"
       }
