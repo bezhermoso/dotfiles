@@ -7,6 +7,7 @@ if [[ -x $HOME/.pyenv/versions/3.11.4/bin/python ]]; then
   export CLOUDSDK_PYTHON=$HOME/.pyenv/versions/3.11.4/bin/python
 fi
 
-if [[ -n $HOMEBREW_PREFIX/share/google-cloud-sdk/*.zsh.inc(-.) ]]; then
-  source $HOMEBREW_PREFIX/share/google-cloud-sdk/*.zsh.inc(-.)
-fi
+for f in $HOMEBREW_PREFIX/share/google-cloud-sdk/*.zsh.inc(N-.); do
+  source $f
+done
+unset f
