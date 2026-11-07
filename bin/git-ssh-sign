@@ -1,0 +1,20 @@
+#!/usr/bin/env zsh
+#
+# git-ssh-sign — gpg.ssh.program (git/1password.gitconfig).
+#
+# Signs through 1Password's op-ssh-sign, except in ssh TTY mode
+# (bin/ssh-tty-mode, e.g. driving this Mac from Rex on the iPhone), where the
+# Touch ID prompt can't be seen: then sign with this machine's agent key via
+# git-agent-sign, which is registered on GitHub as a signing key and itself
+# falls back to 1Password if the key is missing. Verification always goes to
+# op-ssh-sign.
+
+local bin=${0:A:h}
+local op_sign=/Applications/1Password.app/Contents/MacOS/op-ssh-sign
+
+if [[ ${1-} == -Y && ${2-} == sign ]] && $bin/ssh-tty-mode; then
+  exec $bin/git-agent-sign "$@"
+fi
+
+[[ -x $op_sign ]] && exec $op_sign "$@"
+exec ssh-keygen "$@"

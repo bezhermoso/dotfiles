@@ -1,7 +1,8 @@
 #!/usr/bin/env zsh
 #
 # git-agent-sign — gpg.ssh.program for Claude Code sessions (set by the
-# 04-agent-git Claude settings fragment).
+# 04-agent-git Claude settings fragment), and via bin/git-ssh-sign in ssh
+# TTY mode.
 #
 # Signs with this machine's agent key (bin/agent-key-setup) so agents can
 # sign commits while 1Password is locked. Anything else — verification, or
