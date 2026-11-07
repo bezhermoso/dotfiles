@@ -25,3 +25,10 @@ Unless I say otherwise, triage each finding before reporting it:
 ## Editors
 
 - **Markdown.** When I ask to open a Markdown file in "my editor", use iA Writer (`open -a "iA Writer" <file>`) if it's installed, not `$EDITOR`. If it isn't installed, ask me which editor to use.
+
+## SSH from a remote client (TTY mode)
+
+When I'm driving this Mac remotely (e.g. Rex on my iPhone), ssh switches from 1Password to a key I unlock by typing its passphrase at the terminal. `~/.dotfiles/bin/ssh-tty-mode --why` says whether that mode is on and why. `sshtty` controls it; it's a zsh function from `~/.dotfiles/zsh/inc.ssh-tty.zsh`, so source that file if it isn't defined.
+
+- **If ssh fails (`Permission denied (publickey)`, `read_passphrase: can't open /dev/tty`) while `ssh-tty-mode --why` says on,** the key probably isn't unlocked; you can't type its passphrase. Don't retry blindly: open a terminal I can see (in Rex, a float per the rex-float skill) running `ssh-add -t 4h ~/.ssh/id_ed25519_tty`, ask me to type the passphrase there, then retry.
+- **If I say I'm on my phone / away from the Mac** for a while, run `sshtty on <duration>` (e.g. `sshtty on 3h`); when I'm back, `sshtty auto`.
