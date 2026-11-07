@@ -104,6 +104,7 @@ source_config "inc.gum.zsh"
 source_config "inc.tinty.zsh"
 source_config "inc.claude.zsh"
 source_config "inc.agent-key.zsh"
+source_config "inc.ssh-tty.zsh"
 
 # # Load $WORK post-configuration (from decrypted location if on work machine)
 [[ -f "$WORK_CONFIG_DECRYPTED_POST" ]] && source "$WORK_CONFIG_DECRYPTED_POST"
