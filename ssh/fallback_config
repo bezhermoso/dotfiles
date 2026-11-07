@@ -13,7 +13,13 @@ Match host github.com exec "[[ -n $CLAUDECODE && -f ~/.ssh/agent_ed25519 ]]"
     AddKeysToAgent yes
     UseKeychain yes
 
-Match exec "[[ -n $SSH_CONNECTION ]]" Host *
+# TTY mode: when 1Password's Touch ID prompt can't be seen (SSHed in, Rex on
+# the iPhone, `sshtty on`), use macOS's ssh-agent with a key whose passphrase
+# is typed at the terminal. bin/ssh-tty-mode decides; `sshtty` toggles/unlocks.
+# UseKeychain must stay off, or the Keychain would supply the passphrase.
+Match exec "~/.dotfiles/bin/ssh-tty-mode"
     IdentityAgent SSH_AUTH_SOCK
     IdentitiesOnly yes
-    IdentityFile ~/.ssh/id_rsa_fallback
+    IdentityFile ~/.ssh/id_ed25519_tty
+    AddKeysToAgent 4h
+    UseKeychain no

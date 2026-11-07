@@ -1,0 +1,62 @@
+#!/usr/bin/env zsh
+#
+# ssh-tty-mode [--why] — exit 0 if ssh should use the TTY key
+# (~/.ssh/id_ed25519_tty, passphrase typed at the terminal) instead of
+# 1Password's agent, whose Touch ID prompt can't be seen from a remote client.
+#
+# Run by `Match exec` in ssh/fallback_config on every ssh invocation, so it has
+# to be fast and must fail closed (exit 1 → 1Password, the normal behaviour).
+# --why prints the deciding rule to stderr. Toggle by hand with `sshtty`.
+#
+# First rule that decides wins:
+#   1. $SSH_TTY_MODE=on|off         this shell only
+#   2. $state: "on|off <expiry>"    every shell and agent; expiry 0 = never
+#   3. $SSH_CONNECTION              SSHed into this Mac
+#   4. Rex: the client owning this pane isn't the local macOS app (e.g. iPhone)
+
+zmodload zsh/datetime
+
+local why=0
+[[ ${1-} == --why ]] && why=1
+
+decide() {
+  (( why )) && print -u2 "ssh-tty-mode: $1 ($2)"
+  [[ $1 == on ]]
+  exit
+}
+
+case ${SSH_TTY_MODE-} in
+  on|1)  decide on  "SSH_TTY_MODE=$SSH_TTY_MODE" ;;
+  off|0) decide off "SSH_TTY_MODE=$SSH_TTY_MODE" ;;
+esac
+
+local state=${XDG_STATE_HOME:-$HOME/.local/state}/ssh-tty-mode
+if [[ -r $state ]]; then
+  local mode expiry
+  read -r mode expiry < $state
+  if [[ $mode == (on|off) ]] && (( ${expiry:-0} == 0 || expiry > EPOCHSECONDS )); then
+    local until=forever
+    (( ${expiry:-0} )) && until="until $(strftime '%H:%M' $expiry)"
+    decide $mode "sshtty $mode, $until"
+  fi
+fi
+
+[[ -n ${SSH_CONNECTION-} ]] && decide on "SSH_CONNECTION is set"
+
+if [[ -n ${REX_SESSION-} && -n ${REX_BLOCK-} ]] && (( $+commands[rex] && $+commands[jq] )); then
+  local -a rex=(rex --autostart=false --timeout 500ms)
+  local owner kind
+  owner=$($rex api call session.view "{\"session_id\":\"$REX_SESSION\"}" 2>/dev/null \
+    | jq -r --arg b "$REX_BLOCK" \
+      'first(.. | objects | select(.block_id == $b and has("owner")) | .owner) // empty')
+  if [[ -n $owner ]]; then
+    kind=$($rex client inspect "$owner" --json 2>/dev/null \
+      | jq -r '.client | "\(.principal.transport)/\(.info.platform)/\(.info.label // .info.name)"')
+    if [[ -n $kind && $kind != unix/macos/* ]]; then
+      decide on "Rex pane owned by $kind"
+    fi
+    [[ -n $kind ]] && decide off "Rex pane owned by $kind"
+  fi
+fi
+
+decide off "default: 1Password"
