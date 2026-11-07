@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
 #
-# ssh-tty-mode [--why] — exit 0 if ssh should use the TTY key
-# (~/.ssh/id_ed25519_tty, passphrase typed at the terminal) instead of
+# ssh-tty-mode [--why] — exit 0 if ssh should use the fallback
+# key (~/.ssh/id_rsa_fallback; any passphrase typed at the terminal) instead of
 # 1Password's agent, whose Touch ID prompt can't be seen from a remote client.
 #
 # Run by `Match exec` in ssh/fallback_config on every ssh invocation, so it has

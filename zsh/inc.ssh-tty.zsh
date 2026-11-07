@@ -1,6 +1,6 @@
 # sshtty — control ssh's TTY mode (bin/ssh-tty-mode, ssh/fallback_config):
-# a passphrase key typed at the terminal instead of 1Password's Touch ID
-# prompt, for when that prompt can't be seen (e.g. Rex on the iPhone).
+# ~/.ssh/id_rsa_fallback (any passphrase typed at the terminal) instead of
+# 1Password's Touch ID prompt, for when that prompt can't be seen (e.g. Rex on the iPhone).
 #
 #   sshtty                       status: mode, why, whether the key is unlocked
 #   sshtty on|off [DURATION]     force the mode in every shell and agent;
@@ -15,7 +15,7 @@ function sshtty() {
   emulate -L zsh
   zmodload zsh/datetime
 
-  local key=~/.ssh/id_ed25519_tty
+  local key=~/.ssh/id_rsa_fallback
   local state=${XDG_STATE_HOME:-$HOME/.local/state}/ssh-tty-mode
   local cmd=${1:-status}
   (( $# )) && shift
@@ -32,11 +32,15 @@ function sshtty() {
     status)
       ~/.dotfiles/bin/ssh-tty-mode --why
       if [[ ! -f $key ]]; then
-        print -P "key: %F{yellow}missing%f — create it: ssh-keygen -t ed25519 -a 100 -f $key -C \"$USER@${HOST%%.*} tty\""
+        print -P "key: %F{yellow}missing%f — expected at $key"
       elif [[ -f $key.pub ]] && ssh-add -l 2>/dev/null | grep -qF -- "$(ssh-keygen -lf $key.pub | cut -d' ' -f2)"; then
         print -P "key: %F{green}unlocked%f in ssh-agent"
       else
-        print "key: locked (sshtty unlock, or ssh prompts for the passphrase)"
+        if ssh-keygen -y -P "" -f $key &>/dev/null; then
+          print "key: no passphrase, usable as is"
+        else
+          print "key: locked (sshtty unlock, or ssh prompts for the passphrase)"
+        fi
       fi
       ;;
     on|off)
