@@ -1,0 +1,2 @@
+#compdef sshtty
+_arguments '1:command:(status on off auto unlock lock)' '2:duration:(30m 1h 2h 4h 8h 1d 0)'

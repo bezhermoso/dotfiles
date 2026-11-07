@@ -1,0 +1,68 @@
+#!/usr/bin/env zsh
+#
+# sshtty — control ssh's TTY mode (bin/ssh-tty-mode, ssh/fallback_config):
+# ~/.ssh/id_rsa_fallback (any passphrase typed at the terminal) instead of
+# 1Password's Touch ID prompt, for when that prompt can't be seen (e.g. Rex on the iPhone).
+#
+#   sshtty                       status: mode, why, whether the key is unlocked
+#   sshtty on|off [DURATION]     force the mode in every shell and agent;
+#                                DURATION like 30m, 2h, 1d (default 8h), or 0
+#   sshtty auto                  back to automatic detection
+#   sshtty unlock [DURATION]     load the key into ssh-agent (default 4h)
+#   sshtty lock                  remove the key from ssh-agent
+#
+# For one shell only: export SSH_TTY_MODE=on|off.
+
+zmodload zsh/datetime
+
+local bin=${0:A:h}
+local key=~/.ssh/id_rsa_fallback
+local state=${XDG_STATE_HOME:-$HOME/.local/state}/ssh-tty-mode
+local cmd=${1:-status}
+(( $# )) && shift
+
+# DURATION → seconds; fails on a bad value.
+local -A units=(s 1 m 60 h 3600 d 86400)
+secs() {
+  [[ $1 == (0|forever) ]] && { print 0; return }
+  [[ $1 =~ '^([0-9]+)([smhd]?)$' ]] || { print -u2 "sshtty: bad duration: $1"; return 1 }
+  print $(( match[1] * units[${match[2]:-s}] ))
+}
+
+local s
+case $cmd in
+  status)
+    $bin/ssh-tty-mode --why
+    if [[ ! -f $key ]]; then
+      print -P "key: %F{yellow}missing%f — expected at $key"
+    elif [[ -f $key.pub ]] && ssh-add -l 2>/dev/null | grep -qF -- "$(ssh-keygen -lf $key.pub | cut -d' ' -f2)"; then
+      print -P "key: %F{green}unlocked%f in ssh-agent"
+    elif ssh-keygen -y -P "" -f $key &>/dev/null; then
+      print "key: no passphrase, usable as is"
+    else
+      print "key: locked (sshtty unlock, or ssh prompts for the passphrase)"
+    fi
+    ;;
+  on|off)
+    s=$(secs ${1:-8h}) || exit 1
+    mkdir -p ${state:h}
+    print "$cmd $(( s ? EPOCHSECONDS + s : 0 ))" > $state
+    [[ $cmd == off ]] && ssh-add -d $key &>/dev/null
+    $bin/ssh-tty-mode --why
+    ;;
+  auto)
+    rm -f $state
+    $bin/ssh-tty-mode --why
+    ;;
+  unlock)
+    s=$(secs ${1:-4h}) || exit 1
+    if (( s )); then ssh-add -t $s $key; else ssh-add $key; fi
+    ;;
+  lock)
+    ssh-add -d $key
+    ;;
+  *)
+    print -u2 "usage: sshtty [status|on [DURATION]|off [DURATION]|auto|unlock [DURATION]|lock]"
+    exit 1
+    ;;
+esac
